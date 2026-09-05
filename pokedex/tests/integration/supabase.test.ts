@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { describe, expect, it } from 'vitest'
-import { createSupabaseAuthAdapter } from '~/adapter/supabase/auth'
+import { createSupabaseAuthAdapter } from '../../adapter/supabase/auth'
 
 const url = import.meta.env.NUXT_PUBLIC_SUPABASE_URL
 const anonKey = import.meta.env.NUXT_PUBLIC_SUPABASE_ANON_KEY
