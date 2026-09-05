@@ -103,6 +103,7 @@ function stopCropDrag() {
       <article v-for="food in filteredFoods" :key="food.id" class="food-card">
         <div class="food-art" :style="{ backgroundColor: food.color }">
           <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
+          <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
           <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
           <span class="number">#{{ food.number }}</span>
           <span v-if="eatenFoods.includes(food.id)" class="tried-badge">✓ Tried</span>

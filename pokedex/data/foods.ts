@@ -1,3 +1,10 @@
+import dorayakiImage from '~/assets/images/dorayaki.jpg'
+import mochiImage from '~/assets/images/mochi.jpg'
+import sobaImage from '~/assets/images/soba.jpg'
+import tsukemenImage from '~/assets/images/tsukemen.jpg'
+import udonImage from '~/assets/images/udon.jpg'
+import warabiMochiImage from '~/assets/images/warabi mochi.jpg'
+
 export type Food = {
   id: string
   number: string
@@ -7,6 +14,7 @@ export type Food = {
   description: string
   emoji: string
   color: string
+  image?: string
 }
 
 export const foods: Food[] = [
@@ -16,9 +24,9 @@ export const foods: Food[] = [
   { id: 'onigiri', number: '004', name: 'Onigiri', japaneseName: 'おにぎり', categories: ['Rice', 'Snacks'], description: 'Hand-shaped rice triangles, often wrapped in crisp nori.', emoji: '🍙', color: '#c6d8bd' },
   { id: 'takoyaki', number: '005', name: 'Takoyaki', japaneseName: 'たこ焼き', categories: ['Seafood', 'Street food', 'Snacks'], description: 'Golden batter balls filled with tender pieces of octopus.', emoji: '🐙', color: '#e4bf9b' },
   { id: 'matcha', number: '006', name: 'Matcha parfait', japaneseName: '抹茶パフェ', categories: ['Desserts', 'Sweets'], description: 'Layered green tea dessert with cream, jelly, and mochi.', emoji: '🍵', color: '#c4d0ad' },
-  { id: 'soba', number: '007', name: 'Soba', japaneseName: 'そば', categories: ['Noodles'], description: 'Nutty buckwheat noodles served hot or cold.', emoji: '🍜', color: '#d4b99d' },
-  { id: 'udon', number: '008', name: 'Udon', japaneseName: 'うどん', categories: ['Noodles'], description: 'Thick, chewy wheat noodles in a delicate broth.', emoji: '🍲', color: '#e9d8bb' },
-  { id: 'tsukemen', number: '009', name: 'Tsukemen', japaneseName: 'つけ麺', categories: ['Noodles'], description: 'Ramen noodles served separately with a concentrated dipping broth.', emoji: '🥢', color: '#d9b78c' },
+  { id: 'soba', number: '007', name: 'Soba', japaneseName: 'そば', categories: ['Noodles'], description: 'Nutty buckwheat noodles served hot or cold.', emoji: '🍜', color: '#d4b99d', image: sobaImage },
+  { id: 'udon', number: '008', name: 'Udon', japaneseName: 'うどん', categories: ['Noodles'], description: 'Thick, chewy wheat noodles in a delicate broth.', emoji: '🍲', color: '#e9d8bb', image: udonImage },
+  { id: 'tsukemen', number: '009', name: 'Tsukemen', japaneseName: 'つけ麺', categories: ['Noodles'], description: 'Ramen noodles served separately with a concentrated dipping broth.', emoji: '🥢', color: '#d9b78c', image: tsukemenImage },
   { id: 'hiyashi-chuka', number: '010', name: 'Hiyashi chuka', japaneseName: '冷やし中華', categories: ['Noodles', 'Summer'], description: 'Chilled ramen noodles with colourful toppings and dressing.', emoji: '🥗', color: '#e7cf9d' },
   { id: 'tempura', number: '011', name: 'Tempura', japaneseName: '天ぷら', categories: ['Seafood', 'Fried'], description: 'Seafood and vegetables coated in a light, crisp batter.', emoji: '🍤', color: '#f0c88f' },
   { id: 'tonkatsu', number: '012', name: 'Tonkatsu', japaneseName: 'とんかつ', categories: ['Meat', 'Fried'], description: 'A breaded and fried pork cutlet served with tangy sauce.', emoji: '🥩', color: '#d69b78' },
@@ -51,11 +59,11 @@ export const foods: Food[] = [
   { id: 'taiyaki', number: '039', name: 'Taiyaki', japaneseName: 'たい焼き', categories: ['Street food', 'Desserts'], description: 'Fish-shaped cake traditionally filled with sweet red bean paste.', emoji: '🐟', color: '#e3aa68' },
   { id: 'dango', number: '040', name: 'Dango', japaneseName: '団子', categories: ['Street food', 'Desserts'], description: 'Chewy rice-flour dumplings served on a skewer.', emoji: '🍡', color: '#f0d6ac' },
   { id: 'kakigori', number: '041', name: 'Kakigori', japaneseName: 'かき氷', categories: ['Street food', 'Desserts'], description: 'Fluffy shaved ice covered with colourful syrup and toppings.', emoji: '🍧', color: '#b8d9e7' },
-  { id: 'mochi', number: '042', name: 'Mochi', japaneseName: '餅', categories: ['Desserts', 'Snacks'], description: 'Soft, chewy rice cakes enjoyed plain or with sweet fillings.', emoji: '🍡', color: '#f0e3ce' },
+  { id: 'mochi', number: '042', name: 'Mochi', japaneseName: '餅', categories: ['Desserts', 'Snacks'], description: 'Soft, chewy rice cakes enjoyed plain or with sweet fillings.', emoji: '🍡', color: '#f0e3ce', image: mochiImage },
   { id: 'daifuku', number: '043', name: 'Daifuku', japaneseName: '大福', categories: ['Desserts'], description: 'Mochi filled with sweet red bean paste, cream, or fruit.', emoji: '🍓', color: '#f2c3c3' },
   { id: 'ichigo-daifuku', number: '044', name: 'Ichigo daifuku', japaneseName: 'いちご大福', categories: ['Desserts'], description: 'A whole strawberry wrapped in red bean paste and soft mochi.', emoji: '🍓', color: '#f3b6b4' },
-  { id: 'warabi-mochi', number: '045', name: 'Warabi mochi', japaneseName: 'わらび餅', categories: ['Desserts'], description: 'Jiggly, translucent rice cakes dusted with roasted soybean flour.', emoji: '🍡', color: '#d8c7a7' },
-  { id: 'dorayaki', number: '046', name: 'Dorayaki', japaneseName: 'どら焼き', categories: ['Desserts', 'Snacks'], description: 'Two fluffy pancakes sandwiched around sweet red bean paste.', emoji: '🥞', color: '#c9945f' },
+  { id: 'warabi-mochi', number: '045', name: 'Warabi mochi', japaneseName: 'わらび餅', categories: ['Desserts'], description: 'Jiggly, translucent rice cakes dusted with roasted soybean flour.', emoji: '🍡', color: '#d8c7a7', image: warabiMochiImage },
+  { id: 'dorayaki', number: '046', name: 'Dorayaki', japaneseName: 'どら焼き', categories: ['Desserts', 'Snacks'], description: 'Two fluffy pancakes sandwiched around sweet red bean paste.', emoji: '🥞', color: '#c9945f', image: dorayakiImage },
   { id: 'castella', number: '047', name: 'Castella', japaneseName: 'カステラ', categories: ['Desserts'], description: 'A moist, softly textured sponge cake with a golden top.', emoji: '🍰', color: '#e7bd70' },
   { id: 'anmitsu', number: '048', name: 'Anmitsu', japaneseName: 'あんみつ', categories: ['Desserts'], description: 'A colourful dessert of agar jelly, fruit, red bean paste, and syrup.', emoji: '🍨', color: '#d3b9d4' },
   { id: 'melon-pan', number: '049', name: 'Melon pan', japaneseName: 'メロンパン', categories: ['Snacks', 'Convenience store'], description: 'Sweet bread covered in a crisp cookie crust.', emoji: '🍈', color: '#d6d28f' },
