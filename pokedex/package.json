@@ -5,9 +5,15 @@
   "scripts": {
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "nuxt": "^3.17.0"
+    "@vue/test-utils": "^2.4.6",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "happy-dom": "^18.0.1",
+    "nuxt": "^3.17.0",
+    "vitest": "^3.2.4"
   }
 }

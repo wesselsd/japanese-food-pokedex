@@ -28,6 +28,22 @@ npm run generate
 npm run preview
 ```
 
+## Tests
+
+Run the unit tests once:
+
+```bash
+npm test
+```
+
+Run them in watch mode while developing:
+
+```bash
+npm run test:watch
+```
+
+The initial tests cover the `useFoodPokedex` composable: searching, category filtering, eaten-state tracking, and local-storage restoration.
+
 ### To kill stale node processes 
 
 ```bash
