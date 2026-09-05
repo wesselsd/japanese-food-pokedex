@@ -1,0 +1,13 @@
+{
+  "name": "japanese-food-pokedex",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview"
+  },
+  "devDependencies": {
+    "nuxt": "^3.17.0"
+  }
+}
