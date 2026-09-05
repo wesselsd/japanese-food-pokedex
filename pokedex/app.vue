@@ -110,7 +110,7 @@ function stopCropDrag() {
         <div class="card-body">
           <div class="card-heading">
             <div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div>
-            <span class="category-label">{{ food.category }}</span>
+            <span class="category-label">{{ food.categories.join(' · ') }}</span>
           </div>
           <p class="description">{{ food.description }}</p>
           <div class="card-actions">

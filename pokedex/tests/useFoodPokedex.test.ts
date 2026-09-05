@@ -26,7 +26,7 @@ describe('useFoodPokedex', () => {
   it('filters foods by search term and category', async () => {
     const state = mountComposable()
 
-    expect(state.filteredFoods.value).toHaveLength(6)
+    expect(state.filteredFoods.value).toHaveLength(50)
 
     state.searchTerm.value = '寿司'
     await nextTick()
@@ -35,7 +35,15 @@ describe('useFoodPokedex', () => {
     state.searchTerm.value = ''
     state.selectedCategory.value = 'Street food'
     await nextTick()
-    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['okonomiyaki', 'takoyaki'])
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual([
+      'okonomiyaki',
+      'takoyaki',
+      'yakitori',
+      'kushikatsu',
+      'taiyaki',
+      'dango',
+      'senbei'
+    ])
   })
 
   it('toggles eaten foods and persists the state', async () => {
