@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, onMounted, ref, watch } from 'vue'
 import { foods } from '~/data/foods'
 
 const eatenFoods = ref<string[]>([])
