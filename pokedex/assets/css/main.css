@@ -4,6 +4,13 @@
 * { box-sizing: border-box; } body { margin: 0; } button, input { font: inherit; } button { cursor: pointer; }
 .shell { width: min(1120px, calc(100% - 40px)); margin: auto; padding: 52px 0 80px; }
 .hero { max-width: 650px; } .eyebrow, .number, .category-label { color: #b0492f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.account-bar, .auth-heading { align-items: center; display: flex; justify-content: space-between; gap: 12px; }
+.account-bar { color: #77716b; font-size: 12px; margin-top: 22px; }
+.auth-panel { background: #fffdf9; border: 1px solid #e3dcd1; border-radius: 5px; margin-top: 22px; max-width: 520px; padding: 14px; }
+.auth-heading strong { font-size: 13px; } .text-button { background: none; border: 0; color: #b0492f; font-size: 12px; padding: 0; text-decoration: underline; }
+.auth-fields { display: flex; gap: 8px; margin-top: 13px; } .auth-fields input { background: #f7f3ec; border: 1px solid #e3dcd1; border-radius: 3px; min-width: 0; padding: 9px; width: 100%; }
+.auth-button { background: #252321; border: 0; border-radius: 3px; color: #fff; font-size: 12px; padding: 9px 12px; white-space: nowrap; }
+.auth-error, .auth-message { font-size: 12px; margin: 10px 0 0; } .auth-error { color: #b0492f; } .auth-message { color: #58734c; }
 .eyebrow span { color: #d5a34c; margin: 0 8px; } h1 { font-size: clamp(3.25rem, 8vw, 6.5rem); letter-spacing: -.07em; line-height: .91; margin: 22px 0; }
 h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600; letter-spacing: -.06em; } .intro { color: #77716b; font-size: 16px; line-height: 1.6; max-width: 475px; }
 .progress-row { align-items: center; display: flex; gap: 16px; margin-top: 30px; max-width: 500px; } .progress-row strong { font-size: 22px; } .progress-row span { color: #8b847b; font-size: 13px; }
@@ -23,3 +30,4 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .photo-button { align-items: center; border: 1px solid #d8d0c5; border-radius: 3px; color: #b0492f; display: flex; font-size: 19px; justify-content: center; padding: 7px 12px; } .photo-button input { display: none; }
 .empty { color: #77716b; padding: 30px 0; text-align: center; }
 @media (max-width: 800px) { .food-grid { grid-template-columns: repeat(2, 1fr); } } @media (max-width: 540px) { .shell { padding-top: 30px; width: min(100% - 28px, 460px); } .food-grid { grid-template-columns: 1fr; } .food-art { height: 200px; } .controls { margin-top: 42px; } }
+@media (max-width: 540px) { .auth-fields { flex-direction: column; } .auth-button { width: 100%; } }

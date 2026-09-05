@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { foods } from './data/foods'
 import { useFoodPokedex } from './composables/useFoodPokedex'
+import { useAuth } from './composables/useAuth'
 
 const {
   eatenFoods,
@@ -13,12 +15,40 @@ const {
   toggleEaten,
   savePhoto
 } = useFoodPokedex(foods)
+const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth()
+const authMode = ref<'signIn' | 'signUp'>('signIn')
+const email = ref('')
+const password = ref('')
+
+async function submitAuth() {
+  if (authMode.value === 'signIn') await signIn(email.value, password.value)
+  else await signUp(email.value, password.value)
+}
 </script>
 
 <template>
   <main class="shell">
     <header class="hero">
       <div class="eyebrow">おいしい図鑑 <span>•</span> Food adventure</div>
+      <div v-if="initialized && isConfigured && user" class="account-bar">
+        <span>Signed in as {{ user.email }}</span>
+        <button class="text-button" @click="signOut">Sign out</button>
+      </div>
+      <form v-else-if="initialized && isConfigured" class="auth-panel" @submit.prevent="submitAuth">
+        <div class="auth-heading">
+          <strong>{{ authMode === 'signIn' ? 'Save your progress everywhere' : 'Create your account' }}</strong>
+          <button type="button" class="text-button" @click="authMode = authMode === 'signIn' ? 'signUp' : 'signIn'">
+            {{ authMode === 'signIn' ? 'Sign up' : 'Sign in' }}
+          </button>
+        </div>
+        <div class="auth-fields">
+          <input v-model="email" type="email" placeholder="Email" autocomplete="email" required />
+          <input v-model="password" type="password" placeholder="Password" autocomplete="current-password" minlength="6" required />
+          <button class="auth-button" type="submit">{{ authMode === 'signIn' ? 'Sign in' : 'Create account' }}</button>
+        </div>
+        <p v-if="authError" class="auth-error">{{ authError }}</p>
+        <p v-if="authMessage" class="auth-message">{{ authMessage }}</p>
+      </form>
       <h1>Your Japanese<br /><em>food pokedex.</em></h1>
       <p class="intro">Discover classic dishes, mark the ones you have tried, and keep a photo of every delicious memory.</p>
       <div class="progress-row">
