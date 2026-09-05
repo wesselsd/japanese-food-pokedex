@@ -81,6 +81,7 @@ def generate_image(food):
     )
     with open(f"{food}_image.png", "wb") as f:
         f.write(base64.b64decode(interaction.output_image.data))
+    print(f"Created image of {food}.")
     time.sleep(1) # hard rate limit on api and expensive call!
 
 def main():
