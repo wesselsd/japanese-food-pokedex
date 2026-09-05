@@ -1,0 +1,8 @@
+- Make it possible to only show eaten/noneaten food
+- Make the categories more useful and visualize how much of a certain category has been eaten yet
+- Trim tags, and add preselected "Essential" tag with only 25 entries
+- Curate foods
+- Move foods to a config json file?
+- Allow selection of image / multiple images / meta data / Removal of image
+- Option to hide eaten items (default: true unless all have been eaten)
+- Sort food by label
