@@ -42,6 +42,7 @@ describe('useFoodPokedex', () => {
       'kushikatsu',
       'taiyaki',
       'dango',
+      'kakigori',
       'senbei'
     ])
   })
