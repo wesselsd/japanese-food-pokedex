@@ -72,6 +72,14 @@ supabase/migrations/20260905211500_create_user_progress.sql
 
 This creates the user-scoped progress table and private `food-photos` Storage bucket with row-level security policies.
 
+To expand the catalogue and change food categories into multi-value tags, run:
+
+```text
+supabase/migrations/20260905223000_expand_food_catalog_and_tags.sql
+```
+
+This adds the first 50 non-chain foods. Chains, drinks, and very specific sushi/yakiniku ingredient variants are intentionally reserved for later catalogue passes.
+
 ## Photo uploads
 
 Before a photo is saved, the browser opens a wide 16:9 crop editor matching the food thumbnail shape. Drag the image to choose the visible area and use the zoom control if needed. The selected crop is resized to a 640x360 JPEG and compressed to a maximum of 100 KB before being stored. This keeps thumbnail storage small and avoids uploading the original camera image.
