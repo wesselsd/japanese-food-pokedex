@@ -1,4 +1,4 @@
-import type { AuthChangeEvent, Session, SupabaseClient, User } from '@supabase/supabase-js'
+import type { AuthChangeEvent, Session, SupabaseClient } from '@supabase/supabase-js'
 
 export type AuthAdapter = {
   getSession: () => Promise<Session | null>
