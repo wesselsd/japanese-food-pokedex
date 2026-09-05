@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { foods } from '~/data/foods'
+import { foods } from './data/foods'
 
 const eatenFoods = ref<string[]>([])
 const photos = ref<Record<string, string>>({})
@@ -64,7 +64,7 @@ watch(photos, (value) => localStorage.setItem('pokedex-photos', JSON.stringify(v
 
     <section class="food-grid" aria-live="polite">
       <article v-for="food in filteredFoods" :key="food.id" class="food-card">
-        <div class="food-art" :style="{ '--accent': food.color }">
+        <div class="food-art" :style="{ backgroundColor: food.color }">
           <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
           <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
           <span class="number">#{{ food.number }}</span>
@@ -102,7 +102,7 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .search input { background: none; border: 0; min-width: 0; outline: 0; width: 100%; } .categories { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .category { background: transparent; border: 1px solid #d8d0c5; border-radius: 20px; color: #77716b; font-size: 12px; padding: 7px 13px; } .category.active, .category:hover { background: #252321; border-color: #252321; color: #fff; }
 .food-grid { display: grid; gap: 24px; grid-template-columns: repeat(3, 1fr); } .food-card { background: #fffdf9; border: 1px solid #e4ddd2; border-radius: 5px; overflow: hidden; }
-.food-art { align-items: center; background: var(--accent); display: flex; height: 180px; justify-content: center; overflow: hidden; position: relative; } .food-art img { height: 100%; object-fit: cover; width: 100%; }
+.food-art { align-items: center; display: flex; height: 180px; justify-content: center; overflow: hidden; position: relative; } .food-art img { height: 100%; object-fit: cover; width: 100%; }
 .food-emoji { filter: drop-shadow(0 8px 6px #0002); font-size: 88px; } .number { color: #25232199; left: 14px; position: absolute; top: 13px; }
 .tried-badge { background: #252321; border-radius: 20px; color: #fff; font-family: 'DM Mono', monospace; font-size: 10px; padding: 7px 10px; position: absolute; right: 12px; text-transform: uppercase; top: 12px; }
 .card-body { padding: 18px; } .card-heading { align-items: flex-start; display: flex; justify-content: space-between; gap: 8px; } h2 { font-size: 22px; letter-spacing: -.04em; margin: 0; }
