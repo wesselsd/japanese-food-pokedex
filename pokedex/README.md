@@ -64,6 +64,14 @@ npm run test:integration
 
 The integration test reads one row from `public.foods` using the publishable key.
 
+To persist eaten foods and photos per account, also run:
+
+```text
+supabase/migrations/20260905211500_create_user_progress.sql
+```
+
+This creates the user-scoped progress table and private `food-photos` Storage bucket with row-level security policies.
+
 ### To kill stale node processes 
 
 ```bash

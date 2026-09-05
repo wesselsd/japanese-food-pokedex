@@ -1,15 +1,15 @@
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it } from 'vitest'
-import { foods } from '~/data/foods'
-import { useFoodPokedex } from '~/composables/useFoodPokedex'
+import { foods } from '../data/foods'
+import { useFoodPokedex } from '../composables/useFoodPokedex'
 
 function mountComposable() {
   let state!: ReturnType<typeof useFoodPokedex>
 
   mount({
     setup() {
-      state = useFoodPokedex(foods)
+      state = useFoodPokedex(foods, ref(null))
       return {}
     },
     template: '<div />'
@@ -41,13 +41,13 @@ describe('useFoodPokedex', () => {
   it('toggles eaten foods and persists the state', async () => {
     const state = mountComposable()
 
-    state.toggleEaten('ramen')
+    await state.toggleEaten('ramen')
     await nextTick()
     expect(state.eatenFoods.value).toEqual(['ramen'])
     expect(state.eatenCount.value).toBe(1)
     expect(localStorage.getItem('pokedex-eaten')).toBe('["ramen"]')
 
-    state.toggleEaten('ramen')
+    await state.toggleEaten('ramen')
     await nextTick()
     expect(state.eatenFoods.value).toEqual([])
   })

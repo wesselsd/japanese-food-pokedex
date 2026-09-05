@@ -3,7 +3,14 @@ import { ref } from 'vue'
 import { foods } from './data/foods'
 import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
+import { getSupabaseClient } from './adapter/supabase/client'
+import { createSupabaseProgressAdapter } from './adapter/supabase/progress'
 
+const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth()
+const config = useRuntimeConfig()
+const cloudProgress = isConfigured.value
+  ? createSupabaseProgressAdapter(getSupabaseClient(config.public.supabaseUrl, config.public.supabaseAnonKey))
+  : null
 const {
   eatenFoods,
   photos,
@@ -13,9 +20,9 @@ const {
   filteredFoods,
   eatenCount,
   toggleEaten,
-  savePhoto
-} = useFoodPokedex(foods)
-const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth()
+  savePhoto,
+  syncError
+} = useFoodPokedex(foods, user, cloudProgress)
 const authMode = ref<'signIn' | 'signUp'>('signIn')
 const email = ref('')
 const password = ref('')
@@ -51,6 +58,7 @@ async function submitAuth() {
       </form>
       <h1>Your Japanese<br /><em>food pokedex.</em></h1>
       <p class="intro">Discover classic dishes, mark the ones you have tried, and keep a photo of every delicious memory.</p>
+      <p v-if="syncError" class="auth-error">{{ syncError }}</p>
       <div class="progress-row">
         <div><strong>{{ eatenCount }}</strong><span> / {{ foods.length }} foods tried</span></div>
         <div class="progress-track"><div class="progress-fill" :style="{ width: `${(eatenCount / foods.length) * 100}%` }" /></div>
