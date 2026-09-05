@@ -32,8 +32,8 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .crop-backdrop { align-items: center; background: #25232199; display: flex; inset: 0; justify-content: center; padding: 20px; position: fixed; z-index: 10; }
 .crop-dialog { background: #fffdf9; border-radius: 6px; max-width: 360px; padding: 22px; width: 100%; }
 .crop-dialog h2 { margin: 0; } .crop-dialog p { color: #77716b; font-size: 13px; margin: 7px 0 18px; }
-.crop-window { background: #252321; height: 280px; overflow: hidden; position: relative; touch-action: none; width: 280px; }
-.crop-window img { max-width: none; position: absolute; user-select: none; } .zoom-control { display: flex; font-size: 12px; gap: 10px; margin-top: 16px; }
+.crop-window { background: #252321; cursor: grab; height: 180px; overflow: hidden; position: relative; touch-action: none; width: 320px; }
+.crop-window:active { cursor: grabbing; } .crop-window img { max-width: none; pointer-events: none; position: absolute; user-select: none; } .zoom-control { display: flex; font-size: 12px; gap: 10px; margin-top: 16px; }
 .zoom-control input { flex: 1; } .crop-actions { align-items: center; display: flex; justify-content: flex-end; gap: 16px; margin-top: 18px; }
 @media (max-width: 800px) { .food-grid { grid-template-columns: repeat(2, 1fr); } } @media (max-width: 540px) { .shell { padding-top: 30px; width: min(100% - 28px, 460px); } .food-grid { grid-template-columns: 1fr; } .food-art { height: 200px; } .controls { margin-top: 42px; } }
 @media (max-width: 540px) { .auth-fields { flex-direction: column; } .auth-button { width: 100%; } }

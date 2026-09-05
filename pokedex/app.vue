@@ -41,6 +41,7 @@ async function submitAuth() {
 }
 
 function startCropDrag(event: PointerEvent) {
+  event.preventDefault()
   dragging = true
   lastX = event.clientX
   lastY = event.clientY
@@ -126,12 +127,14 @@ function stopCropDrag() {
         <p>Drag the image to choose which part to keep.</p>
         <div
           class="crop-window"
-          @pointerdown="startCropDrag"
+          @pointerdown.prevent="startCropDrag"
           @pointermove="dragCrop"
           @pointerup="stopCropDrag"
           @pointerleave="stopCropDrag"
+          @pointercancel="stopCropDrag"
+          @contextmenu.prevent
         >
-          <img :src="crop.url" alt="Photo crop preview" :style="{ width: `${crop.width * crop.zoom}px`, height: `${crop.height * crop.zoom}px`, left: `${crop.offsetX}px`, top: `${crop.offsetY}px` }" />
+          <img draggable="false" :src="crop.url" alt="Photo crop preview" :style="{ width: `${crop.width * crop.zoom}px`, height: `${crop.height * crop.zoom}px`, left: `${crop.offsetX}px`, top: `${crop.offsetY}px` }" />
         </div>
         <label class="zoom-control">Zoom <input type="range" min="1" max="3" step=".05" :value="crop.zoom" @input="setCropZoom(Number(($event.target as HTMLInputElement).value))" /></label>
         <div class="crop-actions">

@@ -5,13 +5,14 @@ import type { Food } from '~/data/foods'
 
 const EATEN_STORAGE_KEY = 'pokedex-eaten'
 const PHOTOS_STORAGE_KEY = 'pokedex-photos'
-const CROP_SIZE = 280
-const OUTPUT_SIZE = 512
+const CROP_WIDTH = 320
+const CROP_HEIGHT = 180
+const OUTPUT_WIDTH = 640
+const OUTPUT_HEIGHT = 360
 const MAX_PHOTO_BYTES = 100 * 1024
 
 type CropState = {
   foodId: string
-  file: File
   url: string
   width: number
   height: number
@@ -66,15 +67,14 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     const url = URL.createObjectURL(file)
     const image = new Image()
     image.addEventListener('load', () => {
-      const scale = Math.max(CROP_SIZE / image.naturalWidth, CROP_SIZE / image.naturalHeight)
+      const scale = Math.max(CROP_WIDTH / image.naturalWidth, CROP_HEIGHT / image.naturalHeight)
       crop.value = {
         foodId: id,
-        file,
         url,
         width: image.naturalWidth * scale,
         height: image.naturalHeight * scale,
-        offsetX: (CROP_SIZE - image.naturalWidth * scale) / 2,
-        offsetY: (CROP_SIZE - image.naturalHeight * scale) / 2,
+        offsetX: (CROP_WIDTH - image.naturalWidth * scale) / 2,
+        offsetY: (CROP_HEIGHT - image.naturalHeight * scale) / 2,
         zoom: 1
       }
     })
@@ -87,19 +87,19 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     crop.value.offsetX += deltaX
     crop.value.offsetY += deltaY
     const scale = crop.value.zoom
-    const minX = CROP_SIZE - crop.value.width * scale
-    const minY = CROP_SIZE - crop.value.height * scale
+    const minX = CROP_WIDTH - crop.value.width * scale
+    const minY = CROP_HEIGHT - crop.value.height * scale
     crop.value.offsetX = Math.min(0, Math.max(minX, crop.value.offsetX))
     crop.value.offsetY = Math.min(0, Math.max(minY, crop.value.offsetY))
   }
 
   function setCropZoom(zoom: number) {
     if (!crop.value) return
-    const centerX = (CROP_SIZE / 2 - crop.value.offsetX) / crop.value.zoom
-    const centerY = (CROP_SIZE / 2 - crop.value.offsetY) / crop.value.zoom
+    const centerX = (CROP_WIDTH / 2 - crop.value.offsetX) / crop.value.zoom
+    const centerY = (CROP_HEIGHT / 2 - crop.value.offsetY) / crop.value.zoom
     crop.value.zoom = zoom
-    crop.value.offsetX = CROP_SIZE / 2 - centerX * zoom
-    crop.value.offsetY = CROP_SIZE / 2 - centerY * zoom
+    crop.value.offsetX = CROP_WIDTH / 2 - centerX * zoom
+    crop.value.offsetY = CROP_HEIGHT / 2 - centerY * zoom
     moveCrop(0, 0)
   }
 
@@ -118,16 +118,17 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
       image.addEventListener('error', () => reject(new Error('Unable to read the selected image.')))
     })
 
-    const scale = currentCrop.zoom * Math.max(CROP_SIZE / image.naturalWidth, CROP_SIZE / image.naturalHeight)
-    const sourceSize = CROP_SIZE / scale
+    const scale = currentCrop.zoom * Math.max(CROP_WIDTH / image.naturalWidth, CROP_HEIGHT / image.naturalHeight)
+    const sourceWidth = CROP_WIDTH / scale
+    const sourceHeight = CROP_HEIGHT / scale
     const sourceX = -currentCrop.offsetX / scale
     const sourceY = -currentCrop.offsetY / scale
     const canvas = document.createElement('canvas')
-    canvas.width = OUTPUT_SIZE
-    canvas.height = OUTPUT_SIZE
+    canvas.width = OUTPUT_WIDTH
+    canvas.height = OUTPUT_HEIGHT
     const context = canvas.getContext('2d')
     if (!context) throw new Error('Unable to prepare the photo.')
-    context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE)
+    context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT)
 
     let quality = 0.82
     let blob = await canvasToBlob(canvas, quality)

@@ -74,7 +74,7 @@ This creates the user-scoped progress table and private `food-photos` Storage bu
 
 ## Photo uploads
 
-Before a photo is saved, the browser opens a square crop editor. Drag the image to choose the visible area and use the zoom control if needed. The selected crop is resized to a 512x512 JPEG and compressed to a maximum of 100 KB before being stored. This keeps thumbnail storage small and avoids uploading the original camera image.
+Before a photo is saved, the browser opens a wide 16:9 crop editor matching the food thumbnail shape. Drag the image to choose the visible area and use the zoom control if needed. The selected crop is resized to a 640x360 JPEG and compressed to a maximum of 100 KB before being stored. This keeps thumbnail storage small and avoids uploading the original camera image.
 
 ### To kill stale node processes 
 
