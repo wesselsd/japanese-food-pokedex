@@ -56,6 +56,14 @@ The public anonymous key is safe to use in the browser. Do not put a Supabase se
 
 When Supabase credentials are configured, the app shows sign-in and account-creation controls. Authentication code is isolated in `adapter/supabase/`, so the provider can be replaced later.
 
+The initial database migration is in `supabase/migrations/20260905205000_create_foods.sql`. Run it in the Supabase SQL Editor before running the integration test:
+
+```bash
+npm run test:integration
+```
+
+The integration test reads one row from `public.foods` using the publishable key.
+
 ### To kill stale node processes 
 
 ```bash
