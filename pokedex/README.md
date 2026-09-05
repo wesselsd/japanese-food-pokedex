@@ -76,6 +76,23 @@ This creates the user-scoped progress table and private `food-photos` Storage bu
 
 Before a photo is saved, the browser opens a wide 16:9 crop editor matching the food thumbnail shape. Drag the image to choose the visible area and use the zoom control if needed. The selected crop is resized to a 640x360 JPEG and compressed to a maximum of 100 KB before being stored. This keeps thumbnail storage small and avoids uploading the original camera image.
 
+## Deploy to GitHub Pages
+
+The workflow in `.github/workflows/deploy-pages.yml` builds and deploys the site automatically whenever `main` changes.
+
+In the repository on GitHub, configure **Settings → Pages → Source** as **GitHub Actions**. Then add these repository variables under **Settings → Secrets and variables → Actions → Variables**:
+
+```text
+SUPABASE_URL
+SUPABASE_ANON_KEY
+```
+
+These are public browser configuration values, not service-role secrets. The workflow sets the repository base URL to `/japanese-food-pokedex/`, so the site will be available at:
+
+```text
+https://wesselsd.github.io/japanese-food-pokedex/
+```
+
 ### To kill stale node processes 
 
 ```bash
