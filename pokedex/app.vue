@@ -21,15 +21,41 @@ const {
   eatenCount,
   toggleEaten,
   savePhoto,
-  syncError
+  syncError,
+  crop,
+  moveCrop,
+  setCropZoom,
+  cancelCrop,
+  confirmCrop
 } = useFoodPokedex(foods, user, cloudProgress)
 const authMode = ref<'signIn' | 'signUp'>('signIn')
 const email = ref('')
 const password = ref('')
+let dragging = false
+let lastX = 0
+let lastY = 0
 
 async function submitAuth() {
   if (authMode.value === 'signIn') await signIn(email.value, password.value)
   else await signUp(email.value, password.value)
+}
+
+function startCropDrag(event: PointerEvent) {
+  dragging = true
+  lastX = event.clientX
+  lastY = event.clientY
+  ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
+}
+
+function dragCrop(event: PointerEvent) {
+  if (!dragging) return
+  moveCrop(event.clientX - lastX, event.clientY - lastY)
+  lastX = event.clientX
+  lastY = event.clientY
+}
+
+function stopCropDrag() {
+  dragging = false
 }
 </script>
 
@@ -94,5 +120,25 @@ async function submitAuth() {
       </article>
     </section>
     <p v-if="filteredFoods.length === 0" class="empty">No foods found. Try another search.</p>
+    <div v-if="crop" class="crop-backdrop" role="dialog" aria-modal="true" aria-label="Crop photo">
+      <div class="crop-dialog">
+        <h2>Choose your thumbnail</h2>
+        <p>Drag the image to choose which part to keep.</p>
+        <div
+          class="crop-window"
+          @pointerdown="startCropDrag"
+          @pointermove="dragCrop"
+          @pointerup="stopCropDrag"
+          @pointerleave="stopCropDrag"
+        >
+          <img :src="crop.url" alt="Photo crop preview" :style="{ width: `${crop.width * crop.zoom}px`, height: `${crop.height * crop.zoom}px`, left: `${crop.offsetX}px`, top: `${crop.offsetY}px` }" />
+        </div>
+        <label class="zoom-control">Zoom <input type="range" min="1" max="3" step=".05" :value="crop.zoom" @input="setCropZoom(Number(($event.target as HTMLInputElement).value))" /></label>
+        <div class="crop-actions">
+          <button class="text-button" @click="cancelCrop">Cancel</button>
+          <button class="auth-button" @click="confirmCrop">Use this crop</button>
+        </div>
+      </div>
+    </div>
   </main>
 </template>

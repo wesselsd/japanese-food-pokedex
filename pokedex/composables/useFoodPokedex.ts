@@ -5,6 +5,20 @@ import type { Food } from '~/data/foods'
 
 const EATEN_STORAGE_KEY = 'pokedex-eaten'
 const PHOTOS_STORAGE_KEY = 'pokedex-photos'
+const CROP_SIZE = 280
+const OUTPUT_SIZE = 512
+const MAX_PHOTO_BYTES = 100 * 1024
+
+type CropState = {
+  foodId: string
+  file: File
+  url: string
+  width: number
+  height: number
+  offsetX: number
+  offsetY: number
+  zoom: number
+}
 
 export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>>, cloudProgress: ProgressAdapter | null = null) {
   const eatenFoods = ref<string[]>([])
@@ -12,6 +26,7 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
   const searchTerm = ref('')
   const selectedCategory = ref('All')
   const syncError = ref('')
+  const crop = ref<CropState | null>(null)
 
   const categories = ['All', ...new Set(foodList.map((food) => food.category))]
   const filteredFoods = computed(() => {
@@ -48,17 +63,107 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     const file = input.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.addEventListener('load', () => {
-      if (typeof reader.result === 'string') photos.value = { ...photos.value, [id]: reader.result }
-    })
-    reader.readAsDataURL(file)
-      if (user.value && cloudProgress) {
-        void cloudProgress.uploadPhoto(user.value.id, id, file)
-          .then((url) => { photos.value = { ...photos.value, [id]: url } })
-          .catch((cause) => { syncError.value = cause instanceof Error ? cause.message : 'Unable to save photo.' })
+    const url = URL.createObjectURL(file)
+    const image = new Image()
+    image.addEventListener('load', () => {
+      const scale = Math.max(CROP_SIZE / image.naturalWidth, CROP_SIZE / image.naturalHeight)
+      crop.value = {
+        foodId: id,
+        file,
+        url,
+        width: image.naturalWidth * scale,
+        height: image.naturalHeight * scale,
+        offsetX: (CROP_SIZE - image.naturalWidth * scale) / 2,
+        offsetY: (CROP_SIZE - image.naturalHeight * scale) / 2,
+        zoom: 1
       }
+    })
+    image.src = url
+    input.value = ''
+  }
+
+  function moveCrop(deltaX: number, deltaY: number) {
+    if (!crop.value) return
+    crop.value.offsetX += deltaX
+    crop.value.offsetY += deltaY
+    const scale = crop.value.zoom
+    const minX = CROP_SIZE - crop.value.width * scale
+    const minY = CROP_SIZE - crop.value.height * scale
+    crop.value.offsetX = Math.min(0, Math.max(minX, crop.value.offsetX))
+    crop.value.offsetY = Math.min(0, Math.max(minY, crop.value.offsetY))
+  }
+
+  function setCropZoom(zoom: number) {
+    if (!crop.value) return
+    const centerX = (CROP_SIZE / 2 - crop.value.offsetX) / crop.value.zoom
+    const centerY = (CROP_SIZE / 2 - crop.value.offsetY) / crop.value.zoom
+    crop.value.zoom = zoom
+    crop.value.offsetX = CROP_SIZE / 2 - centerX * zoom
+    crop.value.offsetY = CROP_SIZE / 2 - centerY * zoom
+    moveCrop(0, 0)
+  }
+
+  function cancelCrop() {
+    if (crop.value) URL.revokeObjectURL(crop.value.url)
+    crop.value = null
+  }
+
+  async function confirmCrop() {
+    if (!crop.value) return
+    const currentCrop = crop.value
+    const image = new Image()
+    image.src = currentCrop.url
+    await new Promise<void>((resolve, reject) => {
+      image.addEventListener('load', () => resolve())
+      image.addEventListener('error', () => reject(new Error('Unable to read the selected image.')))
+    })
+
+    const scale = currentCrop.zoom * Math.max(CROP_SIZE / image.naturalWidth, CROP_SIZE / image.naturalHeight)
+    const sourceSize = CROP_SIZE / scale
+    const sourceX = -currentCrop.offsetX / scale
+    const sourceY = -currentCrop.offsetY / scale
+    const canvas = document.createElement('canvas')
+    canvas.width = OUTPUT_SIZE
+    canvas.height = OUTPUT_SIZE
+    const context = canvas.getContext('2d')
+    if (!context) throw new Error('Unable to prepare the photo.')
+    context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE)
+
+    let quality = 0.82
+    let blob = await canvasToBlob(canvas, quality)
+    while (blob.size > MAX_PHOTO_BYTES && quality > 0.35) {
+      quality -= 0.08
+      blob = await canvasToBlob(canvas, quality)
     }
+    if (blob.size > MAX_PHOTO_BYTES) throw new Error('This crop could not be compressed below 100 KB.')
+
+    const compressedFile = new File([blob], `${currentCrop.foodId}.jpg`, { type: 'image/jpeg' })
+    const localUrl = URL.createObjectURL(compressedFile)
+    photos.value = { ...photos.value, [currentCrop.foodId]: localUrl }
+    if (user.value && cloudProgress) {
+      try {
+        const url = await cloudProgress.uploadPhoto(user.value.id, currentCrop.foodId, compressedFile)
+        photos.value = { ...photos.value, [currentCrop.foodId]: url }
+        URL.revokeObjectURL(localUrl)
+      } catch (cause) {
+        syncError.value = cause instanceof Error ? cause.message : 'Unable to save photo.'
+      }
+    } else {
+      const reader = new FileReader()
+      reader.addEventListener('load', () => {
+        if (typeof reader.result === 'string') photos.value = { ...photos.value, [currentCrop.foodId]: reader.result }
+        URL.revokeObjectURL(localUrl)
+      })
+      reader.readAsDataURL(compressedFile)
+    }
+    cancelCrop()
+  }
+
+  function canvasToBlob(canvas: HTMLCanvasElement, quality: number) {
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Unable to compress the photo.')), 'image/jpeg', quality)
+    })
+  }
 
     watch(user, async (nextUser) => {
       if (!nextUser || !cloudProgress) {
@@ -87,5 +192,5 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
       if (!user.value && typeof window !== 'undefined') localStorage.setItem(PHOTOS_STORAGE_KEY, JSON.stringify(value))
     }, { deep: true })
 
-    return { eatenFoods, photos, searchTerm, selectedCategory, categories, filteredFoods, eatenCount, syncError, toggleEaten, savePhoto }
+    return { eatenFoods, photos, searchTerm, selectedCategory, categories, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
 }

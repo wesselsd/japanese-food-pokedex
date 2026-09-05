@@ -72,6 +72,10 @@ supabase/migrations/20260905211500_create_user_progress.sql
 
 This creates the user-scoped progress table and private `food-photos` Storage bucket with row-level security policies.
 
+## Photo uploads
+
+Before a photo is saved, the browser opens a square crop editor. Drag the image to choose the visible area and use the zoom control if needed. The selected crop is resized to a 512x512 JPEG and compressed to a maximum of 100 KB before being stored. This keeps thumbnail storage small and avoids uploading the original camera image.
+
 ### To kill stale node processes 
 
 ```bash
