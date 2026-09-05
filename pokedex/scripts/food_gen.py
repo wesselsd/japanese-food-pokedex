@@ -1,11 +1,12 @@
 import os
 import time
+from pathlib import Path
 
 from google import genai
 import base64
-from os import path
 
 API_KEY = os.environ["API_KEY"]
+ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets" / "images"
 
 client = genai.Client(api_key=API_KEY)
 
@@ -72,14 +73,15 @@ extraneous ingredients or multiple dishes. Keep the camera angle and visual scal
 across the series. No people, hands, logos, labels, captions, Japanese characters, or other text."""
 
 def generate_image(food):
-    if path.exists(f"{food}_image.png"):
+    output_path = ASSETS_DIR / f"{food}_image.png"
+    if output_path.exists():
         print(f"Skipping {food}. Already exists.")
         return
     interaction = client.interactions.create(
         model="gemini-3.1-flash-lite-image",
         input=f"Create a picture of {food}. {master_prompt}",
     )
-    with open(f"{food}_image.png", "wb") as f:
+    with output_path.open("wb") as f:
         f.write(base64.b64decode(interaction.output_image.data))
     print(f"Created image of {food}.")
     time.sleep(1) # hard rate limit on api and expensive call!
