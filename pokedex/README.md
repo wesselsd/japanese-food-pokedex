@@ -27,3 +27,9 @@ To test the generated static build:
 npm run generate
 npm run preview
 ```
+
+### To kill stale node processes 
+
+```bash
+Get-Process node |  Stop-Process -Force
+```
