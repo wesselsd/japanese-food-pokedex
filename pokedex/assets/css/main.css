@@ -20,6 +20,7 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .search input { background: none; border: 0; min-width: 0; outline: 0; width: 100%; } .categories { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .category { background: transparent; border: 1px solid #d8d0c5; border-radius: 20px; color: #77716b; font-size: 12px; padding: 7px 13px; } .category.active, .category:hover { background: #252321; border-color: #252321; color: #fff; }
 .food-grid { display: grid; gap: 24px; grid-template-columns: repeat(3, minmax(0, 1fr)); } .food-card { background: #fffdf9; border: 1px solid #e4ddd2; border-radius: 5px; overflow: hidden; }
+.food-section + .food-section { margin-top: 52px; } .section-title { font-size: 28px; letter-spacing: -.04em; margin: 0 0 18px; }
 .food-art { align-items: center; aspect-ratio: 16 / 9; display: flex; justify-content: center; overflow: hidden; position: relative; } .food-art img { height: 100%; object-fit: cover; width: 100%; }
 .food-emoji { filter: drop-shadow(0 8px 6px #0002); font-size: 88px; } .number { color: #25232199; left: 14px; position: absolute; top: 13px; }
 .tried-badge { background: #252321; border-radius: 20px; color: #fff; font-family: 'DM Mono', monospace; font-size: 10px; padding: 7px 10px; position: absolute; right: 12px; text-transform: uppercase; top: 12px; }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { foods } from './data/foods'
 import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
@@ -28,6 +28,11 @@ const {
   cancelCrop,
   confirmCrop
 } = useFoodPokedex(foods, user, cloudProgress)
+const categorySections = computed(() => categories.slice(1).map((category) => ({
+  category,
+  foods: filteredFoods.value.filter((food) => food.category === category && !food.essential)
+})).filter((section) => section.foods.length))
+const essentialFoods = computed(() => filteredFoods.value.filter((food) => food.essential))
 const authMode = ref<'signIn' | 'signUp'>('signIn')
 const email = ref('')
 const password = ref('')
@@ -101,8 +106,10 @@ function stopCropDrag() {
       </div>
     </section>
 
-    <section class="food-grid" aria-live="polite">
-      <article v-for="food in filteredFoods" :key="food.id" class="food-card">
+    <section v-if="essentialFoods.length" class="food-section" aria-live="polite">
+      <h2 class="section-title">Essential</h2>
+      <div class="food-grid">
+      <article v-for="food in essentialFoods" :key="food.id" class="food-card">
         <div class="food-art" :style="{ backgroundColor: food.color }">
           <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
           <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
@@ -113,7 +120,7 @@ function stopCropDrag() {
         <div class="card-body">
           <div class="card-heading">
             <div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div>
-            <span class="category-label">{{ food.categories.join(' · ') }}</span>
+            <span class="category-label">{{ food.category }} · {{ food.foodTypes.join(' · ') }}</span>
           </div>
           <p class="description">{{ food.description }}</p>
           <div class="card-actions">
@@ -122,6 +129,26 @@ function stopCropDrag() {
           </div>
         </div>
       </article>
+      </div>
+    </section>
+    <section v-for="section in categorySections" :key="section.category" class="food-section" aria-live="polite">
+      <h2 class="section-title">{{ section.category }}</h2>
+      <div class="food-grid">
+        <article v-for="food in section.foods" :key="food.id" class="food-card">
+          <div class="food-art" :style="{ backgroundColor: food.color }">
+            <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
+            <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
+            <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
+            <span class="number">#{{ food.number }}</span>
+            <span v-if="eatenFoods.includes(food.id)" class="tried-badge">✓ Tried</span>
+          </div>
+          <div class="card-body">
+            <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div><span class="category-label">{{ food.foodTypes.join(' · ') }}</span></div>
+            <p class="description">{{ food.description }}</p>
+            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'"><span aria-hidden="true">▧</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
+          </div>
+        </article>
+      </div>
     </section>
     <p v-if="filteredFoods.length === 0" class="empty">No foods found. Try another search.</p>
     <div v-if="crop" class="crop-backdrop" role="dialog" aria-modal="true" aria-label="Crop photo">

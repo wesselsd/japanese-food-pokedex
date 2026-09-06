@@ -649,4 +649,9 @@
     "emoji": "🍘",
     "color": "#d5b47e"
   }
+  ,
+  {"id":"yakiniku","number":"051","name":"Yakiniku","japaneseName":"焼肉","categories":["Meat"],"description":"Placeholder entry for grilled Japanese-style meat.","emoji":"🥩","color":"#c98f62"},
+  {"id":"wagashi","number":"052","name":"Wagashi","japaneseName":"和菓子","categories":["Sweets"],"description":"Placeholder entry for traditional Japanese sweets.","emoji":"🍡","color":"#e7c2b5"},
+  {"id":"unagi","number":"053","name":"Unagi","japaneseName":"うなぎ","categories":["Seafood"],"description":"Placeholder entry for grilled freshwater eel.","emoji":"🐟","color":"#b88d70"},
+  {"id":"ekiben","number":"054","name":"Ekiben","japaneseName":"駅弁","categories":["Rice"],"description":"Placeholder entry for a Japanese railway bento meal.","emoji":"🍱","color":"#d9b477"}
 ]

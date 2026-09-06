@@ -26,24 +26,31 @@ describe('useFoodPokedex', () => {
   it('filters foods by search term and category', async () => {
     const state = mountComposable()
 
-    expect(state.filteredFoods.value).toHaveLength(50)
+    expect(state.filteredFoods.value).toHaveLength(54)
+    expect(foods.filter((food) => food.essential)).toHaveLength(14)
+    expect(state.categories).toEqual(['All', 'Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Drinks'])
 
     state.searchTerm.value = '寿司'
     await nextTick()
     expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['sushi'])
 
     state.searchTerm.value = ''
-    state.selectedCategory.value = 'Street food'
+    state.selectedCategory.value = 'Meat'
     await nextTick()
     expect(state.filteredFoods.value.map((food) => food.id)).toEqual([
-      'okonomiyaki',
-      'takoyaki',
+      'tonkatsu',
+      'karaage',
       'yakitori',
+      'chicken-nanban',
       'kushikatsu',
-      'taiyaki',
-      'dango',
-      'kakigori',
-      'senbei'
+      'sukiyaki',
+      'shabu-shabu',
+      'gyutan',
+      'motsunabe',
+      'edamame',
+      'agedashi-tofu',
+      'nikujaga',
+      'yakiniku'
     ])
   })
 

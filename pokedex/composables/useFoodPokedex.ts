@@ -10,6 +10,7 @@ const CROP_HEIGHT = 180
 const OUTPUT_WIDTH = 640
 const OUTPUT_HEIGHT = 360
 const MAX_PHOTO_BYTES = 100 * 1024
+const CATEGORY_ORDER = ['Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Drinks']
 
 type CropState = {
   foodId: string
@@ -29,7 +30,7 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
   const syncError = ref('')
   const crop = ref<CropState | null>(null)
 
-  const categories = ['All', ...new Set(foodList.flatMap((food) => food.categories))]
+  const categories = ['All', ...CATEGORY_ORDER]
   const filteredFoods = computed(() => {
     const search = searchTerm.value.trim().toLowerCase()
 
@@ -38,9 +39,10 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         !search ||
         food.name.toLowerCase().includes(search) ||
         food.japaneseName.includes(search) ||
-        food.categories.some((category) => category.toLowerCase().includes(search))
+        food.category.toLowerCase().includes(search) ||
+        food.foodTypes.some((type) => type.toLowerCase().includes(search))
 
-      return matchesSearch && (selectedCategory.value === 'All' || food.categories.includes(selectedCategory.value))
+      return matchesSearch && (selectedCategory.value === 'All' || food.category === selectedCategory.value)
     })
   })
   const eatenCount = computed(() => eatenFoods.value.length)
