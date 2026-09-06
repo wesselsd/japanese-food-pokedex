@@ -3,10 +3,10 @@
 :root { color: #252321; background: #f7f3ec; font-family: 'DM Sans', sans-serif; }
 * { box-sizing: border-box; } body { margin: 0; } button, input { font: inherit; } button { cursor: pointer; }
 .shell { width: min(1280px, calc(100% - 40px)); margin: auto; padding: 52px 0 80px; }
-.hero { max-width: 650px; } .eyebrow, .number, .category-label { color: #b0492f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.hero { max-width: 100%; } .hero-top { align-items: flex-start; display: flex; justify-content: space-between; gap: 24px; } .eyebrow, .number, .category-label { color: #b0492f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
 .account-bar, .auth-heading { align-items: center; display: flex; justify-content: space-between; gap: 12px; }
-.account-bar { color: #77716b; font-size: 12px; margin-top: 22px; }
-.auth-panel { background: #fffdf9; border: 1px solid #e3dcd1; border-radius: 5px; margin-top: 22px; max-width: 520px; padding: 14px; }
+.account-bar { color: #77716b; font-size: 12px; }
+.auth-panel { background: #fffdf9; border: 1px solid #e3dcd1; border-radius: 5px; max-width: 520px; padding: 14px; }
 .auth-heading strong { font-size: 13px; } .text-button { background: none; border: 0; color: #b0492f; font-size: 12px; padding: 0; text-decoration: underline; }
 .auth-fields { display: flex; gap: 8px; margin-top: 13px; } .auth-fields input { background: #f7f3ec; border: 1px solid #e3dcd1; border-radius: 3px; min-width: 0; padding: 9px; width: 100%; }
 .auth-button { background: #252321; border: 0; border-radius: 3px; color: #fff; font-size: 12px; padding: 9px 12px; white-space: nowrap; }
@@ -37,5 +37,5 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .zoom-control input { flex: 1; } .crop-actions { align-items: center; display: flex; justify-content: flex-end; gap: 16px; margin-top: 18px; }
 @media (min-width: 1100px) { .food-grid { gap: 28px; } .food-art { min-height: 210px; } .card-body { padding: 20px; } }
 @media (max-width: 800px) { .food-grid { gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); } .card-body { padding: 14px; } h2 { font-size: 19px; } .description { font-size: 12px; min-height: 36px; } .card-actions { margin-top: 12px; } .try-button { padding: 9px 6px; } .photo-button { padding: 5px 9px; } }
-@media (max-width: 540px) { .shell { padding-top: 30px; width: min(calc(100% - 20px), 520px); } .food-grid { gap: 10px; } .card-body { padding: 10px; } h2 { font-size: 16px; } .japanese { font-size: 13px; } .category-label { font-size: 8px; } .description { font-size: 11px; line-height: 1.35; min-height: 30px; } .card-actions { gap: 5px; margin-top: 9px; } .try-button { font-size: 10px; padding: 8px 4px; } .photo-button { font-size: 16px; padding: 4px 8px; } .controls { margin-top: 42px; } }
+@media (max-width: 540px) { .shell { padding-top: 30px; width: min(calc(100% - 20px), 520px); } .hero-top { flex-direction: column; gap: 18px; } .auth-panel { width: 100%; } .food-grid { gap: 10px; } .card-body { padding: 10px; } h2 { font-size: 16px; } .japanese { font-size: 13px; } .category-label { font-size: 8px; } .description { font-size: 11px; line-height: 1.35; min-height: 30px; } .card-actions { gap: 5px; margin-top: 9px; } .try-button { font-size: 10px; padding: 8px 4px; } .photo-button { font-size: 16px; padding: 4px 8px; } .controls { margin-top: 42px; } }
 @media (max-width: 540px) { .auth-fields { flex-direction: column; } .auth-button { width: 100%; } }

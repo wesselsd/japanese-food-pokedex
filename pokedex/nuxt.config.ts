@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
       title: 'Japanese Food Pokedex',
+      link: [{ rel: 'icon', type: 'image/x-icon', href: `${process.env.NUXT_APP_BASE_URL || '/'}sushi.ico` }],
       meta: [
         { name: 'description', content: 'Keep track of the Japanese foods you have tried.' },
         { name: 'theme-color', content: '#f7f3ec' }

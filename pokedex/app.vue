@@ -63,27 +63,29 @@ function stopCropDrag() {
 <template>
   <main class="shell">
     <header class="hero">
-      <div class="eyebrow">おいしい図鑑 <span>•</span> Food adventure</div>
-      <div v-if="initialized && isConfigured && user" class="account-bar">
-        <span>Signed in as {{ user.email }}</span>
-        <button class="text-button" @click="signOut">Sign out</button>
+      <div class="hero-top">
+        <div class="eyebrow">おいしい図鑑 <span>•</span> Food adventure</div>
+        <div v-if="initialized && isConfigured && user" class="account-bar">
+          <span>Signed in as {{ user.email }}</span>
+          <button class="text-button" @click="signOut">Sign out</button>
+        </div>
+        <form v-else-if="initialized && isConfigured" class="auth-panel" @submit.prevent="submitAuth">
+          <div class="auth-heading">
+            <strong>{{ authMode === 'signIn' ? 'Save your progress everywhere' : 'Create your account' }}</strong>
+            <button type="button" class="text-button" @click="authMode = authMode === 'signIn' ? 'signUp' : 'signIn'">
+              {{ authMode === 'signIn' ? 'Sign up' : 'Sign in' }}
+            </button>
+          </div>
+          <div class="auth-fields">
+            <input v-model="email" type="email" placeholder="Email" autocomplete="email" required />
+            <input v-model="password" type="password" placeholder="Password" autocomplete="current-password" minlength="6" required />
+            <button class="auth-button" type="submit">{{ authMode === 'signIn' ? 'Sign in' : 'Create account' }}</button>
+          </div>
+          <p v-if="authError" class="auth-error">{{ authError }}</p>
+          <p v-if="authMessage" class="auth-message">{{ authMessage }}</p>
+        </form>
       </div>
-      <form v-else-if="initialized && isConfigured" class="auth-panel" @submit.prevent="submitAuth">
-        <div class="auth-heading">
-          <strong>{{ authMode === 'signIn' ? 'Save your progress everywhere' : 'Create your account' }}</strong>
-          <button type="button" class="text-button" @click="authMode = authMode === 'signIn' ? 'signUp' : 'signIn'">
-            {{ authMode === 'signIn' ? 'Sign up' : 'Sign in' }}
-          </button>
-        </div>
-        <div class="auth-fields">
-          <input v-model="email" type="email" placeholder="Email" autocomplete="email" required />
-          <input v-model="password" type="password" placeholder="Password" autocomplete="current-password" minlength="6" required />
-          <button class="auth-button" type="submit">{{ authMode === 'signIn' ? 'Sign in' : 'Create account' }}</button>
-        </div>
-        <p v-if="authError" class="auth-error">{{ authError }}</p>
-        <p v-if="authMessage" class="auth-message">{{ authMessage }}</p>
-      </form>
-      <h1>Your Japanese<br /><em>food pokedex.</em></h1>
+      <h1>Food<br /><em>Pokedex.</em></h1>
       <p class="intro">Discover classic dishes, mark the ones you have tried, and keep a photo of every delicious memory.</p>
       <p v-if="syncError" class="auth-error">{{ syncError }}</p>
       <div class="progress-row">

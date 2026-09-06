@@ -1,0 +1,652 @@
+[
+  {
+    "id": "ramen",
+    "number": "001",
+    "name": "Ramen",
+    "japaneseName": "ラーメン",
+    "categories": [
+      "Noodles"
+    ],
+    "description": "A comforting bowl of noodles in a rich, savoury broth.",
+    "emoji": "🍜",
+    "color": "#e8c4a5"
+  },
+  {
+    "id": "sushi",
+    "number": "002",
+    "name": "Sushi",
+    "japaneseName": "寿司",
+    "categories": [
+      "Seafood",
+      "Rice"
+    ],
+    "description": "Vinegared rice paired with fresh fish, vegetables, or egg.",
+    "emoji": "🍣",
+    "color": "#f1c1b3"
+  },
+  {
+    "id": "okonomiyaki",
+    "number": "003",
+    "name": "Okonomiyaki",
+    "japaneseName": "お好み焼き",
+    "categories": [
+      "Street food",
+      "Snacks"
+    ],
+    "description": "A savoury cabbage pancake topped with sauce and bonito.",
+    "emoji": "🥞",
+    "color": "#d4c49e"
+  },
+  {
+    "id": "onigiri",
+    "number": "004",
+    "name": "Onigiri",
+    "japaneseName": "おにぎり",
+    "categories": [
+      "Rice",
+      "Snacks"
+    ],
+    "description": "Hand-shaped rice triangles, often wrapped in crisp nori.",
+    "emoji": "🍙",
+    "color": "#c6d8bd"
+  },
+  {
+    "id": "takoyaki",
+    "number": "005",
+    "name": "Takoyaki",
+    "japaneseName": "たこ焼き",
+    "categories": [
+      "Seafood",
+      "Street food",
+      "Snacks"
+    ],
+    "description": "Golden batter balls filled with tender pieces of octopus.",
+    "emoji": "🐙",
+    "color": "#e4bf9b"
+  },
+  {
+    "id": "matcha",
+    "number": "006",
+    "name": "Matcha parfait",
+    "japaneseName": "抹茶パフェ",
+    "categories": [
+      "Desserts",
+      "Sweets"
+    ],
+    "description": "Layered green tea dessert with cream, jelly, and mochi.",
+    "emoji": "🍵",
+    "color": "#c4d0ad"
+  },
+  {
+    "id": "soba",
+    "number": "007",
+    "name": "Soba",
+    "japaneseName": "そば",
+    "categories": [
+      "Noodles"
+    ],
+    "description": "Nutty buckwheat noodles served hot or cold.",
+    "emoji": "🍜",
+    "color": "#d4b99d"
+  },
+  {
+    "id": "udon",
+    "number": "008",
+    "name": "Udon",
+    "japaneseName": "うどん",
+    "categories": [
+      "Noodles"
+    ],
+    "description": "Thick, chewy wheat noodles in a delicate broth.",
+    "emoji": "🍲",
+    "color": "#e9d8bb"
+  },
+  {
+    "id": "tsukemen",
+    "number": "009",
+    "name": "Tsukemen",
+    "japaneseName": "つけ麺",
+    "categories": [
+      "Noodles"
+    ],
+    "description": "Ramen noodles served separately with a concentrated dipping broth.",
+    "emoji": "🥢",
+    "color": "#d9b78c"
+  },
+  {
+    "id": "hiyashi-chuka",
+    "number": "010",
+    "name": "Hiyashi chuka",
+    "japaneseName": "冷やし中華",
+    "categories": [
+      "Noodles",
+      "Summer"
+    ],
+    "description": "Chilled ramen noodles with colourful toppings and dressing.",
+    "emoji": "🥗",
+    "color": "#e7cf9d"
+  },
+  {
+    "id": "tempura",
+    "number": "011",
+    "name": "Tempura",
+    "japaneseName": "天ぷら",
+    "categories": [
+      "Seafood",
+      "Fried"
+    ],
+    "description": "Seafood and vegetables coated in a light, crisp batter.",
+    "emoji": "🍤",
+    "color": "#f0c88f"
+  },
+  {
+    "id": "tonkatsu",
+    "number": "012",
+    "name": "Tonkatsu",
+    "japaneseName": "とんかつ",
+    "categories": [
+      "Meat",
+      "Fried"
+    ],
+    "description": "A breaded and fried pork cutlet served with tangy sauce.",
+    "emoji": "🥩",
+    "color": "#d69b78"
+  },
+  {
+    "id": "karaage",
+    "number": "013",
+    "name": "Karaage",
+    "japaneseName": "からあげ",
+    "categories": [
+      "Meat",
+      "Fried",
+      "Snacks"
+    ],
+    "description": "Japanese-style marinated fried chicken with a crisp coating.",
+    "emoji": "🍗",
+    "color": "#e3b16d"
+  },
+  {
+    "id": "yakitori",
+    "number": "014",
+    "name": "Yakitori",
+    "japaneseName": "焼き鳥",
+    "categories": [
+      "Meat",
+      "Izakaya",
+      "Street food"
+    ],
+    "description": "Chicken pieces grilled over charcoal and brushed with tare.",
+    "emoji": "🍢",
+    "color": "#c98f62"
+  },
+  {
+    "id": "chicken-nanban",
+    "number": "015",
+    "name": "Chicken nanban",
+    "japaneseName": "チキン南蛮",
+    "categories": [
+      "Meat",
+      "Fried"
+    ],
+    "description": "Fried chicken glazed with sweet vinegar and tartar sauce.",
+    "emoji": "🍗",
+    "color": "#dfad76"
+  },
+  {
+    "id": "kushikatsu",
+    "number": "016",
+    "name": "Kushikatsu",
+    "japaneseName": "串カツ",
+    "categories": [
+      "Meat",
+      "Fried",
+      "Street food"
+    ],
+    "description": "Breaded meat and vegetables fried on skewers.",
+    "emoji": "🍡",
+    "color": "#d8a36d"
+  },
+  {
+    "id": "sukiyaki",
+    "number": "017",
+    "name": "Sukiyaki",
+    "japaneseName": "すき焼き",
+    "categories": [
+      "Meat",
+      "Hot pot"
+    ],
+    "description": "Thinly sliced beef and vegetables simmered in a sweet soy broth.",
+    "emoji": "🍲",
+    "color": "#b87558"
+  },
+  {
+    "id": "shabu-shabu",
+    "number": "018",
+    "name": "Shabu-shabu",
+    "japaneseName": "しゃぶしゃぶ",
+    "categories": [
+      "Meat",
+      "Hot pot"
+    ],
+    "description": "Thin slices of meat swished through a bubbling hot pot.",
+    "emoji": "🥘",
+    "color": "#d9b19a"
+  },
+  {
+    "id": "gyutan",
+    "number": "019",
+    "name": "Gyūtan",
+    "japaneseName": "牛タン",
+    "categories": [
+      "Meat",
+      "Grilled"
+    ],
+    "description": "Thinly sliced grilled beef tongue, especially associated with Sendai.",
+    "emoji": "🥩",
+    "color": "#c48b72"
+  },
+  {
+    "id": "motsunabe",
+    "number": "020",
+    "name": "Motsunabe",
+    "japaneseName": "もつ鍋",
+    "categories": [
+      "Meat",
+      "Hot pot"
+    ],
+    "description": "Fukuoka-style hot pot with offal, cabbage, and garlic chives.",
+    "emoji": "🍲",
+    "color": "#a9b98a"
+  },
+  {
+    "id": "katsudon",
+    "number": "021",
+    "name": "Katsudon",
+    "japaneseName": "カツ丼",
+    "categories": [
+      "Rice",
+      "Meat",
+      "Fried"
+    ],
+    "description": "Breaded pork cutlet and egg served over a bowl of rice.",
+    "emoji": "🍚",
+    "color": "#e2c18c"
+  },
+  {
+    "id": "gyudon",
+    "number": "022",
+    "name": "Gyūdon",
+    "japaneseName": "牛丼",
+    "categories": [
+      "Rice",
+      "Meat"
+    ],
+    "description": "Thinly sliced beef and onions simmered over steamed rice.",
+    "emoji": "🍚",
+    "color": "#c99c73"
+  },
+  {
+    "id": "oyakodon",
+    "number": "023",
+    "name": "Oyakodon",
+    "japaneseName": "親子丼",
+    "categories": [
+      "Rice",
+      "Meat"
+    ],
+    "description": "Chicken and softly cooked egg served over rice.",
+    "emoji": "🍳",
+    "color": "#e6c888"
+  },
+  {
+    "id": "tendon",
+    "number": "024",
+    "name": "Tendon",
+    "japaneseName": "天丼",
+    "categories": [
+      "Rice",
+      "Seafood",
+      "Fried"
+    ],
+    "description": "Tempura served over rice with a sweet soy-based sauce.",
+    "emoji": "🍤",
+    "color": "#e7bd7a"
+  },
+  {
+    "id": "kaisendon",
+    "number": "025",
+    "name": "Kaisendon",
+    "japaneseName": "海鮮丼",
+    "categories": [
+      "Rice",
+      "Seafood"
+    ],
+    "description": "A bowl of sushi rice topped with an assortment of sashimi.",
+    "emoji": "🐟",
+    "color": "#b8d6d7"
+  },
+  {
+    "id": "omurice",
+    "number": "026",
+    "name": "Omurice",
+    "japaneseName": "オムライス",
+    "categories": [
+      "Rice",
+      "洋食"
+    ],
+    "description": "Seasoned rice wrapped in a soft omelette and finished with ketchup.",
+    "emoji": "🍳",
+    "color": "#edc36f"
+  },
+  {
+    "id": "ochazuke",
+    "number": "027",
+    "name": "Ochazuke",
+    "japaneseName": "お茶漬け",
+    "categories": [
+      "Rice",
+      "Snacks"
+    ],
+    "description": "Rice topped with savoury ingredients and covered in green tea.",
+    "emoji": "🍵",
+    "color": "#c6d1a3"
+  },
+  {
+    "id": "takikomi-gohan",
+    "number": "028",
+    "name": "Takikomi gohan",
+    "japaneseName": "炊き込みご飯",
+    "categories": [
+      "Rice"
+    ],
+    "description": "Rice cooked together with vegetables, mushrooms, and savoury seasonings.",
+    "emoji": "🍚",
+    "color": "#c9b58c"
+  },
+  {
+    "id": "curry-rice",
+    "number": "029",
+    "name": "Japanese curry rice",
+    "japaneseName": "カレーライス",
+    "categories": [
+      "Curry",
+      "Rice"
+    ],
+    "description": "A rich, mildly spiced curry served over Japanese rice.",
+    "emoji": "🍛",
+    "color": "#d19a5b"
+  },
+  {
+    "id": "katsu-curry",
+    "number": "030",
+    "name": "Katsu curry",
+    "japaneseName": "カツカレー",
+    "categories": [
+      "Curry",
+      "Rice",
+      "Fried"
+    ],
+    "description": "Japanese curry rice topped with a crispy pork cutlet.",
+    "emoji": "🍛",
+    "color": "#c89055"
+  },
+  {
+    "id": "curry-pan",
+    "number": "031",
+    "name": "Curry pan",
+    "japaneseName": "カレーパン",
+    "categories": [
+      "Curry",
+      "Fried",
+      "Snacks"
+    ],
+    "description": "A filled bread roll with Japanese curry inside and a crisp crust.",
+    "emoji": "🥐",
+    "color": "#d9a15d"
+  },
+  {
+    "id": "gyoza",
+    "number": "032",
+    "name": "Gyoza",
+    "japaneseName": "餃子",
+    "categories": [
+      "Meat",
+      "Fried",
+      "Izakaya"
+    ],
+    "description": "Juicy dumplings filled with pork, cabbage, and aromatics.",
+    "emoji": "🥟",
+    "color": "#d4b184"
+  },
+  {
+    "id": "chahan",
+    "number": "033",
+    "name": "Chahan",
+    "japaneseName": "チャーハン",
+    "categories": [
+      "Rice",
+      "Chinese-Japanese"
+    ],
+    "description": "Japanese-style fried rice with egg, vegetables, and savoury seasonings.",
+    "emoji": "🍳",
+    "color": "#e2c27e"
+  },
+  {
+    "id": "nikuman",
+    "number": "034",
+    "name": "Nikuman",
+    "japaneseName": "肉まん",
+    "categories": [
+      "Meat",
+      "Snacks",
+      "Convenience store"
+    ],
+    "description": "A fluffy steamed bun filled with seasoned meat.",
+    "emoji": "🥯",
+    "color": "#e9c9a4"
+  },
+  {
+    "id": "shumai",
+    "number": "035",
+    "name": "Shumai",
+    "japaneseName": "焼売",
+    "categories": [
+      "Seafood",
+      "Chinese-Japanese"
+    ],
+    "description": "Steamed open-topped dumplings filled with pork or shrimp.",
+    "emoji": "🥟",
+    "color": "#dfc4a8"
+  },
+  {
+    "id": "edamame",
+    "number": "036",
+    "name": "Edamame",
+    "japaneseName": "枝豆",
+    "categories": [
+      "Izakaya",
+      "Snacks"
+    ],
+    "description": "Young soybeans steamed or boiled in their pods.",
+    "emoji": "🫛",
+    "color": "#a9c27e"
+  },
+  {
+    "id": "agedashi-tofu",
+    "number": "037",
+    "name": "Agedashi tofu",
+    "japaneseName": "揚げ出し豆腐",
+    "categories": [
+      "Fried",
+      "Izakaya"
+    ],
+    "description": "Crisp tofu served in a delicate dashi broth.",
+    "emoji": "🧈",
+    "color": "#e4d1a7"
+  },
+  {
+    "id": "nikujaga",
+    "number": "038",
+    "name": "Nikujaga",
+    "japaneseName": "肉じゃが",
+    "categories": [
+      "Meat",
+      "Home cooking"
+    ],
+    "description": "A comforting stew of meat, potatoes, onions, and sweet soy broth.",
+    "emoji": "🥔",
+    "color": "#c6a878"
+  },
+  {
+    "id": "taiyaki",
+    "number": "039",
+    "name": "Taiyaki",
+    "japaneseName": "たい焼き",
+    "categories": [
+      "Street food",
+      "Desserts"
+    ],
+    "description": "Fish-shaped cake traditionally filled with sweet red bean paste.",
+    "emoji": "🐟",
+    "color": "#e3aa68"
+  },
+  {
+    "id": "dango",
+    "number": "040",
+    "name": "Dango",
+    "japaneseName": "団子",
+    "categories": [
+      "Street food",
+      "Desserts"
+    ],
+    "description": "Chewy rice-flour dumplings served on a skewer.",
+    "emoji": "🍡",
+    "color": "#f0d6ac"
+  },
+  {
+    "id": "kakigori",
+    "number": "041",
+    "name": "Kakigori",
+    "japaneseName": "かき氷",
+    "categories": [
+      "Street food",
+      "Desserts"
+    ],
+    "description": "Fluffy shaved ice covered with colourful syrup and toppings.",
+    "emoji": "🍧",
+    "color": "#b8d9e7"
+  },
+  {
+    "id": "mochi",
+    "number": "042",
+    "name": "Mochi",
+    "japaneseName": "餅",
+    "categories": [
+      "Desserts",
+      "Snacks"
+    ],
+    "description": "Soft, chewy rice cakes enjoyed plain or with sweet fillings.",
+    "emoji": "🍡",
+    "color": "#f0e3ce"
+  },
+  {
+    "id": "daifuku",
+    "number": "043",
+    "name": "Daifuku",
+    "japaneseName": "大福",
+    "categories": [
+      "Desserts"
+    ],
+    "description": "Mochi filled with sweet red bean paste, cream, or fruit.",
+    "emoji": "🍓",
+    "color": "#f2c3c3"
+  },
+  {
+    "id": "ichigo-daifuku",
+    "number": "044",
+    "name": "Ichigo daifuku",
+    "japaneseName": "いちご大福",
+    "categories": [
+      "Desserts"
+    ],
+    "description": "A whole strawberry wrapped in red bean paste and soft mochi.",
+    "emoji": "🍓",
+    "color": "#f3b6b4"
+  },
+  {
+    "id": "warabi-mochi",
+    "number": "045",
+    "name": "Warabi mochi",
+    "japaneseName": "わらび餅",
+    "categories": [
+      "Desserts"
+    ],
+    "description": "Jiggly, translucent rice cakes dusted with roasted soybean flour.",
+    "emoji": "🍡",
+    "color": "#d8c7a7"
+  },
+  {
+    "id": "dorayaki",
+    "number": "046",
+    "name": "Dorayaki",
+    "japaneseName": "どら焼き",
+    "categories": [
+      "Desserts",
+      "Snacks"
+    ],
+    "description": "Two fluffy pancakes sandwiched around sweet red bean paste.",
+    "emoji": "🥞",
+    "color": "#c9945f"
+  },
+  {
+    "id": "castella",
+    "number": "047",
+    "name": "Castella",
+    "japaneseName": "カステラ",
+    "categories": [
+      "Desserts"
+    ],
+    "description": "A moist, softly textured sponge cake with a golden top.",
+    "emoji": "🍰",
+    "color": "#e7bd70"
+  },
+  {
+    "id": "anmitsu",
+    "number": "048",
+    "name": "Anmitsu",
+    "japaneseName": "あんみつ",
+    "categories": [
+      "Desserts"
+    ],
+    "description": "A colourful dessert of agar jelly, fruit, red bean paste, and syrup.",
+    "emoji": "🍨",
+    "color": "#d3b9d4"
+  },
+  {
+    "id": "melon-pan",
+    "number": "049",
+    "name": "Melon pan",
+    "japaneseName": "メロンパン",
+    "categories": [
+      "Snacks",
+      "Convenience store"
+    ],
+    "description": "Sweet bread covered in a crisp cookie crust.",
+    "emoji": "🍈",
+    "color": "#d6d28f"
+  },
+  {
+    "id": "senbei",
+    "number": "050",
+    "name": "Senbei",
+    "japaneseName": "せんべい",
+    "categories": [
+      "Snacks",
+      "Street food"
+    ],
+    "description": "Crisp rice crackers grilled and seasoned with soy sauce or salt.",
+    "emoji": "🍘",
+    "color": "#d5b47e"
+  }
+]

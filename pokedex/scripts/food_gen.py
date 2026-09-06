@@ -79,7 +79,8 @@ def generate_image(food):
         return
     interaction = client.interactions.create(
         model="gemini-3.1-flash-lite-image",
-        input=f"Create a picture of {food}. {master_prompt}",
+        input=f"{master_prompt} The food is {food}.",
+        service_tier="flex"
     )
     with output_path.open("wb") as f:
         f.write(base64.b64decode(interaction.output_image.data))
