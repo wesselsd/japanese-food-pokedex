@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { foods, foodLabels } from './data/foods'
 import type { Checkin } from './adapter/supabase/progress'
 import { useFoodPokedex } from './composables/useFoodPokedex'
@@ -16,6 +16,7 @@ const {
   eatenFoods,
   checkins,
   photos,
+  selectedPhotos,
   searchTerm,
   selectedCategory,
   selectedLabel,
@@ -29,31 +30,29 @@ const {
   deleteCheckin,
   toggleEaten,
   savePhoto,
-  syncError,
-  crop,
-  moveCrop,
-  setCropZoom,
-  cancelCrop,
-  confirmCrop
+  removePhoto,
+  selectPhoto,
+  syncError
 } = useFoodPokedex(foods, user, cloudProgress)
-const categorySections = computed(() => categories.slice(1).map((category) => ({
+const isFiltering = computed(() => Boolean(searchTerm.value.trim()) || selectedCategory.value !== 'All' || selectedLabel.value !== 'All' || eatenFilter.value !== 'all')
+const categorySections = computed(() => isFiltering.value
+  ? [{ category: '', foods: filteredFoods.value, totalCount: 0, eatenCount: 0 }]
+  : categories.slice(1).map((category) => ({
   category,
   foods: filteredFoods.value.filter((food) => food.category === category && !food.essential),
   totalCount: foods.filter((food) => food.category === category).length,
   eatenCount: foods.filter((food) => food.category === category && eatenFoods.value.includes(food.id)).length
 })).filter((section) => section.foods.length))
-const essentialFoods = computed(() => filteredFoods.value.filter((food) => food.essential))
+const essentialFoods = computed(() => isFiltering.value ? [] : filteredFoods.value.filter((food) => food.essential))
 const selectedFood = ref<(typeof foods)[number] | null>(null)
 const checkinFood = ref<(typeof foods)[number] | null>(null)
 const editingCheckin = ref<Checkin | null>(null)
 const checkinRating = ref(5)
 const checkinLocation = ref('')
 const authMode = ref<'signIn' | 'signUp'>('signIn')
+const authOpen = ref(false)
 const email = ref('')
 const password = ref('')
-let dragging = false
-let lastX = 0
-let lastY = 0
 
 function formatEatenDate(foodId: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(foodId))
@@ -80,6 +79,15 @@ function ratingStars(foodId: string) {
   return `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`
 }
 
+function displayedPhoto(food: (typeof foods)[number]) {
+  const selectedId = selectedPhotos.value[food.id]
+  return photos.value[food.id]?.find((photo) => photo.id === selectedId)?.url ?? food.image
+}
+
+function foodPhotos(foodId: string) {
+  return photos.value[foodId] ?? []
+}
+
 async function submitCheckin() {
   if (editingCheckin.value) {
     await updateCheckin(editingCheckin.value, checkinRating.value, checkinLocation.value.trim())
@@ -96,24 +104,10 @@ async function submitAuth() {
   else await signUp(email.value, password.value)
 }
 
-function startCropDrag(event: PointerEvent) {
-  event.preventDefault()
-  dragging = true
-  lastX = event.clientX
-  lastY = event.clientY
-  ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
-}
+watch([selectedFood, checkinFood, editingCheckin], (values) => {
+  if (typeof document !== 'undefined') document.body.classList.toggle('modal-open', values.some(Boolean))
+})
 
-function dragCrop(event: PointerEvent) {
-  if (!dragging) return
-  moveCrop(event.clientX - lastX, event.clientY - lastY)
-  lastX = event.clientX
-  lastY = event.clientY
-}
-
-function stopCropDrag() {
-  dragging = false
-}
 </script>
 
 <template>
@@ -124,6 +118,11 @@ function stopCropDrag() {
         <div v-if="initialized && isConfigured && user" class="account-bar">
           <span>Signed in as {{ user.email }}</span>
           <button class="text-button" @click="signOut">Sign out</button>
+        </div>
+        <div v-else-if="initialized && isConfigured && !authOpen" class="account-bar">
+          <span>Save your progress</span>
+          <button class="text-button" @click="authMode = 'signIn'; authOpen = true">Sign in</button>
+          <button class="text-button" @click="authMode = 'signUp'; authOpen = true">Sign up</button>
         </div>
         <form v-else-if="initialized && isConfigured" class="auth-panel" @submit.prevent="submitAuth">
           <div class="auth-heading">
@@ -141,8 +140,7 @@ function stopCropDrag() {
           <p v-if="authMessage" class="auth-message">{{ authMessage }}</p>
         </form>
       </div>
-      <h1>Food<br /><em>Pokedex.</em></h1>
-      <p class="intro">Discover classic dishes, mark the ones you have tried, and keep a photo of every delicious memory.</p>
+      <h1>Food <em>Pokedex.</em></h1>
       <p v-if="syncError" class="auth-error">{{ syncError }}</p>
       <div class="progress-row">
         <div><strong>{{ eatenCount }}</strong><span> / {{ foods.length }} foods tried</span></div>
@@ -176,8 +174,7 @@ function stopCropDrag() {
       <div class="food-grid">
       <article v-for="food in essentialFoods" :key="food.id" class="food-card" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
         <div class="food-art" :style="{ backgroundColor: food.color }">
-          <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
-          <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
+          <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" />
           <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
           <span class="number">#{{ food.number }}</span>
           <span class="art-labels">{{ foodLabels(food).slice(0, 3).join(' · ') }}</span>
@@ -195,13 +192,12 @@ function stopCropDrag() {
       </article>
       </div>
     </section>
-    <section v-for="section in categorySections" :key="section.category" class="food-section" aria-live="polite">
-      <h2 class="section-title">{{ section.category }} <span class="category-progress"><span class="category-progress-bar"><span :style="{ width: `${section.eatenCount / section.totalCount * 100}%` }" /></span><small>{{ section.eatenCount }}/{{ section.totalCount }}</small></span></h2>
+    <section v-for="section in categorySections" :key="section.category || 'filtered'" class="food-section" :class="{ 'flat-results': isFiltering }" aria-live="polite">
+      <h2 v-if="!isFiltering" class="section-title">{{ section.category }} <span class="category-progress"><span class="category-progress-bar"><span :style="{ width: `${section.eatenCount / section.totalCount * 100}%` }" /></span><small>{{ section.eatenCount }}/{{ section.totalCount }}</small></span></h2>
       <div class="food-grid">
         <article v-for="food in section.foods" :key="food.id" class="food-card" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
           <div class="food-art" :style="{ backgroundColor: food.color }">
-            <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
-            <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
+            <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" />
             <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
             <span class="number">#{{ food.number }}</span>
             <span class="art-labels">{{ foodLabels(food).slice(0, 3).join(' · ') }}</span>
@@ -219,14 +215,27 @@ function stopCropDrag() {
       <article class="detail-dialog">
         <button class="detail-close" aria-label="Close details" @click="selectedFood = null">×</button>
         <div class="detail-art" :style="{ backgroundColor: selectedFood.color }">
-          <img v-if="photos[selectedFood.id]" :src="photos[selectedFood.id]" :alt="`${selectedFood.name} photo`" />
-          <img v-else-if="selectedFood.image" :src="selectedFood.image" :alt="`${selectedFood.name} illustration`" />
+          <img v-if="displayedPhoto(selectedFood)" :src="displayedPhoto(selectedFood)" :alt="`${selectedFood.name} photo`" />
           <span v-else class="food-emoji" aria-hidden="true">{{ selectedFood.emoji }}</span>
         </div>
         <div class="detail-body">
           <p class="number">#{{ selectedFood.number }}</p>
           <h2>{{ selectedFood.name }}</h2>
           <p class="japanese">{{ selectedFood.japaneseName }}</p>
+          <div class="photo-library">
+            <span class="detail-labels-title">Images</span>
+            <button type="button" class="photo-choice" :class="{ selected: !selectedPhotos[selectedFood.id] || selectedPhotos[selectedFood.id] === 'default' }" @click="selectPhoto(selectedFood.id, 'default')">
+              <img v-if="selectedFood.image" :src="selectedFood.image" :alt="`${selectedFood.name} predefined image`" />
+              <span>Original</span>
+            </button>
+            <div v-for="photo in foodPhotos(selectedFood.id)" :key="photo.id" class="photo-choice-wrap">
+              <button type="button" class="photo-choice" :class="{ selected: selectedPhotos[selectedFood.id] === photo.id }" @click="selectPhoto(selectedFood.id, photo.id)">
+                <img :src="photo.url" :alt="`${selectedFood.name} uploaded photo`" />
+                <span>Uploaded</span>
+              </button>
+              <button type="button" class="remove-photo" aria-label="Remove uploaded image" @click="removePhoto(selectedFood.id, photo.id)">×</button>
+            </div>
+          </div>
           <div class="detail-labels">
             <span class="detail-labels-title">Labels</span>
             <span v-for="label in foodLabels(selectedFood)" :key="label" class="detail-label">{{ label }}</span>
@@ -254,28 +263,6 @@ function stopCropDrag() {
         <label class="location-field">Location <span>(optional)<input v-model="checkinLocation" type="text" maxlength="120" placeholder="Town, region, or restaurant" /></span></label>
         <div class="crop-actions"><button v-if="editingCheckin" type="button" class="auth-button remove-checkin" @click="deleteCheckin(editingCheckin.id); editingCheckin = null">Remove check-in</button><button class="auth-button" type="submit">Save check-in</button></div>
       </form>
-    </div>
-    <div v-if="crop" class="crop-backdrop" role="dialog" aria-modal="true" aria-label="Crop photo">
-      <div class="crop-dialog">
-        <h2>Choose your thumbnail</h2>
-        <p>Drag the image to choose which part to keep.</p>
-        <div
-          class="crop-window"
-          @pointerdown.prevent="startCropDrag"
-          @pointermove="dragCrop"
-          @pointerup="stopCropDrag"
-          @pointerleave="stopCropDrag"
-          @pointercancel="stopCropDrag"
-          @contextmenu.prevent
-        >
-          <img draggable="false" :src="crop.url" alt="Photo crop preview" :style="{ width: `${crop.width * crop.zoom}px`, height: `${crop.height * crop.zoom}px`, left: `${crop.offsetX}px`, top: `${crop.offsetY}px` }" />
-        </div>
-        <label class="zoom-control">Zoom <input type="range" min="1" max="3" step=".05" :value="crop.zoom" @input="setCropZoom(Number(($event.target as HTMLInputElement).value))" /></label>
-        <div class="crop-actions">
-          <button class="text-button" @click="cancelCrop">Cancel</button>
-          <button class="auth-button" @click="confirmCrop">Use this crop</button>
-        </div>
-      </div>
     </div>
   </main>
 </template>

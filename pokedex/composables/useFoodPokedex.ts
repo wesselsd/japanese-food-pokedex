@@ -1,39 +1,24 @@
 import { computed, ref, watch, type Ref } from 'vue'
 import type { User } from '@supabase/supabase-js'
-import type { Checkin, ProgressAdapter } from '~/adapter/supabase/progress'
+import type { Checkin, FoodPhoto, ProgressAdapter } from '~/adapter/supabase/progress'
 import type { Food } from '~/data/foods'
 
 const EATEN_STORAGE_KEY = 'pokedex-eaten'
 const PHOTOS_STORAGE_KEY = 'pokedex-photos'
 const CHECKINS_STORAGE_KEY = 'pokedex-checkins'
-const CROP_WIDTH = 320
-const CROP_HEIGHT = 180
-const OUTPUT_WIDTH = 640
-const OUTPUT_HEIGHT = 360
-const MAX_PHOTO_BYTES = 100 * 1024
 const CATEGORY_ORDER = ['Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Savory', 'Drinks']
 export type EatenFilter = 'all' | 'eaten' | 'uneaten'
-
-type CropState = {
-  foodId: string
-  url: string
-  width: number
-  height: number
-  offsetX: number
-  offsetY: number
-  zoom: number
-}
 
 export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>>, cloudProgress: ProgressAdapter | null = null) {
   const checkins = ref<Checkin[]>([])
   const eatenFoods = computed(() => Array.from(new Set(checkins.value.map((checkin) => checkin.foodId))))
-  const photos = ref<Record<string, string>>({})
+  const photos = ref<Record<string, FoodPhoto[]>>({})
+  const selectedPhotos = ref<Record<string, string>>({})
   const searchTerm = ref('')
   const selectedCategory = ref('All')
   const selectedLabel = ref('All')
   const eatenFilter = ref<EatenFilter>('all')
   const syncError = ref('')
-  const crop = ref<CropState | null>(null)
 
   const categories = ['All', ...CATEGORY_ORDER]
   const labels = ['All', ...Array.from(new Set(foodList.flatMap((food) => food.foodTypes)))]
@@ -94,103 +79,56 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     const url = URL.createObjectURL(file)
     const image = new Image()
     image.addEventListener('load', () => {
-      const scale = Math.max(CROP_WIDTH / image.naturalWidth, CROP_HEIGHT / image.naturalHeight)
-      crop.value = {
-        foodId: id,
-        url,
-        width: image.naturalWidth * scale,
-        height: image.naturalHeight * scale,
-        offsetX: (CROP_WIDTH - image.naturalWidth * scale) / 2,
-        offsetY: (CROP_HEIGHT - image.naturalHeight * scale) / 2,
-        zoom: 1
+      if (!image.naturalWidth || !image.naturalHeight) {
+        URL.revokeObjectURL(url)
+        syncError.value = 'Unable to read the selected image.'
+        return
       }
+      const photoId = crypto.randomUUID()
+      photos.value = { ...photos.value, [id]: [...(photos.value[id] ?? []), { id: photoId, url }] }
+      selectedPhotos.value = { ...selectedPhotos.value, [id]: photoId }
+      if (user.value && cloudProgress) {
+        void cloudProgress.uploadPhoto(user.value.id, id, file).then((photo) => {
+          photos.value = { ...photos.value, [id]: [...(photos.value[id] ?? []).filter((item) => item.id !== photoId), photo] }
+          selectedPhotos.value = { ...selectedPhotos.value, [id]: photo.id }
+          URL.revokeObjectURL(url)
+        }).catch((cause) => {
+          syncError.value = cause instanceof Error ? cause.message : 'Unable to save photo.'
+        })
+      } else {
+        const reader = new FileReader()
+        reader.addEventListener('load', () => {
+          if (typeof reader.result === 'string') photos.value = { ...photos.value, [id]: [...(photos.value[id] ?? []).filter((item) => item.id !== photoId), { id: photoId, url: reader.result }] }
+          URL.revokeObjectURL(url)
+        })
+        reader.readAsDataURL(file)
+      }
+    })
+    image.addEventListener('error', () => {
+      URL.revokeObjectURL(url)
+      syncError.value = 'Unable to read the selected image. Please choose a JPG, PNG, or WebP image.'
     })
     image.src = url
     input.value = ''
   }
 
-  function moveCrop(deltaX: number, deltaY: number) {
-    if (!crop.value) return
-    crop.value.offsetX += deltaX
-    crop.value.offsetY += deltaY
-    const scale = crop.value.zoom
-    const minX = CROP_WIDTH - crop.value.width * scale
-    const minY = CROP_HEIGHT - crop.value.height * scale
-    crop.value.offsetX = Math.min(0, Math.max(minX, crop.value.offsetX))
-    crop.value.offsetY = Math.min(0, Math.max(minY, crop.value.offsetY))
-  }
-
-  function setCropZoom(zoom: number) {
-    if (!crop.value) return
-    const centerX = (CROP_WIDTH / 2 - crop.value.offsetX) / crop.value.zoom
-    const centerY = (CROP_HEIGHT / 2 - crop.value.offsetY) / crop.value.zoom
-    crop.value.zoom = zoom
-    crop.value.offsetX = CROP_WIDTH / 2 - centerX * zoom
-    crop.value.offsetY = CROP_HEIGHT / 2 - centerY * zoom
-    moveCrop(0, 0)
-  }
-
-  function cancelCrop() {
-    if (crop.value) URL.revokeObjectURL(crop.value.url)
-    crop.value = null
-  }
-
-  async function confirmCrop() {
-    if (!crop.value) return
-    const currentCrop = crop.value
-    const image = new Image()
-    image.src = currentCrop.url
-    await new Promise<void>((resolve, reject) => {
-      image.addEventListener('load', () => resolve())
-      image.addEventListener('error', () => reject(new Error('Unable to read the selected image.')))
-    })
-
-    const scale = currentCrop.zoom * Math.max(CROP_WIDTH / image.naturalWidth, CROP_HEIGHT / image.naturalHeight)
-    const sourceWidth = CROP_WIDTH / scale
-    const sourceHeight = CROP_HEIGHT / scale
-    const sourceX = -currentCrop.offsetX / scale
-    const sourceY = -currentCrop.offsetY / scale
-    const canvas = document.createElement('canvas')
-    canvas.width = OUTPUT_WIDTH
-    canvas.height = OUTPUT_HEIGHT
-    const context = canvas.getContext('2d')
-    if (!context) throw new Error('Unable to prepare the photo.')
-    context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT)
-
-    let quality = 0.82
-    let blob = await canvasToBlob(canvas, quality)
-    while (blob.size > MAX_PHOTO_BYTES && quality > 0.35) {
-      quality -= 0.08
-      blob = await canvasToBlob(canvas, quality)
-    }
-    if (blob.size > MAX_PHOTO_BYTES) throw new Error('This crop could not be compressed below 100 KB.')
-
-    const compressedFile = new File([blob], `${currentCrop.foodId}.jpg`, { type: 'image/jpeg' })
-    const localUrl = URL.createObjectURL(compressedFile)
-    photos.value = { ...photos.value, [currentCrop.foodId]: localUrl }
-    if (user.value && cloudProgress) {
-      try {
-        const url = await cloudProgress.uploadPhoto(user.value.id, currentCrop.foodId, compressedFile)
-        photos.value = { ...photos.value, [currentCrop.foodId]: url }
-        URL.revokeObjectURL(localUrl)
-      } catch (cause) {
-        syncError.value = cause instanceof Error ? cause.message : 'Unable to save photo.'
+  async function removePhoto(foodId: string, photoId: string) {
+    if (user.value && cloudProgress) await cloudProgress.deletePhoto(user.value.id, foodId, photoId)
+    photos.value = { ...photos.value, [foodId]: (photos.value[foodId] ?? []).filter((photo) => photo.id !== photoId) }
+    if (selectedPhotos.value[foodId] === photoId) {
+      const next = photos.value[foodId]?.[0]
+      if (next) await selectPhoto(foodId, next.id)
+      else {
+        const updated = { ...selectedPhotos.value }
+        delete updated[foodId]
+        selectedPhotos.value = updated
       }
-    } else {
-      const reader = new FileReader()
-      reader.addEventListener('load', () => {
-        if (typeof reader.result === 'string') photos.value = { ...photos.value, [currentCrop.foodId]: reader.result }
-        URL.revokeObjectURL(localUrl)
-      })
-      reader.readAsDataURL(compressedFile)
     }
-    cancelCrop()
   }
 
-  function canvasToBlob(canvas: HTMLCanvasElement, quality: number) {
-    return new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Unable to compress the photo.')), 'image/jpeg', quality)
-    })
+  async function selectPhoto(foodId: string, photoId: string) {
+    if (user.value && cloudProgress) await cloudProgress.selectPhoto(user.value.id, foodId, photoId)
+    selectedPhotos.value = { ...selectedPhotos.value, [foodId]: photoId }
   }
 
     watch(user, async (nextUser) => {
@@ -200,7 +138,13 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         const savedPhotos = localStorage.getItem(PHOTOS_STORAGE_KEY)
         const savedCheckins = localStorage.getItem(CHECKINS_STORAGE_KEY)
         if (savedEaten) eatenFoods.value = JSON.parse(savedEaten)
-        if (savedPhotos) photos.value = JSON.parse(savedPhotos)
+        if (savedPhotos) {
+          const saved = JSON.parse(savedPhotos) as Record<string, FoodPhoto[] | string>
+          photos.value = Object.fromEntries(Object.entries(saved).map(([foodId, value]) => [foodId, typeof value === 'string' ? [{ id: 'legacy', url: value }] : value]))
+          selectedPhotos.value = Object.fromEntries(Object.keys(photos.value).map((foodId) => [foodId, photos.value[foodId][0]?.id]).filter(([, id]) => id))
+        }
+        const savedSelectedPhotos = localStorage.getItem('pokedex-selected-photos')
+        if (savedSelectedPhotos) selectedPhotos.value = { ...selectedPhotos.value, ...JSON.parse(savedSelectedPhotos) }
         if (savedCheckins) checkins.value = JSON.parse(savedCheckins)
         return
       }
@@ -210,6 +154,7 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         const cloudState = await cloudProgress.load(nextUser.id)
         checkins.value = cloudState.checkins
         photos.value = cloudState.photos
+        selectedPhotos.value = cloudState.selectedPhotos
       } catch (cause) {
         syncError.value = cause instanceof Error ? cause.message : 'Unable to load saved progress.'
       }
@@ -221,6 +166,9 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     watch(photos, (value) => {
       if (!user.value && typeof window !== 'undefined') localStorage.setItem(PHOTOS_STORAGE_KEY, JSON.stringify(value))
     }, { deep: true })
+    watch(selectedPhotos, (value) => {
+      if (!user.value && typeof window !== 'undefined') localStorage.setItem('pokedex-selected-photos', JSON.stringify(value))
+    }, { deep: true })
 
-    return { checkins, eatenFoods, photos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
+    return { checkins, eatenFoods, photos, selectedPhotos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, removePhoto, selectPhoto }
 }

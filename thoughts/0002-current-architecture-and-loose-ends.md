@@ -4,39 +4,57 @@ Updated 2026-09-06.
 
 ## Product
 
-Japanese Food Pokedex is a mobile-first static web app for browsing Japanese foods, marking foods as eaten, and saving a personal photo for each food. The current catalogue contains 50 non-chain foods. Chains and drinks are planned for later.
+Japanese Food Pokedex is a mobile-first static web app for browsing Japanese foods, marking foods as eaten, rating individual check-ins, recording locations, and saving personal photos. The catalogue currently contains 112 foods and drinks. The stable catalogue IDs are the link between the local catalogue and user progress.
 
-## Architecture
+## Application architecture
 
 - `pokedex/` contains the Nuxt application.
 - Nuxt 3 runs as an SPA (`ssr: false`) and is generated as static output for GitHub Pages.
-- Vue UI is in `pokedex/app.vue`.
-- Food catalogue data is in `pokedex/data/foods.json`, loaded through `pokedex/data/foods.ts`.
-- Catalogue filtering, eaten state, photo cropping, and compression are in `pokedex/composables/useFoodPokedex.ts`.
+- The main Vue UI is in `pokedex/app.vue`.
+- `pokedex/composables/useFoodPokedex.ts` owns filtering, check-ins, local persistence, photo state, photo selection, and photo removal.
 - Authentication state is in `pokedex/composables/useAuth.ts`.
-- Supabase-specific code is isolated in `pokedex/adapter/supabase/`.
-- Supabase provides email/password authentication, the `foods` table, per-user progress, and private photo storage.
-- RLS policies scope `user_foods` rows and stored photos to the authenticated user.
-- Signed-in users synchronize progress and photos through Supabase; signed-out users use localStorage for eaten state and browser-local photo state.
-- The app is deployed automatically from `main` using `.github/workflows/deploy-pages.yml` to `https://wesselsd.github.io/japanese-food-pokedex/`.
+- Supabase-specific persistence is isolated in `pokedex/adapter/supabase/`.
+- Styling is in `pokedex/assets/css/main.css`.
+- The app is deployed from `main` using `.github/workflows/deploy-pages.yml` to `https://wesselsd.github.io/japanese-food-pokedex/`.
 
-## Food artwork
+## Catalogue and artwork
 
-- Generated artwork is stored in `pokedex/assets/images/`.
-- Every catalogue item currently has a matching `<food-id>_image.png`.
-- `pokedex/data/foods.ts` discovers these files with `import.meta.glob`.
-- Card image priority is user-uploaded photo, generated catalogue artwork, then emoji fallback.
-- `pokedex/scripts/food_gen.py` generates missing artwork into `pokedex/assets/images/` using a path relative to the script location. It must not be run automatically.
+- The runtime catalogue is `pokedex/data/foods.json`, loaded and typed by `pokedex/data/foods.ts`.
+- Supabase is not the runtime source for food metadata. `user_foods.food_id` matches the JSON catalogue by its stable `id`.
+- Catalogue entries contain names, Japanese names, descriptions, categories, food-type labels, colors, emojis, essential status, and stable numbers.
+- `foodLabels()` deduplicates labels case-insensitively and omits the redundant `Rice` label for the `Rice & Bowls` category.
+- Generated artwork is stored in `pokedex/assets/images/` and discovered with `import.meta.glob`.
+- Displayed image priority is the selected uploaded image, the predefined catalogue artwork, then the emoji fallback.
+- `pokedex/scripts/food_gen.py` generates missing artwork relative to the script location and must not run automatically.
 
-## Data and migrations
+## User progress
 
-Run these migrations in order in Supabase:
+- A check-in is `{ id, foodId, eatenAt, rating, location }`. Multiple check-ins are supported per food.
+- A food is considered eaten when it has at least one check-in.
+- Cards show a check mark for eaten foods and the highest rating as full/empty star characters beside the Japanese name.
+- The detail modal shows check-in history, editable check-ins, locations, ratings, deduplicated labels, and dangerous red removal actions.
+- Filtering by search, category, label, or eaten status renders one flat result grid. Unfiltered browsing retains the Essential and category sections.
+- When a detail, check-in, or edit modal is open, `body.modal-open` prevents background scrolling and the modal owns vertical scrolling.
 
-1. `20260905205000_create_foods.sql`
-2. `20260905211500_create_user_progress.sql`
-3. `20260905223000_expand_food_catalog_and_tags.sql`
+## Photos
 
-The catalogue migration changes the original single `category` column into `categories text[]` and seeds the current 50 foods. The frontend uses the local JSON catalogue as its display source; Supabase is not the runtime source for food metadata. `user_foods.food_id` matches `foods.json` by the stable `id` field. The catalogue table and foreign key are removed by `20260906120000_remove_static_food_catalogue.sql`.
+- Photos are represented as `{ id: string; url: string }` and stored in `Record<string, FoodPhoto[]>`.
+- Each food can have multiple uploaded photos. The detail modal displays thumbnails, allows selecting the predefined image or an uploaded image, and allows removing uploaded images.
+- The current flow is intentionally direct: file chooser, image validation, immediate display, then persistence. Cropping and compression were removed after the crop dialog proved unreliable.
+- Signed-in users upload the original selected file to Supabase. Signed-out users convert it to a data URL and persist it in localStorage.
+- A temporary object URL is shown immediately while cloud upload or local data-URL conversion completes.
+- Legacy single-photo localStorage entries and legacy `user_foods.photo_path` rows remain supported.
+
+## Supabase data and migrations
+
+- Supabase provides email/password authentication, per-user check-ins, selected-photo metadata, and private photo storage.
+- The static catalogue table is no longer used by the frontend. `20260906120000_remove_static_food_catalogue.sql` removes the old catalogue table and foreign key.
+- `user_foods` remains for compatibility and now stores `selected_photo_id`.
+- `user_food_photos` stores one row per uploaded image: `id`, `user_id`, `food_id`, `photo_path`, and `created_at`.
+- Uploaded storage paths use `${userId}/${foodId}/${photoId}.jpg` in the `food-photos` bucket.
+- `pokedex/supabase/migrations/20260906183000_add_multiple_food_photos.sql` adds the multi-photo schema and RLS policies.
+- RLS policies restrict progress and photo metadata to the authenticated owner. Storage deletion is restricted to paths under the authenticated user's folder.
+- Signed-in state is loaded through the progress adapter, which also signs private storage URLs. Signed-out state uses localStorage keys for check-ins, photos, and selected photos.
 
 ## Validation
 
@@ -48,21 +66,13 @@ npm run test:integration
 npm run generate
 ```
 
-The integration test requires the local `.env` Supabase configuration and an accessible migrated database.
+The integration test requires the local `.env` Supabase configuration and an accessible database with the migrations applied.
 
-## Loose ends from `thoughts/todo.md`
+## Remaining loose ends
 
-- Add an eaten/uneaten filter.
-- Make categories more useful and show category-specific progress.
-- Trim tags and introduce an `Essential` tag containing about 25 entries.
-- Curate the catalogue.
-- Support selecting, replacing, removing, and possibly storing multiple images and image metadata.
-- Add an option to hide eaten items, defaulting to hidden unless all foods have been eaten.
-- Add sorting by label.
-
-## Future catalogue work
-
-- Add chains as a separate category or type.
-- Add drinks later.
-- Consider adding more carefully curated regional dishes and variants from `thoughts/food.md`.
-- Keep the eventual combined food-and-chain catalogue near the original target of approximately 150 items.
+- Curate the catalogue and labels further.
+- Decide whether to add chains as a separate category or type.
+- Consider adding more regional dishes and variants from `thoughts/food.md`.
+- Consider a hide-eaten mode and sorting by label.
+- Original uploads are currently stored without resizing or compression; revisit limits and image optimization if localStorage or storage usage becomes a problem.
+- Add focused automated coverage for multi-photo upload, selection, removal, and legacy-photo compatibility.
