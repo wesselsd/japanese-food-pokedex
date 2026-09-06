@@ -29,6 +29,7 @@ describe('useFoodPokedex', () => {
     expect(state.filteredFoods.value).toHaveLength(54)
     expect(foods.filter((food) => food.essential)).toHaveLength(14)
     expect(state.categories).toEqual(['All', 'Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Drinks'])
+    expect(foods.every((food) => food.image)).toBe(true)
 
     state.searchTerm.value = '寿司'
     await nextTick()

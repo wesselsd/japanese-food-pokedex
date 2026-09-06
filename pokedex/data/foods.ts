@@ -20,8 +20,12 @@ export type Food = {
   image?: string
 }
 
-function imageForFood(id: string) {
-  return imageModules[`../assets/images/${id}_image.png`]
+function imageSlugForName(name: string) {
+  return name.toLowerCase().replace(/ /g, '-')
+}
+
+function imageForFood(name: string) {
+  return imageModules[`../assets/images/${imageSlugForName(name)}_image.png`]
 }
 
 const essentialIds = new Set([
@@ -70,5 +74,5 @@ export const foods: Food[] = foodData.map((food) => ({
   category: categoryById[food.id] ?? 'Sweets',
   essential: essentialIds.has(food.id),
   foodTypes: foodTypesById[food.id] ?? ['snack'],
-  image: imageForFood(food.id)
+  image: imageForFood(food.name)
 }))
