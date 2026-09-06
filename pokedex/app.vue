@@ -141,12 +141,12 @@ function stopCropDrag() {
           <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
           <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
           <span class="number">#{{ food.number }}</span>
+          <span class="art-labels">{{ foodLabels(food).join(' · ') }}</span>
           <span v-if="eatenFoods.includes(food.id)" class="tried-badge">✓ Tried</span>
         </div>
         <div class="card-body">
           <div class="card-heading">
             <div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div>
-            <span class="category-label">{{ foodLabels(food).join(' · ') }}</span>
           </div>
           <div class="card-actions">
             <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button>
@@ -165,10 +165,11 @@ function stopCropDrag() {
             <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
             <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
             <span class="number">#{{ food.number }}</span>
+            <span class="art-labels">{{ foodLabels(food).join(' · ') }}</span>
             <span v-if="eatenFoods.includes(food.id)" class="tried-badge">✓ Tried</span>
           </div>
           <div class="card-body">
-            <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div><span class="category-label">{{ foodLabels(food).join(' · ') }}</span></div>
+            <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div></div>
             <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span aria-hidden="true">▧</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
           </div>
         </article>
