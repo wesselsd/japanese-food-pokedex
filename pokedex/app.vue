@@ -25,10 +25,11 @@ const {
   eatenFilter,
   categories,
   labels,
+  lockedVariationCount,
   filteredFoods,
-  eatenCount,
   essentialCount,
-  eatenEssentialCount,
+  progressCount,
+  progressTotal,
   checkIn,
   updateCheckin,
   deleteCheckin,
@@ -38,8 +39,6 @@ const {
   selectPhoto,
   syncError
 } = useFoodPokedex(foods, user, cloudProgress)
-const progressCount = computed(() => eatenEssentialCount.value === essentialCount ? eatenCount.value : eatenEssentialCount.value)
-const progressTotal = computed(() => eatenEssentialCount.value === essentialCount ? foods.length : essentialCount)
 const isLabelFiltering = computed(() => selectedLabel.value !== 'All')
 const categorySections = computed(() => isLabelFiltering.value
   ? [{ category: '', foods: filteredFoods.value, totalCount: 0, eatenCount: 0 }]
@@ -218,6 +217,9 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
         </label>
       </div>
     </section>
+    <p v-if="lockedVariationCount" class="locked-notice" aria-live="polite">
+      {{ lockedVariationCount }} variation{{ lockedVariationCount === 1 ? '' : 's' }} awaiting a parent check-in.
+    </p>
 
     <section v-if="essentialFoods.length" class="food-section" aria-live="polite">
       <h2 class="section-title">Essential</h2>

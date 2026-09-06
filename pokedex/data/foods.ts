@@ -14,6 +14,7 @@ export type Food = {
   category: string
   essential: boolean
   foodTypes: string[]
+  parentId?: string
   description: string
   emoji: string
   color: string

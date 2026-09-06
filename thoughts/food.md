@@ -254,7 +254,6 @@ Okinawa soba
 - Kakigori
 - Mochi
 - Daifuku
-- Ichigo daifuku
 - Warabi mochi
 - Dango
 - Dorayaki

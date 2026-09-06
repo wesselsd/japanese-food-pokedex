@@ -16,6 +16,7 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .progress-row { align-items: center; display: flex; gap: 16px; margin-top: 30px; max-width: 500px; } .progress-row strong { font-size: 22px; } .progress-row span { color: #8b847b; font-size: 13px; }
 .progress-track { background: #e5ded3; border-radius: 10px; flex: 1; height: 6px; } .progress-fill { background: #b0492f; border-radius: inherit; height: 100%; transition: width .25s; }
 .controls { border-bottom: 1px solid #e3dcd1; border-top: 1px solid #e3dcd1; margin: 60px 0 32px; padding: 18px 0; }
+.locked-notice { color: #77716b; font-family: 'DM Mono', monospace; font-size: 11px; margin: -18px 0 32px; text-transform: uppercase; }
 .search { align-items: center; background: #fffdf9; border: 1px solid #e3dcd1; border-radius: 4px; display: flex; gap: 10px; max-width: 340px; padding: 10px 13px; } .search span { color: #b0492f; font-size: 24px; line-height: 15px; }
 .search input { background: none; border: 0; min-width: 0; outline: 0; width: 100%; } .eaten-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .clear-search { background: none; border: 0; color: #9b938a; font-size: 20px; line-height: 1; padding: 0; } .clear-search:hover { color: #252321; }

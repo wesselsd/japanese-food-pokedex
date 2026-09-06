@@ -132,7 +132,8 @@
     "foodTypes": [
       "noodles",
       "soup"
-    ]
+    ],
+    "parentId": "ramen"
   },
   {
     "id": "hiyashi-chuka",
@@ -146,7 +147,8 @@
     "essential": false,
     "foodTypes": [
       "noodles"
-    ]
+    ],
+    "parentId": "ramen"
   },
   {
     "id": "tempura",
@@ -448,7 +450,8 @@
       "meat",
       "fried",
       "rice"
-    ]
+    ],
+    "parentId": "curry-rice"
   },
   {
     "id": "curry-pan",
@@ -638,25 +641,12 @@
     "essential": false,
     "foodTypes": [
       "dessert"
-    ]
-  },
-  {
-    "id": "ichigo-daifuku",
-    "number": "044",
-    "name": "Ichigo daifuku",
-    "japaneseName": "いちご大福",
-    "description": "A whole strawberry wrapped in red bean paste and soft mochi.",
-    "emoji": "🍓",
-    "color": "#f3b6b4",
-    "category": "Sweets",
-    "essential": false,
-    "foodTypes": [
-      "dessert"
-    ]
+    ],
+    "parentId": "mochi"
   },
   {
     "id": "warabi-mochi",
-    "number": "045",
+    "number": "044",
     "name": "Warabi mochi",
     "japaneseName": "わらび餅",
     "description": "Jiggly, translucent confection made from bracken starch and dusted with roasted soybean flour.",
@@ -670,7 +660,7 @@
   },
   {
     "id": "dorayaki",
-    "number": "046",
+    "number": "045",
     "name": "Dorayaki",
     "japaneseName": "どら焼き",
     "description": "Two fluffy pancakes sandwiched around sweet red bean paste.",
@@ -684,7 +674,7 @@
   },
   {
     "id": "castella",
-    "number": "047",
+    "number": "046",
     "name": "Castella",
     "japaneseName": "カステラ",
     "description": "A moist, softly textured sponge cake with a golden top.",
@@ -698,7 +688,7 @@
   },
   {
     "id": "anmitsu",
-    "number": "048",
+    "number": "047",
     "name": "Anmitsu",
     "japaneseName": "あんみつ",
     "description": "A colourful dessert of agar jelly, fruit, red bean paste, and syrup.",
@@ -712,7 +702,7 @@
   },
   {
     "id": "melon-pan",
-    "number": "049",
+    "number": "048",
     "name": "Melon pan",
     "japaneseName": "メロンパン",
     "description": "Sweet bread covered in a crisp cookie crust.",
@@ -726,7 +716,7 @@
   },
   {
     "id": "senbei",
-    "number": "050",
+    "number": "049",
     "name": "Senbei",
     "japaneseName": "せんべい",
     "description": "Crisp rice crackers grilled and seasoned with soy sauce or salt.",
@@ -740,7 +730,7 @@
   },
   {
     "id": "yakiniku",
-    "number": "051",
+    "number": "050",
     "name": "Yakiniku",
     "japaneseName": "焼肉",
     "description": "Small pieces of meat grilled at the table, commonly served with dipping sauces.",
@@ -755,7 +745,7 @@
   },
   {
     "id": "nerikiri",
-    "number": "052",
+    "number": "051",
     "name": "Nerikiri",
     "japaneseName": "練り切り",
     "description": "Delicate seasonal sweets shaped from white bean paste and coloured into artistic forms.",
@@ -769,7 +759,7 @@
   },
   {
     "id": "unagi-kabayaki",
-    "number": "053",
+    "number": "052",
     "name": "Unagi kabayaki",
     "japaneseName": "うなぎの蒲焼き",
     "description": "Freshwater eel commonly grilled and brushed with a sweet soy-based sauce.",
@@ -784,7 +774,7 @@
   },
   {
     "id": "ekiben",
-    "number": "054",
+    "number": "053",
     "name": "Ekiben",
     "japaneseName": "駅弁",
     "description": "A boxed meal sold at railway stations, usually packed with rice, side dishes, and regional specialties.",
@@ -799,7 +789,7 @@
   },
   {
     "id": "curry-udon",
-    "number": "055",
+    "number": "054",
     "name": "Curry udon",
     "japaneseName": "カレーうどん",
     "description": "Thick udon noodles served in a warmly spiced Japanese curry broth.",
@@ -810,11 +800,12 @@
     "foodTypes": [
       "noodles",
       "soup"
-    ]
+    ],
+    "parentId": "udon"
   },
   {
     "id": "yaki-udon",
-    "number": "056",
+    "number": "055",
     "name": "Yaki-udon",
     "japaneseName": "焼きうどん",
     "description": "Chewy udon noodles stir-fried with vegetables, meat, and a savoury sauce.",
@@ -824,11 +815,12 @@
     "essential": false,
     "foodTypes": [
       "noodles"
-    ]
+    ],
+    "parentId": "udon"
   },
   {
     "id": "sara-udon",
-    "number": "057",
+    "number": "056",
     "name": "Sara udon",
     "japaneseName": "皿うどん",
     "description": "Nagasaki-style noodles topped with a generous serving of vegetables and seafood in gravy.",
@@ -838,11 +830,12 @@
     "essential": false,
     "foodTypes": [
       "noodles"
-    ]
+    ],
+    "parentId": "udon"
   },
   {
     "id": "tanmen",
-    "number": "058",
+    "number": "057",
     "name": "Tanmen",
     "japaneseName": "タンメン",
     "description": "A light noodle soup piled high with stir-fried pork and vegetables.",
@@ -857,7 +850,7 @@
   },
   {
     "id": "champon",
-    "number": "059",
+    "number": "058",
     "name": "Champon",
     "japaneseName": "ちゃんぽん",
     "description": "A hearty Nagasaki noodle dish combining seafood, pork, vegetables, and a rich broth.",
@@ -873,7 +866,7 @@
   },
   {
     "id": "unadon",
-    "number": "060",
+    "number": "059",
     "name": "Unadon",
     "japaneseName": "うな丼",
     "description": "Tender grilled eel glazed with sweet tare and served over a bowl of steamed rice.",
@@ -884,11 +877,12 @@
     "foodTypes": [
       "seafood",
       "rice"
-    ]
+    ],
+    "parentId": "unagi-kabayaki"
   },
   {
     "id": "tekkadon",
-    "number": "061",
+    "number": "060",
     "name": "Tekkadon",
     "japaneseName": "鉄火丼",
     "description": "A bowl of sushi rice topped with slices of fresh tuna sashimi.",
@@ -904,7 +898,7 @@
   },
   {
     "id": "soboro-don",
-    "number": "062",
+    "number": "061",
     "name": "Soboro-don",
     "japaneseName": "そぼろ丼",
     "description": "Seasoned ground meat and softly cooked egg arranged over steamed rice.",
@@ -920,7 +914,7 @@
   },
   {
     "id": "hayashi-rice",
-    "number": "063",
+    "number": "062",
     "name": "Hayashi rice",
     "japaneseName": "ハヤシライス",
     "description": "Thinly sliced beef and onions simmered in a rich demi-glace sauce over rice.",
@@ -935,7 +929,7 @@
   },
   {
     "id": "uni-gunkan",
-    "number": "064",
+    "number": "063",
     "name": "Uni gunkan",
     "japaneseName": "うに軍艦",
     "description": "Gunkan sushi topped with rich, creamy sea urchin roe.",
@@ -947,11 +941,12 @@
       "seafood",
       "rice",
       "raw"
-    ]
+    ],
+    "parentId": "sushi"
   },
   {
     "id": "ikura-gunkan",
-    "number": "065",
+    "number": "064",
     "name": "Ikura gunkan",
     "japaneseName": "いくら軍艦",
     "description": "Gunkan sushi topped with bright salmon roe and its delicate briny pop.",
@@ -963,11 +958,12 @@
       "seafood",
       "rice",
       "raw"
-    ]
+    ],
+    "parentId": "sushi"
   },
   {
     "id": "anago-nigiri",
-    "number": "066",
+    "number": "065",
     "name": "Anago nigiri",
     "japaneseName": "穴子握り",
     "description": "Nigiri sushi topped with tender conger eel brushed with a delicate sweet sauce.",
@@ -978,11 +974,12 @@
     "foodTypes": [
       "seafood",
       "rice"
-    ]
+    ],
+    "parentId": "sushi"
   },
   {
     "id": "hotate-nigiri",
-    "number": "067",
+    "number": "066",
     "name": "Hotate nigiri",
     "japaneseName": "ほたて握り",
     "description": "Nigiri sushi topped with a sweet, tender raw scallop.",
@@ -994,11 +991,12 @@
       "seafood",
       "rice",
       "raw"
-    ]
+    ],
+    "parentId": "sushi"
   },
   {
     "id": "hamachi-sashimi",
-    "number": "068",
+    "number": "067",
     "name": "Hamachi sashimi",
     "japaneseName": "はまち刺身",
     "description": "Slices of mild, buttery yellowtail served as sashimi.",
@@ -1013,7 +1011,7 @@
   },
   {
     "id": "kani-maki",
-    "number": "069",
+    "number": "068",
     "name": "Kani maki",
     "japaneseName": "かに巻き",
     "description": "Sushi roll filled with sweet Japanese crab.",
@@ -1024,11 +1022,12 @@
     "foodTypes": [
       "seafood",
       "rice"
-    ]
+    ],
+    "parentId": "sushi"
   },
   {
     "id": "korokke",
-    "number": "070",
+    "number": "069",
     "name": "Korokke",
     "japaneseName": "コロッケ",
     "description": "Crisp breaded croquettes filled with mashed potato, meat, or vegetables.",
@@ -1043,7 +1042,7 @@
   },
   {
     "id": "menchi-katsu",
-    "number": "071",
+    "number": "070",
     "name": "Menchi-katsu",
     "japaneseName": "メンチカツ",
     "description": "A juicy seasoned minced-meat patty coated in breadcrumbs and fried until crisp.",
@@ -1058,7 +1057,7 @@
   },
   {
     "id": "ebi-fry",
-    "number": "072",
+    "number": "071",
     "name": "Ebi fry",
     "japaneseName": "エビフライ",
     "description": "Large prawns coated in breadcrumbs and fried until golden and crunchy.",
@@ -1073,7 +1072,7 @@
   },
   {
     "id": "tebasaki",
-    "number": "073",
+    "number": "072",
     "name": "Tebasaki",
     "japaneseName": "手羽先",
     "description": "Nagoya-style chicken wings seasoned, fried, and finished with a savoury glaze.",
@@ -1088,7 +1087,7 @@
   },
   {
     "id": "tsukune",
-    "number": "074",
+    "number": "073",
     "name": "Tsukune",
     "japaneseName": "つくね",
     "description": "Seasoned chicken meatballs grilled on skewers and brushed with sweet tare.",
@@ -1099,11 +1098,12 @@
     "foodTypes": [
       "meat",
       "grilled"
-    ]
+    ],
+    "parentId": "yakitori"
   },
   {
     "id": "grilled-squid",
-    "number": "075",
+    "number": "074",
     "name": "Grilled squid",
     "japaneseName": "イカ焼き",
     "description": "Whole squid grilled until tender and brushed with a savoury soy-based sauce.",
@@ -1118,7 +1118,7 @@
   },
   {
     "id": "potato-salad",
-    "number": "076",
+    "number": "075",
     "name": "Japanese potato salad",
     "japaneseName": "ポテトサラダ",
     "description": "Creamy Japanese potato salad with cucumber, carrot, and delicately seasoned mayonnaise.",
@@ -1132,7 +1132,7 @@
   },
   {
     "id": "japanese-omelette",
-    "number": "077",
+    "number": "076",
     "name": "Japanese omelette",
     "japaneseName": "卵焼き",
     "description": "Layers of seasoned egg rolled into a soft, neat omelette, often lightly sweetened.",
@@ -1146,7 +1146,7 @@
   },
   {
     "id": "pickled-vegetables",
-    "number": "078",
+    "number": "077",
     "name": "Japanese pickled vegetables",
     "japaneseName": "漬物",
     "description": "Crisp vegetables preserved with salt, vinegar, or miso and served as a bright side dish.",
@@ -1160,7 +1160,7 @@
   },
   {
     "id": "mabo-tofu",
-    "number": "079",
+    "number": "078",
     "name": "Mabo tofu",
     "japaneseName": "麻婆豆腐",
     "description": "Silken tofu simmered with seasoned minced meat in a spicy, savoury sauce.",
@@ -1175,7 +1175,7 @@
   },
   {
     "id": "imagawayaki",
-    "number": "080",
+    "number": "079",
     "name": "Imagawayaki",
     "japaneseName": "今川焼き",
     "description": "Round griddled cakes filled with sweet red bean paste, custard, or other fillings.",
@@ -1190,7 +1190,7 @@
   },
   {
     "id": "mitarashi-dango",
-    "number": "081",
+    "number": "080",
     "name": "Mitarashi dango",
     "japaneseName": "みたらし団子",
     "description": "Chewy rice dumplings on a skewer coated in a glossy sweet soy glaze.",
@@ -1200,11 +1200,12 @@
     "essential": false,
     "foodTypes": [
       "dessert"
-    ]
+    ],
+    "parentId": "dango"
   },
   {
     "id": "ningyoyaki",
-    "number": "082",
+    "number": "081",
     "name": "Ningyoyaki",
     "japaneseName": "人形焼",
     "description": "Small shaped sponge cakes traditionally filled with sweet red bean paste.",
@@ -1218,7 +1219,7 @@
   },
   {
     "id": "yakiimo",
-    "number": "083",
+    "number": "082",
     "name": "Yakiimo",
     "japaneseName": "焼き芋",
     "description": "Japanese sweet potato roasted slowly until its skin is charred and its centre is soft and honey-sweet.",
@@ -1233,7 +1234,7 @@
   },
   {
     "id": "yakisoba",
-    "number": "084",
+    "number": "083",
     "name": "Yakisoba",
     "japaneseName": "焼きそば",
     "description": "Wheat noodles stir-fried with cabbage, meat, and a tangy savoury sauce.",
@@ -1248,7 +1249,7 @@
   },
   {
     "id": "yokan",
-    "number": "085",
+    "number": "084",
     "name": "Yokan",
     "japaneseName": "羊羹",
     "description": "Firm, glossy Japanese confection made from red bean paste, agar, and sugar.",
@@ -1262,7 +1263,7 @@
   },
   {
     "id": "monaka",
-    "number": "086",
+    "number": "085",
     "name": "Monaka",
     "japaneseName": "最中",
     "description": "Crisp delicate wafer shells filled with smooth or chunky sweet red bean paste.",
@@ -1276,7 +1277,7 @@
   },
   {
     "id": "mont-blanc",
-    "number": "087",
+    "number": "086",
     "name": "Japanese Mont Blanc",
     "japaneseName": "モンブラン",
     "description": "A cake topped with a nest of sweet chestnut cream and often finished with whipped cream.",
@@ -1290,7 +1291,7 @@
   },
   {
     "id": "japanese-pudding",
-    "number": "088",
+    "number": "087",
     "name": "Japanese pudding",
     "japaneseName": "プリン",
     "description": "A softly set custard dessert served chilled with a layer of caramel sauce.",
@@ -1304,7 +1305,7 @@
   },
   {
     "id": "matcha-ice-cream",
-    "number": "089",
+    "number": "088",
     "name": "Matcha ice cream",
     "japaneseName": "抹茶アイス",
     "description": "Cool, creamy ice cream with the gently bitter flavour and vivid colour of matcha.",
@@ -1318,7 +1319,7 @@
   },
   {
     "id": "tamago-sando",
-    "number": "090",
+    "number": "089",
     "name": "Tamago sando",
     "japaneseName": "たまごサンド",
     "description": "Soft white bread filled with a creamy Japanese egg salad.",
@@ -1333,7 +1334,7 @@
   },
   {
     "id": "yakisoba-pan",
-    "number": "091",
+    "number": "090",
     "name": "Yakisoba pan",
     "japaneseName": "焼きそばパン",
     "description": "A soft bread roll filled with saucy yakisoba noodles for a distinctly Japanese snack.",
@@ -1348,7 +1349,7 @@
   },
   {
     "id": "japanese-cheesecake",
-    "number": "092",
+    "number": "091",
     "name": "Japanese cheesecake",
     "japaneseName": "スフレチーズケーキ",
     "description": "A light, airy cheesecake with a gently jiggly texture and delicate tang.",
@@ -1362,7 +1363,7 @@
   },
   {
     "id": "famichiki",
-    "number": "093",
+    "number": "092",
     "name": "Famichiki",
     "japaneseName": "ファミチキ",
     "description": "A juicy seasoned fried chicken fillet sold hot from Japanese convenience stores.",
@@ -1373,6 +1374,21 @@
     "foodTypes": [
       "meat",
       "fried"
+    ]
+  },
+  {
+    "id": "tea",
+    "number": "093",
+    "name": "Tea",
+    "japaneseName": "お茶",
+    "description": "A broad family of Japanese teas prepared from leaves or roasted grains and enjoyed hot or cold.",
+    "emoji": "🍵",
+    "color": "#c4d3a9",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "tea",
+      "non-alcoholic"
     ]
   },
   {
@@ -1388,7 +1404,8 @@
     "foodTypes": [
       "tea",
       "non-alcoholic"
-    ]
+    ],
+    "parentId": "tea"
   },
   {
     "id": "hojicha",
@@ -1403,7 +1420,8 @@
     "foodTypes": [
       "tea",
       "non-alcoholic"
-    ]
+    ],
+    "parentId": "tea"
   },
   {
     "id": "mugicha",
@@ -1418,7 +1436,8 @@
     "foodTypes": [
       "tea",
       "non-alcoholic"
-    ]
+    ],
+    "parentId": "tea"
   },
   {
     "id": "pocari-sweat",
@@ -1464,8 +1483,23 @@
     ]
   },
   {
-    "id": "hoppy-set",
+    "id": "japanese-mixed-drink",
     "number": "100",
+    "name": "Japanese mixed drink",
+    "japaneseName": "日本のミックスドリンク",
+    "description": "A Japanese mixed drink made by combining spirits or beer-style mixers with soda, fruit, or other flavours.",
+    "emoji": "🍹",
+    "color": "#d9b878",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "mixed drink",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "hoppy-set",
+    "number": "101",
     "name": "Hoppy Set",
     "japaneseName": "ホッピーセット",
     "description": "A low-alcohol beer-style mixer served with a glass of shōchū and Hoppy.",
@@ -1477,11 +1511,12 @@
       "beer",
       "shochu",
       "alcoholic"
-    ]
+    ],
+    "parentId": "japanese-mixed-drink"
   },
   {
     "id": "lemon-sour",
-    "number": "101",
+    "number": "102",
     "name": "Lemon Sour",
     "japaneseName": "レモンサワー",
     "description": "A Japanese mixed drink combining shōchū, sparkling water, and lemon.",
@@ -1493,11 +1528,12 @@
       "cocktail",
       "shochu",
       "alcoholic"
-    ]
+    ],
+    "parentId": "japanese-mixed-drink"
   },
   {
     "id": "highball",
-    "number": "102",
+    "number": "103",
     "name": "High Ball",
     "japaneseName": "ハイボール",
     "description": "Whisky lengthened with chilled sparkling water and served over ice.",
@@ -1509,11 +1545,12 @@
       "cocktail",
       "whisky",
       "alcoholic"
-    ]
+    ],
+    "parentId": "japanese-mixed-drink"
   },
   {
     "id": "chuhai",
-    "number": "103",
+    "number": "104",
     "name": "Chūhai",
     "japaneseName": "チューハイ",
     "description": "A Japanese canned or mixed drink made with shōchū, sparkling water, and flavouring.",
@@ -1525,11 +1562,27 @@
       "cocktail",
       "shochu",
       "alcoholic"
+    ],
+    "parentId": "japanese-mixed-drink"
+  },
+  {
+    "id": "sake",
+    "number": "105",
+    "name": "Sake",
+    "japaneseName": "日本酒",
+    "description": "Traditional Japanese rice wine with many styles ranging from crisp and aromatic to cloudy and rich.",
+    "emoji": "🍶",
+    "color": "#e3d4b8",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "sake",
+      "alcoholic"
     ]
   },
   {
     "id": "junmai-sake",
-    "number": "104",
+    "number": "106",
     "name": "Junmai Sake",
     "japaneseName": "純米酒",
     "description": "Sake brewed from rice, water, yeast, and koji without added distilled alcohol.",
@@ -1540,11 +1593,12 @@
     "foodTypes": [
       "sake",
       "alcoholic"
-    ]
+    ],
+    "parentId": "sake"
   },
   {
     "id": "ginjo-sake",
-    "number": "105",
+    "number": "107",
     "name": "Ginjo Sake",
     "japaneseName": "吟醸酒",
     "description": "A fragrant style of sake made with highly polished rice and careful low-temperature fermentation.",
@@ -1555,11 +1609,12 @@
     "foodTypes": [
       "sake",
       "alcoholic"
-    ]
+    ],
+    "parentId": "sake"
   },
   {
     "id": "nigori-sake",
-    "number": "106",
+    "number": "108",
     "name": "Nigori Sake",
     "japaneseName": "にごり酒",
     "description": "Cloudy, lightly filtered sake that retains some rice sediment for a creamy texture.",
@@ -1570,11 +1625,12 @@
     "foodTypes": [
       "sake",
       "alcoholic"
-    ]
+    ],
+    "parentId": "sake"
   },
   {
     "id": "namazake",
-    "number": "107",
+    "number": "109",
     "name": "Namazake",
     "japaneseName": "生酒",
     "description": "Unpasteurized sake with a fresh, lively flavour that is usually kept refrigerated.",
@@ -1585,11 +1641,12 @@
     "foodTypes": [
       "sake",
       "alcoholic"
-    ]
+    ],
+    "parentId": "sake"
   },
   {
     "id": "shochu",
-    "number": "108",
+    "number": "110",
     "name": "Shōchū",
     "japaneseName": "焼酎",
     "description": "A distilled Japanese spirit made from ingredients such as barley, sweet potato, rice, or buckwheat.",
@@ -1604,7 +1661,7 @@
   },
   {
     "id": "imo-shochu",
-    "number": "109",
+    "number": "111",
     "name": "Imo Shōchū",
     "japaneseName": "芋焼酎",
     "description": "A sweet potato shōchū with a distinctive earthy aroma and full flavour.",
@@ -1615,11 +1672,12 @@
     "foodTypes": [
       "spirit",
       "alcoholic"
-    ]
+    ],
+    "parentId": "shochu"
   },
   {
     "id": "mugi-shochu",
-    "number": "110",
+    "number": "112",
     "name": "Mugi Shōchū",
     "japaneseName": "麦焼酎",
     "description": "A barley shōchū with a clean, mellow flavour and a light grain aroma.",
@@ -1630,11 +1688,12 @@
     "foodTypes": [
       "spirit",
       "alcoholic"
-    ]
+    ],
+    "parentId": "shochu"
   },
   {
     "id": "awamori",
-    "number": "111",
+    "number": "113",
     "name": "Awamori",
     "japaneseName": "泡盛",
     "description": "A distilled Okinawan spirit made from long-grain indica rice and black koji.",
@@ -1649,7 +1708,7 @@
   },
   {
     "id": "umeshu",
-    "number": "112",
+    "number": "114",
     "name": "Umeshu",
     "japaneseName": "梅酒",
     "description": "A sweet Japanese liqueur made by steeping ume fruit in alcohol and sugar.",
@@ -1664,7 +1723,7 @@
   },
   {
     "id": "engawa-nigiri",
-    "number": "113",
+    "number": "115",
     "name": "Engawa nigiri",
     "japaneseName": "えんがわ握り",
     "description": "Nigiri sushi topped with delicate flounder fin meat, prized for its rich texture.",
@@ -1676,11 +1735,12 @@
       "seafood",
       "rice",
       "raw"
-    ]
+    ],
+    "parentId": "sushi"
   },
   {
     "id": "natto",
-    "number": "114",
+    "number": "116",
     "name": "Natto",
     "japaneseName": "納豆",
     "description": "Fermented soybeans with a distinctive aroma, sticky texture, and savoury umami flavour.",

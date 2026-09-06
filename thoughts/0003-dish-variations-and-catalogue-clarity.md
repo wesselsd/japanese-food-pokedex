@@ -20,6 +20,22 @@ Sushi -> Gunkan -> Ikura Gunkan
 
 Standalone foods remain visible without participating in an evolution chain.
 
+## Implemented hierarchy behavior
+
+The catalogue now uses optional `parentId` metadata on a food entry. The initial
+catalogue has two tiers only: each marked variation points to a root/base food, and
+no variation points to another variation yet. The implemented chains are the ones in
+the table below (with `curry-rice` as the stable ID for Japanese curry rice).
+
+Only root and standalone foods are shown initially. A variation becomes visible after
+the user has at least one check-in for its parent. Unlock checks walk up the parent
+chain, so the same rule will support deeper hierarchies later without exposing a
+grandchild before its ancestors are unlocked. Visibility is applied before search and
+all other filters; locked variations never appear as ordinary cards or filter results.
+The catalogue displays a small count of variations waiting for a parent check-in, and
+the count updates immediately when a check-in is saved. There are currently 87
+root-level foods and 29 locked variations.
+
 ## Recommended first chains
 
 These relationships are clear enough to use as the initial two-tier system:
@@ -33,14 +49,22 @@ These relationships are clear enough to use as the initial two-tier system:
 | Yakitori (`yakitori`) | Tsukune (`tsukune`) |
 | Unagi kabayaki (`unagi-kabayaki`) | Unadon (`unadon`) |
 | Japanese curry rice (`curry-rice`) | Katsu curry (`katsu-curry`) |
+| Tea (`tea`) | Green Tea (`green-tea`), Hojicha (`hojicha`), Mugicha (`mugicha`) |
+| Sake (`sake`) | Junmai Sake (`junmai-sake`), Ginjo Sake (`ginjo-sake`), Nigori Sake (`nigori-sake`), Namazake (`namazake`) |
+| Japanese mixed drink (`japanese-mixed-drink`) | Hoppy Set (`hoppy-set`), Lemon Sour (`lemon-sour`), High Ball (`highball`), Chūhai (`chuhai`) |
 | Shōchū (`shochu`) | Imo Shōchū (`imo-shochu`), Mugi Shōchū (`mugi-shochu`) |
 | Ramen (`ramen`) | Tsukemen (`tsukemen`), Hiyashi chuka (`hiyashi-chuka`) |
 
-The strongest future three-tier chain currently present in the data is:
+## Further root-reduction opportunities
 
-```text
-Mochi -> Daifuku -> Ichigo daifuku
-```
+The current unlock implementation supports deeper chains if a future catalog addition
+justifies one, but there is no additional strong root-reduction candidate ready yet.
+A `Sashimi -> Hamachi sashimi` chain would not reduce the root count because it would
+add one root for one existing child, so it is better deferred until more sashimi
+entries exist.
+
+`Japanese mixed drink` is deliberately singular: it represents the user's goal of
+trying any one Japanese mixed drink, rather than a collection of drinks.
 
 The Sushi chain now uses explicit preparation names rather than treating ingredients
 such as `Ikura` as if they were already complete sushi dishes. `Hamachi sashimi` is
@@ -108,9 +132,9 @@ The catalogue also contains drinks and branded products. They are not dishes, bu
 is intentional because the product covers Japanese food and drinks:
 
 - Natto, Grilled gyūtan, and Nerikiri should remain standalone for now.
-- Green Tea, Hojicha, Mugicha, Pocari Sweat, and Calpis
+- Pocari Sweat and Calpis
 - Nama Beer, Hoppy Set, Lemon Sour, High Ball, and Chūhai
-- Sake styles, Shōchū styles, Awamori, and Umeshu
+- Awamori, Umeshu, and other standalone drinks without a clear base
 - Famichiki as a named convenience-store product
 
 These should not be forced into the dish-variation system unless a separate drink or
@@ -124,8 +148,11 @@ brand hierarchy is designed.
   existing check-ins do not become orphaned.
 - The current artwork lookup derives filenames from the display name. New artwork needs
   to be generated for renamed entries; until then they use the emoji fallback.
-- A future catalogue model should represent `parentId` or an equivalent relationship,
-  with room for more than two levels.
+- The `parentId` model supports more than two levels, although the current catalog only
+  enables two-tier relationships.
 - The unlock rule should be based on at least one check-in for the parent food.
-- Whether locked children count toward the total progress denominator remains a
-  product decision; it should be settled before implementing the UI.
+- The progress denominator is settled as follows: progress uses the 14 essential foods
+  until every essential has been eaten. After that, it switches to the full catalogue
+  length (`foods.length`, currently 116), including locked variations. Eaten counts
+  always include check-ins, including check-ins retained for a variation that is not
+  currently visible.

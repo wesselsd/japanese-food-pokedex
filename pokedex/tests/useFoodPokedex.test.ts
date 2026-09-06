@@ -4,12 +4,12 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { foodLabels, foods } from '../data/foods'
 import { useFoodPokedex } from '../composables/useFoodPokedex'
 
-function mountComposable() {
+function mountComposable(foodList = foods) {
   let state!: ReturnType<typeof useFoodPokedex>
 
   mount({
     setup() {
-      state = useFoodPokedex(foods, ref(null))
+      state = useFoodPokedex(foodList, ref(null))
       return {}
     },
     template: '<div />'
@@ -41,18 +41,31 @@ describe('useFoodPokedex', () => {
     state.selectedLabel.value = 'sake'
     await nextTick()
 
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['sake'])
+
+    await state.checkIn('sake', 4)
+    await nextTick()
     expect(state.filteredFoods.value.map((food) => food.id)).toEqual([
+      'sake',
       'junmai-sake',
       'ginjo-sake',
       'nigori-sake',
       'namazake'
     ])
+
+    state.selectedLabel.value = 'tea'
+    await nextTick()
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['tea'])
+
+    await state.checkIn('tea', 4)
+    await nextTick()
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['tea', 'green-tea', 'hojicha', 'mugicha'])
   })
 
   it('filters foods by search term and category', async () => {
     const state = mountComposable()
 
-    expect(state.filteredFoods.value).toHaveLength(114)
+    expect(state.filteredFoods.value).toHaveLength(87)
     expect(foods.filter((food) => food.essential)).toHaveLength(14)
     expect(state.categories).toEqual(['All', 'Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Savory', 'Drinks'])
 
@@ -76,14 +89,13 @@ describe('useFoodPokedex', () => {
       'yakiniku',
       'menchi-katsu',
       'tebasaki',
-      'tsukune',
       'famichiki'
     ])
 
     state.selectedCategory.value = 'All'
     state.selectedLabel.value = 'grilled'
     await nextTick()
-    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['yakitori', 'grilled-gyutan', 'yakiniku', 'unagi-kabayaki', 'tsukune', 'grilled-squid'])
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['yakitori', 'grilled-gyutan', 'yakiniku', 'unagi-kabayaki', 'grilled-squid'])
   })
 
   it('toggles eaten foods and persists the state', async () => {
@@ -142,8 +154,68 @@ describe('useFoodPokedex', () => {
 
     state.eatenFilter.value = 'uneaten'
     await nextTick()
-    expect(state.filteredFoods.value).toHaveLength(113)
+    expect(state.filteredFoods.value).toHaveLength(88)
     expect(state.filteredFoods.value.some((food) => food.id === 'ramen')).toBe(false)
+  })
+
+  it('hides variations until their parent has been checked in', () => {
+    const state = mountComposable()
+
+    expect(state.visibleFoods.value.some((food) => food.id === 'sushi')).toBe(true)
+    expect(state.visibleFoods.value.some((food) => food.id === 'uni-gunkan')).toBe(false)
+    expect(state.lockedVariationCount.value).toBe(29)
+  })
+
+  it('does not expose locked variations through search or filters', async () => {
+    const state = mountComposable()
+
+    state.searchTerm.value = 'tsukemen'
+    await nextTick()
+    expect(state.filteredFoods.value).toEqual([])
+
+    state.searchTerm.value = ''
+    state.selectedCategory.value = 'Noodles'
+    await nextTick()
+    expect(state.filteredFoods.value.some((food) => food.id === 'tsukemen')).toBe(false)
+  })
+
+  it('unlocks a parent variation reactively after a check-in', async () => {
+    const state = mountComposable()
+
+    await state.checkIn('ramen', 4)
+    await nextTick()
+
+    expect(state.visibleFoods.value.map((food) => food.id)).toContain('tsukemen')
+    expect(state.visibleFoods.value.map((food) => food.id)).toContain('hiyashi-chuka')
+    expect(state.lockedVariationCount.value).toBe(27)
+  })
+
+  it('unlocks Japanese mixed drink variations from the singular parent', async () => {
+    const state = mountComposable()
+
+    await state.checkIn('japanese-mixed-drink', 4)
+    await nextTick()
+    expect(state.visibleFoods.value.map((food) => food.id)).toEqual(expect.arrayContaining([
+      'hoppy-set',
+      'lemon-sour',
+      'highball',
+      'chuhai'
+    ]))
+    expect(state.lockedVariationCount.value).toBe(25)
+  })
+
+  it('uses the full catalog for progress after all essential foods are eaten', async () => {
+    const state = mountComposable()
+
+    for (const food of foods.filter((item) => item.essential)) await state.checkIn(food.id, 5)
+
+    expect(state.progressCount.value).toBe(14)
+    expect(state.progressTotal.value).toBe(116)
+    expect(state.eatenCount.value).toBe(14)
+
+    await state.checkIn('curry-udon', 4)
+    expect(state.progressCount.value).toBe(15)
+    expect(state.eatenCount.value).toBe(15)
   })
 
   it('restores saved eaten foods on mount', () => {

@@ -22,10 +22,20 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
 
   const categories = ['All', ...CATEGORY_ORDER]
   const labels = ['All', ...Array.from(new Set(foodList.flatMap((food) => food.foodTypes)))]
+  const foodById = new Map(foodList.map((food) => [food.id, food]))
+  function isUnlocked(food: Food, visited = new Set<string>()) {
+    if (!food.parentId) return true
+    if (visited.has(food.id)) return false
+    visited.add(food.id)
+    const parent = foodById.get(food.parentId)
+    return !!parent && eatenFoods.value.includes(parent.id) && isUnlocked(parent, visited)
+  }
+  const visibleFoods = computed(() => foodList.filter((food) => isUnlocked(food)))
+  const lockedVariationCount = computed(() => foodList.filter((food) => food.parentId && !isUnlocked(food)).length)
   const filteredFoods = computed(() => {
     const search = searchTerm.value.trim().toLowerCase()
 
-    return foodList.filter((food) => {
+    return visibleFoods.value.filter((food) => {
       const matchesSearch =
         !search ||
         food.name.toLowerCase().includes(search) ||
@@ -47,6 +57,8 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
   const eatenCount = computed(() => eatenFoods.value.length)
   const essentialCount = foodList.filter((food) => food.essential).length
   const eatenEssentialCount = computed(() => eatenFoods.value.filter((id) => foodList.some((food) => food.id === id && food.essential)).length)
+  const progressCount = computed(() => eatenEssentialCount.value === essentialCount ? eatenCount.value : eatenEssentialCount.value)
+  const progressTotal = computed(() => eatenEssentialCount.value === essentialCount ? foodList.length : essentialCount)
 
   async function checkIn(id: string, rating: number, location = '', locationDetails?: FoodLocation) {
     if (rating < 1 || rating > 5) throw new Error('Rating must be between 1 and 5.')
@@ -189,5 +201,5 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
       if (!user.value && typeof window !== 'undefined') localStorage.setItem('pokedex-selected-photos', JSON.stringify(value))
     }, { deep: true })
 
-    return { checkins, eatenFoods, photos, selectedPhotos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, essentialCount, eatenEssentialCount, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, removePhoto, selectPhoto }
+    return { checkins, eatenFoods, photos, selectedPhotos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, visibleFoods, lockedVariationCount, filteredFoods, eatenCount, essentialCount, eatenEssentialCount, progressCount, progressTotal, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, removePhoto, selectPhoto }
 }

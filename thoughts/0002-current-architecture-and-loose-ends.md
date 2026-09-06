@@ -4,7 +4,7 @@ Updated 2026-09-06.
 
 ## Product
 
-Japanese Food Pokedex is a mobile-first static web app for browsing Japanese foods, marking foods as eaten, rating individual check-ins, recording locations, and saving personal photos. The catalogue currently contains 114 foods and drinks. The stable catalogue IDs are the link between the local catalogue and user progress.
+Japanese Food Pokedex is a mobile-first static web app for browsing Japanese foods, marking foods as eaten, rating individual check-ins, recording locations, and saving personal photos. The catalogue currently contains 116 foods and drinks. The stable catalogue IDs are the link between the local catalogue and user progress.
 
 ## Application architecture
 
