@@ -10,7 +10,7 @@ const CROP_HEIGHT = 180
 const OUTPUT_WIDTH = 640
 const OUTPUT_HEIGHT = 360
 const MAX_PHOTO_BYTES = 100 * 1024
-const CATEGORY_ORDER = ['Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Drinks']
+const CATEGORY_ORDER = ['Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Savory', 'Drinks']
 export type EatenFilter = 'all' | 'eaten' | 'uneaten'
 
 type CropState = {

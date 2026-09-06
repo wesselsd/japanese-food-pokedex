@@ -1,5 +1,64 @@
+# Food to try
+
+## Categories
+- Noodles
+- Rice & Bowls
+- Meat
+- Seafood
+- Dumplings & Buns
+- Sweets
+- Savory
+- Drinks
+
+## Labels
+### Label: Essential
+#### Essential
+
+Sushi
+Ramen
+Yakiniku
+Yakitori
+Tonkatsu
+Tempura
+Japanese Curry
+Gyūdon
+Soba
+Wagashi
+Okonomiyaki
+Kakigori
+Unagi
+Ekiben
+
+#### Not essential
+Everything else
+
+### Label: Food Type
+####  noodles
+Ramen
+Soba
+Udon
+
+#### rice
+Gyudon
+
+#### meat
+Yakiniku
+Yakitori
+
+#### seafood
+#### vegetable
+#### tofu
+#### egg
+#### dessert
+#### snack
+#### soup
+#### fried
+#### grilled
+#### raw
+
 ## Food categories
 Food can be in multiple categories. This section describes various categories and some of their members.
+Savory is used for standalone savoury dishes that are not fundamentally noodles, rice dishes, meat, seafood, dumplings/buns, sweets, or drinks.
 
 ### Noodles
 #### Ramen

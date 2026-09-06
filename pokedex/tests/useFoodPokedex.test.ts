@@ -28,7 +28,7 @@ describe('useFoodPokedex', () => {
 
     expect(state.filteredFoods.value).toHaveLength(93)
     expect(foods.filter((food) => food.essential)).toHaveLength(14)
-    expect(state.categories).toEqual(['All', 'Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Drinks'])
+    expect(state.categories).toEqual(['All', 'Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Savory', 'Drinks'])
     expect(foods.filter((food) => food.image)).toHaveLength(93)
 
     state.searchTerm.value = '寿司'
@@ -43,19 +43,15 @@ describe('useFoodPokedex', () => {
       'karaage',
       'yakitori',
       'chicken-nanban',
-      'kushikatsu',
       'sukiyaki',
       'shabu-shabu',
       'gyutan',
       'motsunabe',
-      'edamame',
-      'agedashi-tofu',
       'nikujaga',
       'yakiniku',
       'menchi-katsu',
       'tebasaki',
       'tsukune',
-      'potato-salad',
       'famichiki'
     ])
   })
