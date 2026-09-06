@@ -89,13 +89,23 @@ describe('useFoodPokedex', () => {
     await nextTick()
     expect(state.eatenFoods.value).toEqual(['ramen'])
     expect(state.eatenCount.value).toBe(1)
-    expect(state.eatenDates.value.ramen).toBeDefined()
-    expect(localStorage.getItem('pokedex-eaten')).toBe('["ramen"]')
+    expect(state.checkins.value[0]).toMatchObject({ foodId: 'ramen', rating: 5 })
 
     await state.toggleEaten('ramen')
     await nextTick()
     expect(state.eatenFoods.value).toEqual([])
-    expect(state.eatenDates.value).toEqual({})
+    expect(state.checkins.value).toEqual([])
+  })
+
+  it('keeps multiple check-ins for the same food', async () => {
+    const state = mountComposable()
+
+    await state.checkIn('ramen', 5, 'Tokyo')
+    await state.checkIn('ramen', 2, 'Zurich')
+
+    expect(state.checkins.value).toHaveLength(2)
+    expect(state.checkins.value.map((checkin) => checkin.location)).toEqual(['Tokyo', 'Zurich'])
+    expect(state.eatenFoods.value).toEqual(['ramen'])
   })
 
   it('filters foods by eaten status', async () => {
@@ -113,7 +123,10 @@ describe('useFoodPokedex', () => {
   })
 
   it('restores saved eaten foods on mount', () => {
-    localStorage.setItem('pokedex-eaten', '["sushi", "onigiri"]')
+    localStorage.setItem('pokedex-checkins', JSON.stringify([
+      { id: 'one', foodId: 'sushi', eatenAt: '2026-09-06T10:00:00Z', rating: 4, location: '' },
+      { id: 'two', foodId: 'onigiri', eatenAt: '2026-09-06T11:00:00Z', rating: 3, location: '' }
+    ]))
 
     const state = mountComposable()
 

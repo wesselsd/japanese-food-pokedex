@@ -1,11 +1,11 @@
 import { computed, ref, watch, type Ref } from 'vue'
 import type { User } from '@supabase/supabase-js'
-import type { ProgressAdapter } from '~/adapter/supabase/progress'
+import type { Checkin, ProgressAdapter } from '~/adapter/supabase/progress'
 import type { Food } from '~/data/foods'
 
 const EATEN_STORAGE_KEY = 'pokedex-eaten'
 const PHOTOS_STORAGE_KEY = 'pokedex-photos'
-const EATEN_DATES_STORAGE_KEY = 'pokedex-eaten-dates'
+const CHECKINS_STORAGE_KEY = 'pokedex-checkins'
 const CROP_WIDTH = 320
 const CROP_HEIGHT = 180
 const OUTPUT_WIDTH = 640
@@ -25,8 +25,8 @@ type CropState = {
 }
 
 export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>>, cloudProgress: ProgressAdapter | null = null) {
-  const eatenFoods = ref<string[]>([])
-  const eatenDates = ref<Record<string, string>>({})
+  const checkins = ref<Checkin[]>([])
+  const eatenFoods = computed(() => Array.from(new Set(checkins.value.map((checkin) => checkin.foodId))))
   const photos = ref<Record<string, string>>({})
   const searchTerm = ref('')
   const selectedCategory = ref('All')
@@ -61,21 +61,29 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
   })
   const eatenCount = computed(() => eatenFoods.value.length)
 
+  async function checkIn(id: string, rating: number, location = '') {
+    if (rating < 1 || rating > 5) throw new Error('Rating must be between 1 and 5.')
+    const localCheckin = { id: crypto.randomUUID(), foodId: id, eatenAt: new Date().toISOString(), rating, location }
+    if (user.value && cloudProgress) checkins.value = [...checkins.value, await cloudProgress.addCheckin(user.value.id, id, rating, location)]
+    else checkins.value = [...checkins.value, localCheckin]
+  }
+
   async function toggleEaten(id: string) {
-    const nextEaten = !eatenFoods.value.includes(id)
-    eatenFoods.value = nextEaten
-      ? [...eatenFoods.value, id]
-      : eatenFoods.value.filter((foodId) => foodId !== id)
-    eatenDates.value = nextEaten
-      ? { ...eatenDates.value, [id]: new Date().toISOString() }
-      : Object.fromEntries(Object.entries(eatenDates.value).filter(([foodId]) => foodId !== id))
-    if (user.value && cloudProgress) {
-      try {
-        await cloudProgress.setEaten(user.value.id, id, nextEaten)
-      } catch (cause) {
-        syncError.value = cause instanceof Error ? cause.message : 'Unable to save eaten status.'
-      }
-    }
+    if (!eatenFoods.value.includes(id)) return checkIn(id, 5)
+    checkins.value = checkins.value.filter((checkin) => checkin.foodId !== id)
+  }
+
+  async function updateCheckin(checkin: Checkin, rating: number, location: string) {
+    const updated = { ...checkin, rating, location }
+    if (user.value && cloudProgress) await cloudProgress.updateCheckin(user.value.id, updated)
+    checkins.value = checkins.value.map((item) => item.id === checkin.id ? updated : item)
+  }
+
+  async function deleteCheckin(id: string) {
+    const checkin = checkins.value.find((item) => item.id === id)
+    if (!checkin) return
+    if (user.value && cloudProgress) await cloudProgress.deleteCheckin(user.value.id, id)
+    checkins.value = checkins.value.filter((item) => item.id !== id)
   }
 
   function savePhoto(id: string, event: Event) {
@@ -190,33 +198,29 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         if (typeof window === 'undefined') return
         const savedEaten = localStorage.getItem(EATEN_STORAGE_KEY)
         const savedPhotos = localStorage.getItem(PHOTOS_STORAGE_KEY)
-        const savedEatenDates = localStorage.getItem(EATEN_DATES_STORAGE_KEY)
+        const savedCheckins = localStorage.getItem(CHECKINS_STORAGE_KEY)
         if (savedEaten) eatenFoods.value = JSON.parse(savedEaten)
         if (savedPhotos) photos.value = JSON.parse(savedPhotos)
-        if (savedEatenDates) eatenDates.value = JSON.parse(savedEatenDates)
+        if (savedCheckins) checkins.value = JSON.parse(savedCheckins)
         return
       }
 
       try {
         syncError.value = ''
         const cloudState = await cloudProgress.load(nextUser.id)
-        eatenFoods.value = cloudState.eatenFoods
-        eatenDates.value = cloudState.eatenDates
+        checkins.value = cloudState.checkins
         photos.value = cloudState.photos
       } catch (cause) {
         syncError.value = cause instanceof Error ? cause.message : 'Unable to load saved progress.'
       }
     }, { immediate: true })
 
-    watch(eatenFoods, (value) => {
-      if (!user.value && typeof window !== 'undefined') localStorage.setItem(EATEN_STORAGE_KEY, JSON.stringify(value))
+    watch(checkins, (value) => {
+      if (!user.value && typeof window !== 'undefined') localStorage.setItem(CHECKINS_STORAGE_KEY, JSON.stringify(value))
     }, { deep: true })
     watch(photos, (value) => {
       if (!user.value && typeof window !== 'undefined') localStorage.setItem(PHOTOS_STORAGE_KEY, JSON.stringify(value))
     }, { deep: true })
-    watch(eatenDates, (value) => {
-      if (!user.value && typeof window !== 'undefined') localStorage.setItem(EATEN_DATES_STORAGE_KEY, JSON.stringify(value))
-    }, { deep: true })
 
-    return { eatenFoods, eatenDates, photos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
+    return { checkins, eatenFoods, photos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
 }

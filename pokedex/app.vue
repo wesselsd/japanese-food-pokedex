@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { foods, foodLabels } from './data/foods'
+import type { Checkin } from './adapter/supabase/progress'
 import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
 import { getSupabaseClient } from './adapter/supabase/client'
@@ -13,7 +14,7 @@ const cloudProgress = isConfigured.value
   : null
 const {
   eatenFoods,
-  eatenDates,
+  checkins,
   photos,
   searchTerm,
   selectedCategory,
@@ -23,6 +24,9 @@ const {
   labels,
   filteredFoods,
   eatenCount,
+  checkIn,
+  updateCheckin,
+  deleteCheckin,
   toggleEaten,
   savePhoto,
   syncError,
@@ -40,6 +44,10 @@ const categorySections = computed(() => categories.slice(1).map((category) => ({
 })).filter((section) => section.foods.length))
 const essentialFoods = computed(() => filteredFoods.value.filter((food) => food.essential))
 const selectedFood = ref<(typeof foods)[number] | null>(null)
+const checkinFood = ref<(typeof foods)[number] | null>(null)
+const editingCheckin = ref<Checkin | null>(null)
+const checkinRating = ref(5)
+const checkinLocation = ref('')
 const authMode = ref<'signIn' | 'signUp'>('signIn')
 const email = ref('')
 const password = ref('')
@@ -48,8 +56,30 @@ let lastX = 0
 let lastY = 0
 
 function formatEatenDate(foodId: string) {
-  const date = eatenDates.value[foodId]
-  return date ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(date)) : ''
+  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(foodId))
+}
+
+function openCheckin(food: (typeof foods)[number]) {
+  checkinFood.value = food
+  checkinRating.value = 5
+  checkinLocation.value = ''
+}
+
+function openEditCheckin(checkin: Checkin) {
+  editingCheckin.value = checkin
+  checkinRating.value = checkin.rating
+  checkinLocation.value = checkin.location
+}
+
+async function submitCheckin() {
+  if (editingCheckin.value) {
+    await updateCheckin(editingCheckin.value, checkinRating.value, checkinLocation.value.trim())
+    editingCheckin.value = null
+    return
+  }
+  if (!checkinFood.value) return
+  await checkIn(checkinFood.value.id, checkinRating.value, checkinLocation.value.trim())
+  checkinFood.value = null
 }
 
 async function submitAuth() {
@@ -149,7 +179,7 @@ function stopCropDrag() {
             <div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div>
           </div>
           <div class="card-actions">
-            <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark eaten' }}</button>
+            <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button>
             <label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label>
           </div>
         </div>
@@ -170,7 +200,7 @@ function stopCropDrag() {
           </div>
           <div class="card-body">
             <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div></div>
-            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
+            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
           </div>
         </article>
       </div>
@@ -188,10 +218,29 @@ function stopCropDrag() {
           <p class="number">#{{ selectedFood.number }}</p>
           <h2>{{ selectedFood.name }}</h2>
           <p class="japanese">{{ selectedFood.japaneseName }}</p>
-          <p class="detail-meta">{{ eatenFoods.includes(selectedFood.id) ? `Eaten at ${formatEatenDate(selectedFood.id)}` : 'Not yet eaten' }}</p>
+          <div v-if="eatenFoods.includes(selectedFood.id)" class="checkin-list">
+            <p v-for="checkin in checkins.filter((item) => item.foodId === selectedFood.id).sort((a, b) => b.eatenAt.localeCompare(a.eatenAt))" :key="checkin.id" class="detail-meta">
+              Eaten at {{ formatEatenDate(checkin.eatenAt) }} · {{ checkin.rating }}/5 stars<span v-if="checkin.location"> · {{ checkin.location }}</span>
+              <button class="edit-checkin" @click="openEditCheckin(checkin)">edit check-in</button>
+            </p>
+          </div>
+          <p v-else class="detail-meta">Not yet eaten</p>
           <p class="description">{{ selectedFood.description }}</p>
         </div>
       </article>
+    </div>
+    <div v-if="checkinFood || editingCheckin" class="detail-backdrop" role="dialog" aria-modal="true" :aria-label="`Check in ${checkinFood?.name ?? 'food'}`" @click.self="checkinFood = null; editingCheckin = null">
+      <form class="checkin-dialog" @submit.prevent="submitCheckin">
+        <button type="button" class="detail-close" aria-label="Close check-in" @click="checkinFood = null; editingCheckin = null">×</button>
+        <h2>{{ editingCheckin ? 'Edit check-in' : 'Mark eaten' }}</h2>
+        <p class="checkin-food">{{ editingCheckin ? foods.find((food) => food.id === editingCheckin.foodId)?.name : checkinFood?.name }}</p>
+        <fieldset class="rating-field">
+          <legend>Rating <span>(required)</span></legend>
+          <label v-for="star in 5" :key="star"><input v-model.number="checkinRating" type="radio" :value="star" required /> {{ star }}★</label>
+        </fieldset>
+        <label class="location-field">Location <span>(optional)<input v-model="checkinLocation" type="text" maxlength="120" placeholder="Town, region, or restaurant" /></span></label>
+        <div class="crop-actions"><button v-if="editingCheckin" type="button" class="auth-button remove-checkin" @click="deleteCheckin(editingCheckin.id); editingCheckin = null">Remove check-in</button><button class="auth-button" type="submit">Save check-in</button></div>
+      </form>
     </div>
     <div v-if="crop" class="crop-backdrop" role="dialog" aria-modal="true" aria-label="Crop photo">
       <div class="crop-dialog">

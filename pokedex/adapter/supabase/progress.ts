@@ -1,14 +1,17 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 export type CloudProgress = {
-  eatenFoods: string[]
-  eatenDates: Record<string, string>
+  checkins: Checkin[]
   photos: Record<string, string>
 }
 
+export type Checkin = { id: string; foodId: string; eatenAt: string; rating: number; location: string }
+
 export type ProgressAdapter = {
   load: (userId: string) => Promise<CloudProgress>
-  setEaten: (userId: string, foodId: string, eaten: boolean) => Promise<void>
+  addCheckin: (userId: string, foodId: string, rating: number, location: string) => Promise<Checkin>
+  updateCheckin: (userId: string, checkin: Checkin) => Promise<void>
+  deleteCheckin: (userId: string, checkinId: string) => Promise<void>
   uploadPhoto: (userId: string, foodId: string, file: File) => Promise<string>
 }
 
@@ -18,14 +21,14 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
   async function load(userId: string): Promise<CloudProgress> {
     const { data, error } = await client
       .from('user_foods')
-      .select('food_id, photo_path, eaten_at')
+      .select('food_id, photo_path')
       .eq('user_id', userId)
 
     if (error) throw error
 
     const photos: Record<string, string> = {}
-    const eatenDates: Record<string, string> = {}
-    data.forEach((row) => { eatenDates[row.food_id] = row.eaten_at })
+    const { data: checkinData, error: checkinError } = await client.from('user_food_checkins').select('id, food_id, eaten_at, rating, location').eq('user_id', userId)
+    if (checkinError) throw checkinError
     await Promise.all(
       data
         .filter((row) => row.photo_path)
@@ -39,20 +42,24 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
     )
 
     return {
-      eatenFoods: data.map((row) => row.food_id),
-      eatenDates,
+      checkins: checkinData.map((row) => ({ id: row.id, foodId: row.food_id, eatenAt: row.eaten_at, rating: row.rating, location: row.location ?? '' })),
       photos
     }
   }
 
-  async function setEaten(userId: string, foodId: string, eaten: boolean) {
-    if (eaten) {
-      const { error } = await client.from('user_foods').upsert({ user_id: userId, food_id: foodId })
-      if (error) throw error
-      return
-    }
+  async function addCheckin(userId: string, foodId: string, rating: number, location: string) {
+    const { data, error } = await client.from('user_food_checkins').insert({ user_id: userId, food_id: foodId, rating, location: location || null }).select('id, food_id, eaten_at, rating, location').single()
+    if (error) throw error
+    return { id: data.id, foodId: data.food_id, eatenAt: data.eaten_at, rating: data.rating, location: data.location ?? '' }
+  }
 
-    const { error } = await client.from('user_foods').delete().eq('user_id', userId).eq('food_id', foodId)
+  async function updateCheckin(userId: string, checkin: Checkin) {
+    const { error } = await client.from('user_food_checkins').update({ rating: checkin.rating, location: checkin.location || null }).eq('id', checkin.id).eq('user_id', userId)
+    if (error) throw error
+  }
+
+  async function deleteCheckin(userId: string, checkinId: string) {
+    const { error } = await client.from('user_food_checkins').delete().eq('id', checkinId).eq('user_id', userId)
     if (error) throw error
   }
 
@@ -71,5 +78,5 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
     return data.signedUrl
   }
 
-  return { load, setEaten, uploadPhoto }
+  return { load, addCheckin, updateCheckin, deleteCheckin, uploadPhoto }
 }

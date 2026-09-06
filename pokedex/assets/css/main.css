@@ -42,6 +42,13 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .detail-art img { height: 100%; object-fit: cover; width: 100%; }
 .detail-close { background: #fffdf9dd; border: 0; border-radius: 50%; color: #252321; font-size: 24px; height: 34px; line-height: 1; position: absolute; right: 14px; top: 14px; width: 34px; z-index: 1; }
 .detail-body { padding: 22px; } .detail-body .number { color: #b0492f; position: static; } .detail-meta { color: #b0492f; font-family: 'DM Mono', monospace; font-size: 11px; text-transform: uppercase; }
+.detail-edit { background: #b0492f; border: 0; border-radius: 3px; color: #fff; font-size: 12px; padding: 9px 12px; }
+.edit-checkin { background: none; border: 0; color: #b0492f; font-size: 10px; margin-left: 6px; padding: 0; text-decoration: underline; text-transform: none; }
+.remove-checkin { background: #b0492f; }
+.checkin-dialog { background: #fffdf9; border-radius: 6px; max-width: 380px; padding: 26px; position: relative; width: 100%; }
+.checkin-dialog h2 { margin: 0; } .checkin-food { color: #b0492f; margin: 6px 0 22px; }
+.rating-field { border: 0; display: flex; gap: 8px; margin: 0 0 18px; padding: 0; } .rating-field legend { font-size: 12px; margin-bottom: 8px; width: 100%; } .rating-field legend span, .location-field > span:first-child { color: #9b938a; font-size: 11px; } .rating-field label { font-size: 14px; } .rating-field input { accent-color: #b0492f; }
+.location-field { display: block; font-size: 12px; margin-bottom: 18px; } .location-field > span { color: #77716b; display: block; } .location-field input { background: #f7f3ec; border: 1px solid #e3dcd1; border-radius: 3px; display: block; margin-top: 6px; padding: 9px; width: 100%; }
 .crop-backdrop { align-items: center; background: #25232199; display: flex; inset: 0; justify-content: center; padding: 20px; position: fixed; z-index: 10; }
 .crop-dialog { background: #fffdf9; border-radius: 6px; max-width: 360px; padding: 22px; width: 100%; }
 .crop-dialog h2 { margin: 0; } .crop-dialog p { color: #77716b; font-size: 13px; margin: 7px 0 18px; }
