@@ -270,7 +270,25 @@ Okinawa soba
 - Sweet potato desserts
 
 ## Drinks
-Not yet added
+Green Tea
+Hojicha
+Mugicha
+Pocari Sweat
+Calpis
+Nama Beer
+Hoppy Set
+Lemon Sour
+High Ball
+Chūhai
+Junmai Sake
+Ginjo Sake
+Nigori Sake
+Namazake
+Shōchū
+Imo Shōchū
+Mugi Shōchū
+Awamori
+Umeshu
 
 ## Chains
 This describes various chains.
