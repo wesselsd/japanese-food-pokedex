@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it } from 'vitest'
-import { foods } from '../data/foods'
+import { foodLabels, foods } from '../data/foods'
 import { useFoodPokedex } from '../composables/useFoodPokedex'
 
 function mountComposable() {
@@ -23,6 +23,27 @@ afterEach(() => {
 })
 
 describe('useFoodPokedex', () => {
+  it('deduplicates category and food type labels', () => {
+    const yakiniku = foods.find((food) => food.id === 'yakiniku')
+
+    expect(yakiniku).toBeDefined()
+    expect(foodLabels(yakiniku!)).toEqual(['Meat', 'grilled'])
+  })
+
+  it('filters foods by a selected label', async () => {
+    const state = mountComposable()
+
+    state.selectedLabel.value = 'sake'
+    await nextTick()
+
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual([
+      'junmai-sake',
+      'ginjo-sake',
+      'nigori-sake',
+      'namazake'
+    ])
+  })
+
   it('filters foods by search term and category', async () => {
     const state = mountComposable()
 
@@ -54,6 +75,11 @@ describe('useFoodPokedex', () => {
       'tsukune',
       'famichiki'
     ])
+
+    state.selectedCategory.value = 'All'
+    state.selectedLabel.value = 'grilled'
+    await nextTick()
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['yakitori', 'gyutan', 'yakiniku', 'unagi', 'tsukune', 'grilled-squid'])
   })
 
   it('toggles eaten foods and persists the state', async () => {

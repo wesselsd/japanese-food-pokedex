@@ -20,6 +20,11 @@ export type Food = {
   image?: string
 }
 
+export function foodLabels(food: Food) {
+  return [...new Set([food.category, ...food.foodTypes].map((label) => label.toLowerCase()))]
+    .map((label) => [food.category, ...food.foodTypes].find((value) => value.toLowerCase() === label) ?? label)
+}
+
 function imageSlugForName(name: string) {
   return name.toLowerCase().replace(/ /g, '-')
 }

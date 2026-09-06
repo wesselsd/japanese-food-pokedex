@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { foods } from './data/foods'
+import { foods, foodLabels } from './data/foods'
 import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
 import { getSupabaseClient } from './adapter/supabase/client'
@@ -16,8 +16,10 @@ const {
   photos,
   searchTerm,
   selectedCategory,
+  selectedLabel,
   eatenFilter,
   categories,
+  labels,
   filteredFoods,
   eatenCount,
   toggleEaten,
@@ -103,12 +105,15 @@ function stopCropDrag() {
     </header>
 
     <section class="controls" aria-label="Food filters">
-      <label class="search"><span aria-hidden="true">⌕</span><input v-model="searchTerm" type="search" placeholder="Search foods..." /></label>
+      <label class="search"><span aria-hidden="true">⌕</span><input v-model="searchTerm" type="search" placeholder="Search foods..." /><button v-if="searchTerm" type="button" class="clear-search" aria-label="Clear search" @click="searchTerm = ''">×</button></label>
       <div class="eaten-filters" aria-label="Eaten status">
         <button v-for="filter in [{ value: 'all', label: 'All' }, { value: 'eaten', label: 'Eaten' }, { value: 'uneaten', label: 'Not eaten' }]" :key="filter.value" class="category" :class="{ active: eatenFilter === filter.value }" @click="eatenFilter = filter.value">{{ filter.label }}</button>
       </div>
       <div class="categories">
         <button v-for="category in categories" :key="category" class="category" :class="{ active: selectedCategory === category }" @click="selectedCategory = category">{{ category }}</button>
+      </div>
+      <div class="labels" aria-label="Food labels">
+        <button v-for="label in labels" :key="label" class="category" :class="{ active: selectedLabel === label }" @click="selectedLabel = label">{{ label }}</button>
       </div>
     </section>
 
@@ -126,7 +131,7 @@ function stopCropDrag() {
         <div class="card-body">
           <div class="card-heading">
             <div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div>
-            <span class="category-label">{{ food.category }} · {{ food.foodTypes.join(' · ') }}</span>
+            <span class="category-label">{{ foodLabels(food).join(' · ') }}</span>
           </div>
           <p class="description">{{ food.description }}</p>
           <div class="card-actions">
@@ -149,7 +154,7 @@ function stopCropDrag() {
             <span v-if="eatenFoods.includes(food.id)" class="tried-badge">✓ Tried</span>
           </div>
           <div class="card-body">
-            <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div><span class="category-label">{{ food.foodTypes.join(' · ') }}</span></div>
+            <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div><span class="category-label">{{ foodLabels(food).join(' · ') }}</span></div>
             <p class="description">{{ food.description }}</p>
             <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'"><span aria-hidden="true">▧</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
           </div>

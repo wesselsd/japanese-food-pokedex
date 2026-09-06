@@ -28,11 +28,13 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
   const photos = ref<Record<string, string>>({})
   const searchTerm = ref('')
   const selectedCategory = ref('All')
+  const selectedLabel = ref('All')
   const eatenFilter = ref<EatenFilter>('all')
   const syncError = ref('')
   const crop = ref<CropState | null>(null)
 
   const categories = ['All', ...CATEGORY_ORDER]
+  const labels = ['All', ...Array.from(new Set(foodList.flatMap((food) => food.foodTypes)))]
   const filteredFoods = computed(() => {
     const search = searchTerm.value.trim().toLowerCase()
 
@@ -49,7 +51,10 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         (eatenFilter.value === 'eaten' && eatenFoods.value.includes(food.id)) ||
         (eatenFilter.value === 'uneaten' && !eatenFoods.value.includes(food.id))
 
-      return matchesSearch && matchesEaten && (selectedCategory.value === 'All' || food.category === selectedCategory.value)
+      const matchesLabel = selectedLabel.value === 'All' || food.foodTypes.includes(selectedLabel.value)
+      return matchesSearch && matchesEaten &&
+        (selectedCategory.value === 'All' || food.category === selectedCategory.value) &&
+        matchesLabel
     })
   })
   const eatenCount = computed(() => eatenFoods.value.length)
@@ -202,5 +207,5 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
       if (!user.value && typeof window !== 'undefined') localStorage.setItem(PHOTOS_STORAGE_KEY, JSON.stringify(value))
     }, { deep: true })
 
-    return { eatenFoods, photos, searchTerm, selectedCategory, eatenFilter, categories, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
+    return { eatenFoods, photos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
 }
