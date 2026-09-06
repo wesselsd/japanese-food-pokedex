@@ -25,9 +25,14 @@ afterEach(() => {
 describe('useFoodPokedex', () => {
   it('deduplicates category and food type labels', () => {
     const yakiniku = foods.find((food) => food.id === 'yakiniku')
-
     expect(yakiniku).toBeDefined()
-    expect(foodLabels(yakiniku!)).toEqual(['Meat', 'grilled'])
+    expect(foodLabels(yakiniku!)).toEqual(['Meat', 'Grilled'])
+  })
+
+  it('does not repeat Rice as a label for Rice & Bowls foods', () => {
+    const onigiri = foods.find((food) => food.id === 'onigiri')
+    expect(onigiri).toBeDefined()
+    expect(foodLabels(onigiri!)).not.toContain('Rice')
   })
 
   it('filters foods by a selected label', async () => {

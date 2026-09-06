@@ -29,9 +29,9 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .food-art { align-items: center; aspect-ratio: 16 / 9; display: flex; justify-content: center; overflow: hidden; position: relative; } .food-art img { height: 100%; object-fit: cover; width: 100%; }
 .food-emoji { filter: drop-shadow(0 8px 6px #0002); font-size: 88px; } .number { color: #25232199; left: 14px; position: absolute; top: 13px; }
 .art-labels { bottom: 5px; color: #25232199; font-family: 'DM Mono', monospace; font-size: 9px; left: 14px; letter-spacing: .08em; position: absolute; text-transform: uppercase; }
-.tried-badge { background: #252321; border-radius: 20px; color: #fff; font-family: 'DM Mono', monospace; font-size: 10px; padding: 7px 10px; position: absolute; right: 12px; text-transform: uppercase; top: 12px; }
+.tried-badge { color: #25232199; font-size: 18px; line-height: 1; position: absolute; right: 12px; top: 12px; }
 .card-body { padding: 12px 18px 14px; } .card-heading { align-items: flex-start; } h2 { font-size: 22px; letter-spacing: -.04em; margin: 0; }
-.japanese { color: #b0492f; font-family: 'Playfair Display', serif; font-size: 15px; font-style: italic; margin: 4px 0 0; } .category-label { color: #9b938a; font-size: 9px; margin-top: 5px; }
+.japanese-row { align-items: center; display: flex; justify-content: space-between; gap: 8px; } .japanese { color: #b0492f; font-family: 'Playfair Display', serif; font-size: 15px; font-style: italic; margin: 4px 0 0; } .card-rating { color: #b0492f; font-size: 12px; letter-spacing: 1px; margin-top: 4px; white-space: nowrap; } .category-label { color: #9b938a; font-size: 9px; margin-top: 5px; }
 .description { color: #77716b; font-size: 13px; line-height: 1.5; min-height: 40px; } .card-actions { align-items: center; display: flex; gap: 8px; margin-top: 18px; }
 .try-button, .photo-button { align-items: center; background: #b0492f; border: 0; border-radius: 3px; color: white; display: flex; flex: 1; font-size: 12px; justify-content: center; min-width: 0; padding: 11px; text-align: center; }
 .try-button.selected { background: #252321; } .photo-button input { display: none; }
@@ -42,6 +42,9 @@ h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600
 .detail-art img { height: 100%; object-fit: cover; width: 100%; }
 .detail-close { background: #fffdf9dd; border: 0; border-radius: 50%; color: #252321; font-size: 24px; height: 34px; line-height: 1; position: absolute; right: 14px; top: 14px; width: 34px; z-index: 1; }
 .detail-body { padding: 22px; } .detail-body .number { color: #b0492f; position: static; } .detail-meta { color: #b0492f; font-family: 'DM Mono', monospace; font-size: 11px; text-transform: uppercase; }
+.detail-labels { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0; }
+.detail-labels-title { color: #77716b; font-size: 11px; margin-right: 2px; text-transform: uppercase; }
+.detail-label { background: #f0ebe3; border-radius: 3px; color: #77716b; font-family: 'DM Mono', monospace; font-size: 10px; padding: 4px 7px; text-transform: uppercase; }
 .detail-edit { background: #b0492f; border: 0; border-radius: 3px; color: #fff; font-size: 12px; padding: 9px 12px; }
 .edit-checkin { background: none; border: 0; color: #b0492f; font-size: 10px; margin-left: 6px; padding: 0; text-decoration: underline; text-transform: none; }
 .remove-checkin { background: #b0492f; }

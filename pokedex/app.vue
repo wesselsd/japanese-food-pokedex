@@ -71,6 +71,15 @@ function openEditCheckin(checkin: Checkin) {
   checkinLocation.value = checkin.location
 }
 
+function highestRating(foodId: string) {
+  return Math.max(...checkins.value.filter((checkin) => checkin.foodId === foodId).map((checkin) => checkin.rating))
+}
+
+function ratingStars(foodId: string) {
+  const rating = highestRating(foodId)
+  return `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`
+}
+
 async function submitCheckin() {
   if (editingCheckin.value) {
     await updateCheckin(editingCheckin.value, checkinRating.value, checkinLocation.value.trim())
@@ -171,12 +180,12 @@ function stopCropDrag() {
           <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
           <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
           <span class="number">#{{ food.number }}</span>
-          <span class="art-labels">{{ foodLabels(food).join(' · ') }}</span>
-          <span v-if="eatenFoods.includes(food.id)" class="tried-badge">✓ Tried</span>
+          <span class="art-labels">{{ foodLabels(food).slice(0, 3).join(' · ') }}</span>
+          <span v-if="eatenFoods.includes(food.id)" class="tried-badge" aria-label="Eaten">✓</span>
         </div>
         <div class="card-body">
           <div class="card-heading">
-            <div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div>
+            <div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(food.id)} out of 5`">{{ ratingStars(food.id) }}</span></div></div>
           </div>
           <div class="card-actions">
             <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button>
@@ -195,11 +204,11 @@ function stopCropDrag() {
             <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
             <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
             <span class="number">#{{ food.number }}</span>
-            <span class="art-labels">{{ foodLabels(food).join(' · ') }}</span>
-            <span v-if="eatenFoods.includes(food.id)" class="tried-badge">✓ Tried</span>
+            <span class="art-labels">{{ foodLabels(food).slice(0, 3).join(' · ') }}</span>
+            <span v-if="eatenFoods.includes(food.id)" class="tried-badge" aria-label="Eaten">✓</span>
           </div>
           <div class="card-body">
-            <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div></div>
+            <div class="card-heading"><div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(food.id)} out of 5`">{{ ratingStars(food.id) }}</span></div></div></div>
             <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
           </div>
         </article>
@@ -218,6 +227,10 @@ function stopCropDrag() {
           <p class="number">#{{ selectedFood.number }}</p>
           <h2>{{ selectedFood.name }}</h2>
           <p class="japanese">{{ selectedFood.japaneseName }}</p>
+          <div class="detail-labels">
+            <span class="detail-labels-title">Labels</span>
+            <span v-for="label in foodLabels(selectedFood)" :key="label" class="detail-label">{{ label }}</span>
+          </div>
           <div v-if="eatenFoods.includes(selectedFood.id)" class="checkin-list">
             <p v-for="checkin in checkins.filter((item) => item.foodId === selectedFood.id).sort((a, b) => b.eatenAt.localeCompare(a.eatenAt))" :key="checkin.id" class="detail-meta">
               Eaten at {{ formatEatenDate(checkin.eatenAt) }} · {{ checkin.rating }}/5 stars<span v-if="checkin.location"> · {{ checkin.location }}</span>

@@ -21,8 +21,16 @@ export type Food = {
 }
 
 export function foodLabels(food: Food) {
-  return [...new Set([food.category, ...food.foodTypes].map((label) => label.toLowerCase()))]
-    .map((label) => [food.category, ...food.foodTypes].find((value) => value.toLowerCase() === label) ?? label)
+  const types = food.category === 'Rice & Bowls'
+    ? food.foodTypes.filter((label) => label.toLowerCase() !== 'rice')
+    : food.foodTypes
+  return [...new Set([food.category, ...types].map((label) => label.toLowerCase()))]
+    .map((label) => {
+      const displayLabel = [food.category, ...types].find((value) => value.toLowerCase() === label) ?? label
+      return displayLabel === food.category
+        ? displayLabel
+        : displayLabel.charAt(0).toUpperCase() + displayLabel.slice(1)
+    })
 }
 
 function imageSlugForName(name: string) {
