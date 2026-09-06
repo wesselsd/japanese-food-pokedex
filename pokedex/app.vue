@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { foods, foodLabels } from './data/foods'
-import type { Checkin } from './adapter/supabase/progress'
+import type { Checkin, FoodLocation } from './adapter/supabase/progress'
 import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
 import { getSupabaseClient } from './adapter/supabase/client'
 import { createSupabaseProgressAdapter } from './adapter/supabase/progress'
 import ImageCropDialog from './components/ImageCropDialog.vue'
+import LocationPicker from './components/LocationPicker.vue'
 
 const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth()
 const config = useRuntimeConfig()
@@ -50,6 +51,9 @@ const checkinFood = ref<(typeof foods)[number] | null>(null)
 const editingCheckin = ref<Checkin | null>(null)
 const checkinRating = ref(3)
 const checkinLocation = ref('')
+const checkinLocationDetails = ref<FoodLocation | undefined>()
+const locationPickerOpen = ref(false)
+const locationError = ref('')
 const authMode = ref<'signIn' | 'signUp'>('signIn')
 const authOpen = ref(false)
 const email = ref('')
@@ -65,12 +69,18 @@ function openCheckin(food: (typeof foods)[number]) {
   checkinFood.value = food
   checkinRating.value = 3
   checkinLocation.value = ''
+  checkinLocationDetails.value = undefined
+  locationPickerOpen.value = false
+  locationError.value = ''
 }
 
 function openEditCheckin(checkin: Checkin) {
   editingCheckin.value = checkin
   checkinRating.value = checkin.rating
   checkinLocation.value = checkin.location
+  checkinLocationDetails.value = checkin.locationDetails
+  locationPickerOpen.value = false
+  locationError.value = ''
 }
 
 function highestRating(foodId: string) {
@@ -93,13 +103,20 @@ function foodPhotos(foodId: string) {
 
 async function submitCheckin() {
   if (editingCheckin.value) {
-    await updateCheckin(editingCheckin.value, checkinRating.value, checkinLocation.value.trim())
+    await updateCheckin(editingCheckin.value, checkinRating.value, checkinLocation.value.trim(), checkinLocationDetails.value)
     editingCheckin.value = null
     return
   }
   if (!checkinFood.value) return
-  await checkIn(checkinFood.value.id, checkinRating.value, checkinLocation.value.trim())
+  await checkIn(checkinFood.value.id, checkinRating.value, checkinLocation.value.trim(), checkinLocationDetails.value)
   checkinFood.value = null
+}
+
+function chooseLocation(location: FoodLocation) {
+  checkinLocationDetails.value = location
+  checkinLocation.value = location.name
+  locationPickerOpen.value = false
+  locationError.value = ''
 }
 
 async function submitAuth() {
@@ -272,7 +289,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
           </div>
           <div v-if="eatenFoods.includes(selectedFood.id)" class="checkin-list">
             <p v-for="checkin in checkins.filter((item) => item.foodId === selectedFood.id).sort((a, b) => b.eatenAt.localeCompare(a.eatenAt))" :key="checkin.id" class="detail-meta">
-              Eaten on {{ formatEatenDate(checkin.eatenAt) }} · {{ checkin.rating }}/5 stars<span v-if="checkin.location"> · {{ checkin.location }}</span>
+              Eaten on {{ formatEatenDate(checkin.eatenAt) }} · {{ checkin.rating }}/5 stars<span v-if="checkin.location"> · <a v-if="checkin.locationDetails" :href="checkin.locationDetails.mapsUrl" target="_blank" rel="noreferrer">{{ checkin.location }}</a><span v-else>{{ checkin.location }}</span></span>
               <button class="edit-checkin" @click="openEditCheckin(checkin)">edit check-in</button>
             </p>
           </div>
@@ -290,7 +307,16 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
           <legend>Rating <span>(required)</span></legend>
           <label v-for="star in 5" :key="star"><input v-model.number="checkinRating" type="radio" :value="star" required /> {{ star }}★</label>
         </fieldset>
-        <label class="location-field">Location <span>(optional)<input v-model="checkinLocation" type="text" maxlength="120" placeholder="Town, region, or restaurant" /></span></label>
+        <label class="location-field">Location <span>(optional)<input v-model="checkinLocation" type="text" maxlength="120" placeholder="Town, region, or restaurant" @input="checkinLocationDetails = undefined" /></span></label>
+        <button type="button" class="location-button" @click="locationPickerOpen = !locationPickerOpen">Choose on Google Maps</button>
+        <div v-if="checkinLocationDetails" class="selected-location">
+          <strong>{{ checkinLocationDetails.name }}</strong>
+          <span>{{ checkinLocationDetails.address }}</span>
+        </div>
+        <div v-if="locationPickerOpen" class="location-picker-panel">
+          <LocationPicker @selected="chooseLocation" @error="locationError = $event" />
+          <p v-if="locationError" class="auth-error">{{ locationError }}</p>
+        </div>
         <div class="crop-actions"><button v-if="editingCheckin" type="button" class="auth-button remove-checkin" @click="deleteCheckin(editingCheckin.id); editingCheckin = null">Remove check-in</button><button class="auth-button" type="submit">Save check-in</button></div>
       </form>
     </div>

@@ -113,6 +113,23 @@ describe('useFoodPokedex', () => {
     expect(state.eatenFoods.value).toEqual(['ramen'])
   })
 
+  it('persists a selected map location with a check-in', async () => {
+    const state = mountComposable()
+    const location = {
+      placeId: 'place-1',
+      name: 'Sushi Bar',
+      address: 'Tokyo, Japan',
+      latitude: 35.6762,
+      longitude: 139.6503,
+      mapsUrl: 'https://www.google.com/maps/place/place-1'
+    }
+
+    await state.checkIn('sushi', 3, location.name, location)
+
+    expect(state.checkins.value[0]).toMatchObject({ location: 'Sushi Bar', locationDetails: location })
+    expect(JSON.parse(localStorage.getItem('pokedex-checkins')!)[0].locationDetails).toEqual(location)
+  })
+
   it('filters foods by eaten status', async () => {
     const state = mountComposable()
 

@@ -1,0 +1,213 @@
+{
+  "places": [
+    {
+      "id": "ChIJu4fJrkQLkEcRoOWwRmXn_tY",
+      "resourceName": "places/ChIJu4fJrkQLkEcRoOWwRmXn_tY",
+      "displayName": "Al Ventotto",
+      "formattedAddress": "Schaffhauserstrasse 29, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3902897,
+        "lng": 8.538744399999999
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=15492074190364796320&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJtfCXpasLkEcR03-QGHDXqw8",
+      "resourceName": "places/ChIJtfCXpasLkEcR03-QGHDXqw8",
+      "displayName": "Restaurant Bombay Indian",
+      "formattedAddress": "Rötelstrasse 53, 8037 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3924593,
+        "lng": 8.5346057
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=1129233008034873299&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJoaQ8MKigmkcRxSHXctRBTp8",
+      "resourceName": "places/ChIJoaQ8MKigmkcRxSHXctRBTp8",
+      "displayName": "Kormasutra Indian Restaurant",
+      "formattedAddress": "Rötelstrasse 53, 8037 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3924593,
+        "lng": 8.5346057
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=11479184880929546693&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJk9GWU3ULkEcRxW85T6fN4Kc",
+      "resourceName": "places/ChIJk9GWU3ULkEcRxW85T6fN4Kc",
+      "displayName": "Maharaja Dining Restaurant",
+      "formattedAddress": "Schaffhauserstrasse 32, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.390330899999995,
+        "lng": 8.539215
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=12096894717589548997&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJN3ePwOULkEcRVoqFd3ap7Js",
+      "resourceName": "places/ChIJN3ePwOULkEcRVoqFd3ap7Js",
+      "displayName": "Gastro Selimi",
+      "formattedAddress": "Schaffhauserstrasse 32, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.390330899999995,
+        "lng": 8.539215
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=11235541496659020374&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJU2Z5yHMKkEcR30xxkEhXLrU",
+      "resourceName": "places/ChIJU2Z5yHMKkEcR30xxkEhXLrU",
+      "displayName": "Thali",
+      "formattedAddress": "Schaffhauserstrasse 32, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3903311,
+        "lng": 8.5392156
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=13055468338966252767&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJzUrlFIwLkEcRCom8BS6Uprw",
+      "resourceName": "places/ChIJzUrlFIwLkEcRCom8BS6Uprw",
+      "displayName": "Remo Wüst Bäckerei + Konditorei AG",
+      "formattedAddress": "Schaffhauserstrasse 21, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3896677,
+        "lng": 8.5388737
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=13593715450650069258&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJI0muRsELkEcRUBcFW0ojUjI",
+      "resourceName": "places/ChIJI0muRsELkEcRUBcFW0ojUjI",
+      "displayName": "Con Gusto Schaffhauserplatz",
+      "formattedAddress": "Hotzestrasse 65, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.392056,
+        "lng": 8.539016199999999
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=3625999452248282960&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJw_SGAsMLkEcRwQZxuD2PRTI",
+      "resourceName": "places/ChIJw_SGAsMLkEcRwQZxuD2PRTI",
+      "displayName": "Bakery Bakery Schaffhauserplatz",
+      "formattedAddress": "Hotzestrasse 65, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3920088,
+        "lng": 8.5391276
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=3622458970539624129&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJm8s4jnIKkEcReH2cc_uIteM",
+      "resourceName": "places/ChIJm8s4jnIKkEcReH2cc_uIteM",
+      "displayName": "Café des Amis",
+      "formattedAddress": "Nordstrasse 88, 8037 Zürich, Switzerland",
+      "location": {
+        "lat": 47.388670499999996,
+        "lng": 8.5360746
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=16408171430952074616&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJ5XgFtbsLkEcRGCszn-jgFBc",
+      "resourceName": "places/ChIJ5XgFtbsLkEcRGCszn-jgFBc",
+      "displayName": "Luis Giltner",
+      "formattedAddress": "Nordstrasse 85, 8037 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3882608,
+        "lng": 8.5359157
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=1663201452114520856&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJi4hHCnEKkEcRQHlzxL7YHcE",
+      "resourceName": "places/ChIJi4hHCnEKkEcRQHlzxL7YHcE",
+      "displayName": "Libanes Take-Away",
+      "formattedAddress": "Schaffhauserstrasse 74, 8057 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3929049,
+        "lng": 8.5393326
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=13915516737495988544&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJ4xFjC3MKkEcRYqRroSDM1Nw",
+      "resourceName": "places/ChIJ4xFjC3MKkEcRYqRroSDM1Nw",
+      "displayName": "Edi's",
+      "formattedAddress": "Schaffhauserstrasse 10, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3886743,
+        "lng": 8.539310799999999
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=15912567823926010978&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJr8Mg660LkEcRSD_aR1G3pyA",
+      "resourceName": "places/ChIJr8Mg660LkEcRSD_aR1G3pyA",
+      "displayName": "kitchery",
+      "formattedAddress": "Schaffhauserstrasse 8, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3886031,
+        "lng": 8.5393384
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=2353050890050092872&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJ-RppE3MKkEcRplBfDTGWmIc",
+      "resourceName": "places/ChIJ-RppE3MKkEcRplBfDTGWmIc",
+      "displayName": "Differente",
+      "formattedAddress": "Schaffhauserstrasse 1, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3880974,
+        "lng": 8.5390385
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=9770724529002205350&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJ-RppE3MKkEcRG0YzQFAvt1s",
+      "resourceName": "places/ChIJ-RppE3MKkEcRG0YzQFAvt1s",
+      "displayName": "Hotel Krone Unterstrass",
+      "formattedAddress": "Schaffhauserstrasse 1, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3880157,
+        "lng": 8.5391184
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=6608802999910483483&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJJXwmRwALkEcRvxyD1XciaRU",
+      "resourceName": "places/ChIJJXwmRwALkEcRvxyD1XciaRU",
+      "displayName": "Skandaal um Lo",
+      "formattedAddress": "Rousseaustrasse 22, 8037 Zürich, Switzerland",
+      "location": {
+        "lat": 47.387744399999995,
+        "lng": 8.534348
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=1542802245429697727&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJ5VsPLa4LkEcR7q65Q6oFJBA",
+      "resourceName": "places/ChIJ5VsPLa4LkEcR7q65Q6oFJBA",
+      "displayName": "Neri Cantina & Cucina",
+      "formattedAddress": "Nordstrasse 180, 8037 Zürich, Switzerland",
+      "location": {
+        "lat": 47.3922655,
+        "lng": 8.5316113
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=1163060832607252206&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    },
+    {
+      "id": "ChIJTZl8kkgLkEcRdLnDTvMAhO4",
+      "resourceName": "places/ChIJTZl8kkgLkEcRdLnDTvMAhO4",
+      "displayName": "Restaurant SimSim City",
+      "formattedAddress": "Kronenstrasse 48, 8006 Zürich, Switzerland",
+      "location": {
+        "lat": 47.38780690000001,
+        "lng": 8.5392028
+      },
+      "googleMapsURI": "https://maps.google.com/?cid=17186863122951158132&g_mp=Cilnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaE5lYXJieRACGAEgAA&hl=en-US&source=apiv3"
+    }
+  ]
+}

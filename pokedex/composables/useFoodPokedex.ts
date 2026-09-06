@@ -1,6 +1,6 @@
 import { computed, ref, watch, type Ref } from 'vue'
 import type { User } from '@supabase/supabase-js'
-import type { Checkin, FoodPhoto, ProgressAdapter } from '~/adapter/supabase/progress'
+import type { Checkin, FoodLocation, FoodPhoto, ProgressAdapter } from '~/adapter/supabase/progress'
 import type { Food } from '~/data/foods'
 
 const EATEN_STORAGE_KEY = 'pokedex-eaten'
@@ -46,10 +46,10 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
   })
   const eatenCount = computed(() => eatenFoods.value.length)
 
-  async function checkIn(id: string, rating: number, location = '') {
+  async function checkIn(id: string, rating: number, location = '', locationDetails?: FoodLocation) {
     if (rating < 1 || rating > 5) throw new Error('Rating must be between 1 and 5.')
-    const localCheckin = { id: crypto.randomUUID(), foodId: id, eatenAt: new Date().toISOString(), rating, location }
-    if (user.value && cloudProgress) checkins.value = [...checkins.value, await cloudProgress.addCheckin(user.value.id, id, rating, location)]
+    const localCheckin = { id: crypto.randomUUID(), foodId: id, eatenAt: new Date().toISOString(), rating, location, locationDetails }
+    if (user.value && cloudProgress) checkins.value = [...checkins.value, await cloudProgress.addCheckin(user.value.id, id, rating, location, locationDetails)]
     else checkins.value = [...checkins.value, localCheckin]
   }
 
@@ -58,8 +58,8 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     checkins.value = checkins.value.filter((checkin) => checkin.foodId !== id)
   }
 
-  async function updateCheckin(checkin: Checkin, rating: number, location: string) {
-    const updated = { ...checkin, rating, location }
+  async function updateCheckin(checkin: Checkin, rating: number, location: string, locationDetails?: FoodLocation) {
+    const updated = { ...checkin, rating, location, locationDetails }
     if (user.value && cloudProgress) await cloudProgress.updateCheckin(user.value.id, updated)
     checkins.value = checkins.value.map((item) => item.id === checkin.id ? updated : item)
   }

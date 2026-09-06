@@ -41,6 +41,7 @@ Japanese Food Pokedex is a mobile-first static web app for browsing Japanese foo
 - Photos are represented as `{ id: string; url: string }` and stored in `Record<string, FoodPhoto[]>`.
 - Each food can have multiple uploaded photos. The detail modal displays thumbnails, allows selecting the predefined image or an uploaded image, and allows removing uploaded images.
 - The upload flow opens a vue-advanced-cropper dialog with a movable and resizable 16:9 crop stencil, then resizes the cropped JPEG to at most 100KB before display and persistence.
+- Check-ins can store a Google Places selection with its display name, address, coordinates, place ID, and Google Maps URL. Older free-text locations remain supported.
 - Signed-in users upload the original selected file to Supabase. Signed-out users convert it to a data URL and persist it in localStorage.
 - A temporary object URL is shown immediately while cloud upload or local data-URL conversion completes.
 - Legacy single-photo localStorage entries and legacy `user_foods.photo_path` rows remain supported.
