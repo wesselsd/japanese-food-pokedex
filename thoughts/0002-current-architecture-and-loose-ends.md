@@ -40,7 +40,7 @@ Japanese Food Pokedex is a mobile-first static web app for browsing Japanese foo
 
 - Photos are represented as `{ id: string; url: string }` and stored in `Record<string, FoodPhoto[]>`.
 - Each food can have multiple uploaded photos. The detail modal displays thumbnails, allows selecting the predefined image or an uploaded image, and allows removing uploaded images.
-- The current flow is intentionally direct: file chooser, image validation, immediate display, then persistence. Cropping and compression were removed after the crop dialog proved unreliable.
+- The upload flow opens a vue-advanced-cropper dialog with a movable and resizable 16:9 crop stencil, then resizes the cropped JPEG to at most 100KB before display and persistence.
 - Signed-in users upload the original selected file to Supabase. Signed-out users convert it to a data URL and persist it in localStorage.
 - A temporary object URL is shown immediately while cloud upload or local data-URL conversion completes.
 - Legacy single-photo localStorage entries and legacy `user_foods.photo_path` rows remain supported.
@@ -74,5 +74,5 @@ The integration test requires the local `.env` Supabase configuration and an acc
 - Decide whether to add chains as a separate category or type.
 - Consider adding more regional dishes and variants from `thoughts/food.md`.
 - Consider a hide-eaten mode and sorting by label.
-- Original uploads are currently stored without resizing or compression; revisit limits and image optimization if localStorage or storage usage becomes a problem.
+- Uploaded images are resized to at most 100KB before localStorage or Supabase persistence.
 - Add focused automated coverage for multi-photo upload, selection, removal, and legacy-photo compatibility.

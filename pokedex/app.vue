@@ -6,6 +6,7 @@ import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
 import { getSupabaseClient } from './adapter/supabase/client'
 import { createSupabaseProgressAdapter } from './adapter/supabase/progress'
+import ImageCropDialog from './components/ImageCropDialog.vue'
 
 const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth()
 const config = useRuntimeConfig()
@@ -53,6 +54,8 @@ const authMode = ref<'signIn' | 'signUp'>('signIn')
 const authOpen = ref(false)
 const email = ref('')
 const password = ref('')
+const cropFoodId = ref<string | null>(null)
+const cropSource = ref('')
 
 function formatEatenDate(foodId: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(foodId))
@@ -104,7 +107,33 @@ async function submitAuth() {
   else await signUp(email.value, password.value)
 }
 
-watch([selectedFood, checkinFood, editingCheckin], (values) => {
+function openCrop(foodId: string, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) return
+  cropFoodId.value = foodId
+  cropSource.value = URL.createObjectURL(file)
+}
+
+function closeCrop() {
+  if (cropSource.value) URL.revokeObjectURL(cropSource.value)
+  cropSource.value = ''
+  cropFoodId.value = null
+}
+
+async function finishCrop(file: File) {
+  if (!cropFoodId.value) return
+  const foodId = cropFoodId.value
+  closeCrop()
+  try {
+    await savePhoto(foodId, file)
+  } catch (cause) {
+    syncError.value = cause instanceof Error ? cause.message : 'Unable to save photo.'
+  }
+}
+
+watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
   if (typeof document !== 'undefined') document.body.classList.toggle('modal-open', values.some(Boolean))
 })
 
@@ -186,7 +215,7 @@ watch([selectedFood, checkinFood, editingCheckin], (values) => {
           </div>
           <div class="card-actions">
             <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button>
-            <label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label>
+            <label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(food.id, $event)" /></label>
           </div>
         </div>
       </article>
@@ -205,11 +234,12 @@ watch([selectedFood, checkinFood, editingCheckin], (values) => {
           </div>
           <div class="card-body">
             <div class="card-heading"><div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(food.id)} out of 5`">{{ ratingStars(food.id) }}</span></div></div></div>
-            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
+            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(food.id, $event)" /></label></div>
           </div>
         </article>
       </div>
     </section>
+    <ImageCropDialog v-if="cropSource" :src="cropSource" @cancel="closeCrop" @crop="finishCrop" />
     <p v-if="filteredFoods.length === 0" class="empty">No foods found. Try another search.</p>
     <div v-if="selectedFood" class="detail-backdrop" role="dialog" aria-modal="true" :aria-label="`${selectedFood.name} details`" @click.self="selectedFood = null">
       <article class="detail-dialog">

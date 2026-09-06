@@ -11,11 +11,14 @@
     "test:integration": "vitest run tests/integration"
   },
   "devDependencies": {
-    "@vue/test-utils": "^2.4.6",
+    "@supabase/supabase-js": "2.49.8",
     "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/test-utils": "^2.4.6",
     "happy-dom": "^18.0.1",
     "nuxt": "^3.17.0",
-    "@supabase/supabase-js": "2.49.8",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "vue-advanced-cropper": "^2.8.9"
   }
 }

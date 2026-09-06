@@ -71,12 +71,34 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     checkins.value = checkins.value.filter((item) => item.id !== id)
   }
 
-  function savePhoto(id: string, event: Event) {
-    const input = event.target as HTMLInputElement
-    const file = input.files?.[0]
-    if (!file) return
+  async function compressPhoto(source: Blob): Promise<File> {
+    const sourceUrl = URL.createObjectURL(source)
+    const image = new Image()
+    image.src = sourceUrl
+    await new Promise<void>((resolve, reject) => {
+      image.addEventListener('load', () => resolve(), { once: true })
+      image.addEventListener('error', () => reject(new Error('Unable to process the selected image.')), { once: true })
+    })
+    URL.revokeObjectURL(sourceUrl)
 
-    const url = URL.createObjectURL(file)
+    for (let maxDimension = 1600; maxDimension >= 320; maxDimension = Math.round(maxDimension * 0.8)) {
+      const canvas = document.createElement('canvas')
+      const scale = Math.min(1, maxDimension / image.naturalWidth)
+      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale))
+      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale))
+      canvas.getContext('2d')?.drawImage(image, 0, 0, canvas.width, canvas.height)
+
+      for (let quality = 0.85; quality >= 0.1; quality -= 0.05) {
+        const compressed = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality))
+        if (compressed && compressed.size <= 100 * 1024) return new File([compressed], 'food-photo.jpg', { type: 'image/jpeg' })
+      }
+    }
+    throw new Error('This image could not be resized below 100KB. Please choose a smaller image.')
+  }
+
+  async function savePhoto(id: string, file: Blob) {
+    const processedFile = await compressPhoto(file)
+    const url = URL.createObjectURL(processedFile)
     const image = new Image()
     image.addEventListener('load', () => {
       if (!image.naturalWidth || !image.naturalHeight) {
@@ -88,7 +110,7 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
       photos.value = { ...photos.value, [id]: [...(photos.value[id] ?? []), { id: photoId, url }] }
       selectedPhotos.value = { ...selectedPhotos.value, [id]: photoId }
       if (user.value && cloudProgress) {
-        void cloudProgress.uploadPhoto(user.value.id, id, file).then((photo) => {
+        void cloudProgress.uploadPhoto(user.value.id, id, processedFile).then((photo) => {
           photos.value = { ...photos.value, [id]: [...(photos.value[id] ?? []).filter((item) => item.id !== photoId), photo] }
           selectedPhotos.value = { ...selectedPhotos.value, [id]: photo.id }
           URL.revokeObjectURL(url)
@@ -101,15 +123,10 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
           if (typeof reader.result === 'string') photos.value = { ...photos.value, [id]: [...(photos.value[id] ?? []).filter((item) => item.id !== photoId), { id: photoId, url: reader.result }] }
           URL.revokeObjectURL(url)
         })
-        reader.readAsDataURL(file)
+        reader.readAsDataURL(processedFile)
       }
     })
-    image.addEventListener('error', () => {
-      URL.revokeObjectURL(url)
-      syncError.value = 'Unable to read the selected image. Please choose a JPG, PNG, or WebP image.'
-    })
     image.src = url
-    input.value = ''
   }
 
   async function removePhoto(foodId: string, photoId: string) {
