@@ -48,7 +48,7 @@ const essentialFoods = computed(() => isFiltering.value ? [] : filteredFoods.val
 const selectedFood = ref<(typeof foods)[number] | null>(null)
 const checkinFood = ref<(typeof foods)[number] | null>(null)
 const editingCheckin = ref<Checkin | null>(null)
-const checkinRating = ref(5)
+const checkinRating = ref(3)
 const checkinLocation = ref('')
 const authMode = ref<'signIn' | 'signUp'>('signIn')
 const authOpen = ref(false)
@@ -57,13 +57,13 @@ const password = ref('')
 const cropFoodId = ref<string | null>(null)
 const cropSource = ref('')
 
-function formatEatenDate(foodId: string) {
-  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(foodId))
+function formatEatenDate(date: string) {
+  return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date))
 }
 
 function openCheckin(food: (typeof foods)[number]) {
   checkinFood.value = food
-  checkinRating.value = 5
+  checkinRating.value = 3
   checkinLocation.value = ''
 }
 
@@ -272,7 +272,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
           </div>
           <div v-if="eatenFoods.includes(selectedFood.id)" class="checkin-list">
             <p v-for="checkin in checkins.filter((item) => item.foodId === selectedFood.id).sort((a, b) => b.eatenAt.localeCompare(a.eatenAt))" :key="checkin.id" class="detail-meta">
-              Eaten at {{ formatEatenDate(checkin.eatenAt) }} · {{ checkin.rating }}/5 stars<span v-if="checkin.location"> · {{ checkin.location }}</span>
+              Eaten on {{ formatEatenDate(checkin.eatenAt) }} · {{ checkin.rating }}/5 stars<span v-if="checkin.location"> · {{ checkin.location }}</span>
               <button class="edit-checkin" @click="openEditCheckin(checkin)">edit check-in</button>
             </p>
           </div>
