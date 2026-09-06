@@ -46,7 +46,17 @@ const categoryById: Record<string, string> = {
   edamame: 'Meat', 'agedashi-tofu': 'Meat', nikujaga: 'Meat', wagashi: 'Sweets', matcha: 'Sweets',
   taiyaki: 'Sweets', dango: 'Sweets', kakigori: 'Sweets', mochi: 'Sweets', daifuku: 'Sweets',
   'ichigo-daifuku': 'Sweets', 'warabi-mochi': 'Sweets', dorayaki: 'Sweets', castella: 'Sweets',
-  anmitsu: 'Sweets', 'melon-pan': 'Sweets', senbei: 'Sweets', unagi: 'Seafood'
+  anmitsu: 'Sweets', 'melon-pan': 'Sweets', senbei: 'Sweets', unagi: 'Seafood',
+  'curry-udon': 'Noodles', 'yaki-udon': 'Noodles', 'sara-udon': 'Noodles', tanmen: 'Noodles', champon: 'Noodles',
+  unadon: 'Rice & Bowls', tekkadon: 'Rice & Bowls', 'soboro-don': 'Rice & Bowls', 'hayashi-rice': 'Rice & Bowls',
+  uni: 'Seafood', ikura: 'Seafood', anago: 'Seafood', hotate: 'Seafood', hamachi: 'Seafood', kani: 'Seafood',
+  korokke: 'Dumplings & Buns', 'menchi-katsu': 'Meat', 'ebi-fry': 'Seafood', tebasaki: 'Meat', tsukune: 'Meat',
+  'grilled-squid': 'Seafood', 'potato-salad': 'Meat', 'japanese-omelette': 'Rice & Bowls',
+  'pickled-vegetables': 'Sweets', 'mabo-tofu': 'Dumplings & Buns', imagawayaki: 'Sweets',
+  'mitarashi-dango': 'Sweets', ningyoyaki: 'Sweets', yakiimo: 'Sweets', yakisoba: 'Noodles',
+  yokan: 'Sweets', monaka: 'Sweets', 'mont-blanc': 'Sweets', 'japanese-pudding': 'Sweets',
+  'matcha-ice-cream': 'Sweets', 'tamago-sando': 'Dumplings & Buns', 'yakisoba-pan': 'Dumplings & Buns',
+  'japanese-cheesecake': 'Sweets', famichiki: 'Meat'
 }
 
 const foodTypesById: Record<string, string[]> = {
@@ -67,6 +77,18 @@ const foodTypesById: Record<string, string[]> = {
   'warabi-mochi': ['dessert'], dorayaki: ['dessert'], castella: ['dessert'], anmitsu: ['dessert'],
   'melon-pan': ['snack'], senbei: ['snack'], yakiniku: ['meat', 'grilled'], wagashi: ['dessert'],
   unagi: ['seafood', 'grilled'], ekiben: ['rice', 'snack']
+  , 'curry-udon': ['noodles', 'soup'], 'yaki-udon': ['noodles'], 'sara-udon': ['noodles'],
+  tanmen: ['noodles', 'soup'], champon: ['noodles', 'seafood', 'soup'], unadon: ['seafood', 'rice'],
+  tekkadon: ['seafood', 'raw', 'rice'], 'soboro-don': ['meat', 'egg', 'rice'], 'hayashi-rice': ['meat', 'rice'],
+  uni: ['seafood', 'raw'], ikura: ['seafood', 'raw'], anago: ['seafood', 'raw'], hotate: ['seafood', 'raw'],
+  hamachi: ['seafood', 'raw'], kani: ['seafood'], korokke: ['fried', 'vegetable'], 'menchi-katsu': ['meat', 'fried'],
+  'ebi-fry': ['seafood', 'fried'], tebasaki: ['meat', 'fried'], tsukune: ['meat', 'grilled'],
+  'grilled-squid': ['seafood', 'grilled'], 'potato-salad': ['vegetable'], 'japanese-omelette': ['egg'],
+  'pickled-vegetables': ['vegetable'], 'mabo-tofu': ['tofu', 'meat'], imagawayaki: ['dessert', 'snack'],
+  'mitarashi-dango': ['dessert'], ningyoyaki: ['dessert'], yakiimo: ['dessert', 'snack'],
+  yakisoba: ['noodles', 'fried'], yokan: ['dessert'], monaka: ['dessert'], 'mont-blanc': ['dessert'],
+  'japanese-pudding': ['dessert'], 'matcha-ice-cream': ['dessert'], 'tamago-sando': ['egg', 'snack'],
+  'yakisoba-pan': ['noodles', 'snack'], 'japanese-cheesecake': ['dessert'], famichiki: ['meat', 'fried']
 }
 
 export const foods: Food[] = foodData.map((food) => ({

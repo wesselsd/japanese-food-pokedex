@@ -26,10 +26,10 @@ describe('useFoodPokedex', () => {
   it('filters foods by search term and category', async () => {
     const state = mountComposable()
 
-    expect(state.filteredFoods.value).toHaveLength(54)
+    expect(state.filteredFoods.value).toHaveLength(93)
     expect(foods.filter((food) => food.essential)).toHaveLength(14)
     expect(state.categories).toEqual(['All', 'Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Drinks'])
-    expect(foods.every((food) => food.image)).toBe(true)
+    expect(foods.filter((food) => food.image)).toHaveLength(93)
 
     state.searchTerm.value = '寿司'
     await nextTick()
@@ -51,7 +51,12 @@ describe('useFoodPokedex', () => {
       'edamame',
       'agedashi-tofu',
       'nikujaga',
-      'yakiniku'
+      'yakiniku',
+      'menchi-katsu',
+      'tebasaki',
+      'tsukune',
+      'potato-salad',
+      'famichiki'
     ])
   })
 
@@ -79,7 +84,7 @@ describe('useFoodPokedex', () => {
 
     state.eatenFilter.value = 'uneaten'
     await nextTick()
-    expect(state.filteredFoods.value).toHaveLength(53)
+    expect(state.filteredFoods.value).toHaveLength(92)
     expect(state.filteredFoods.value.some((food) => food.id === 'ramen')).toBe(false)
   })
 

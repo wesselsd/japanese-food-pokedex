@@ -33,6 +33,8 @@ def generate_image(food):
     if output_path.exists():
         print(f"Skipping {food}. Already exists.")
         return
+    else:
+        print(f"Generating {food}.")
     interaction = client.interactions.create(
         model="gemini-3.1-flash-lite-image",
         input=f"{master_prompt} The food is {food}.",
@@ -40,7 +42,6 @@ def generate_image(food):
     )
     with output_path.open("wb") as f:
         f.write(base64.b64decode(interaction.output_image.data))
-    print(f"Created image of {food}.")
     time.sleep(1) # hard rate limit on api and expensive call!
 
 def main():
