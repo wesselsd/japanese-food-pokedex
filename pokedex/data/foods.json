@@ -1367,5 +1367,292 @@
       "meat",
       "fried"
     ]
+  },
+  {
+    "id": "green-tea",
+    "number": "094",
+    "name": "Green Tea",
+    "japaneseName": "緑茶",
+    "description": "Japanese tea made by steeping processed green tea leaves in hot water.",
+    "emoji": "🍵",
+    "color": "#b8d3a5",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "tea",
+      "non-alcoholic"
+    ]
+  },
+  {
+    "id": "hojicha",
+    "number": "095",
+    "name": "Hojicha",
+    "japaneseName": "ほうじ茶",
+    "description": "Roasted Japanese green tea with a warm, nutty aroma and low bitterness.",
+    "emoji": "🍵",
+    "color": "#c99b6b",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "tea",
+      "non-alcoholic"
+    ]
+  },
+  {
+    "id": "mugicha",
+    "number": "096",
+    "name": "Mugicha",
+    "japaneseName": "麦茶",
+    "description": "A caffeine-free tea made from roasted barley, commonly served chilled.",
+    "emoji": "🫖",
+    "color": "#c49b65",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "tea",
+      "non-alcoholic"
+    ]
+  },
+  {
+    "id": "pocari-sweat",
+    "number": "097",
+    "name": "Pocari Sweat",
+    "japaneseName": "ポカリスエット",
+    "description": "A lightly sweetened Japanese electrolyte drink with a mild citrus flavour.",
+    "emoji": "🥤",
+    "color": "#b9d9ed",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "non-alcoholic"
+    ]
+  },
+  {
+    "id": "calpis",
+    "number": "098",
+    "name": "Calpis",
+    "japaneseName": "カルピス",
+    "description": "A milky, sweet and tangy Japanese soft drink usually diluted with water or soda.",
+    "emoji": "🥛",
+    "color": "#eee5cf",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "non-alcoholic"
+    ]
+  },
+  {
+    "id": "nama-beer",
+    "number": "099",
+    "name": "Nama Beer",
+    "japaneseName": "生ビール",
+    "description": "Japanese draft beer served from a tap, typically poured into a chilled glass.",
+    "emoji": "🍺",
+    "color": "#e6c46b",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "beer",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "hoppy-set",
+    "number": "100",
+    "name": "Hoppy Set",
+    "japaneseName": "ホッピーセット",
+    "description": "A low-alcohol beer-style mixer served with a glass of shōchū and Hoppy.",
+    "emoji": "🍺",
+    "color": "#d8c38b",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "beer",
+      "shochu",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "lemon-sour",
+    "number": "101",
+    "name": "Lemon Sour",
+    "japaneseName": "レモンサワー",
+    "description": "A Japanese mixed drink combining shōchū, sparkling water, and lemon.",
+    "emoji": "🍋",
+    "color": "#e8dc91",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "cocktail",
+      "shochu",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "highball",
+    "number": "102",
+    "name": "High Ball",
+    "japaneseName": "ハイボール",
+    "description": "Whisky lengthened with chilled sparkling water and served over ice.",
+    "emoji": "🥃",
+    "color": "#d8b878",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "cocktail",
+      "whisky",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "chuhai",
+    "number": "103",
+    "name": "Chūhai",
+    "japaneseName": "チューハイ",
+    "description": "A Japanese canned or mixed drink made with shōchū, sparkling water, and flavouring.",
+    "emoji": "🥤",
+    "color": "#d9d4a0",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "cocktail",
+      "shochu",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "junmai-sake",
+    "number": "104",
+    "name": "Junmai Sake",
+    "japaneseName": "純米酒",
+    "description": "Sake brewed from rice, water, yeast, and koji without added distilled alcohol.",
+    "emoji": "🍶",
+    "color": "#e8d7b5",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "sake",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "ginjo-sake",
+    "number": "105",
+    "name": "Ginjo Sake",
+    "japaneseName": "吟醸酒",
+    "description": "A fragrant style of sake made with highly polished rice and careful low-temperature fermentation.",
+    "emoji": "🍶",
+    "color": "#e5d0a8",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "sake",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "nigori-sake",
+    "number": "106",
+    "name": "Nigori Sake",
+    "japaneseName": "にごり酒",
+    "description": "Cloudy, lightly filtered sake that retains some rice sediment for a creamy texture.",
+    "emoji": "🍶",
+    "color": "#eee8d8",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "sake",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "namazake",
+    "number": "107",
+    "name": "Namazake",
+    "japaneseName": "生酒",
+    "description": "Unpasteurized sake with a fresh, lively flavour that is usually kept refrigerated.",
+    "emoji": "🍶",
+    "color": "#dce8d3",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "sake",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "shochu",
+    "number": "108",
+    "name": "Shōchū",
+    "japaneseName": "焼酎",
+    "description": "A distilled Japanese spirit made from ingredients such as barley, sweet potato, rice, or buckwheat.",
+    "emoji": "🥃",
+    "color": "#d9d3b7",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "spirit",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "imo-shochu",
+    "number": "109",
+    "name": "Imo Shōchū",
+    "japaneseName": "芋焼酎",
+    "description": "A sweet potato shōchū with a distinctive earthy aroma and full flavour.",
+    "emoji": "🥃",
+    "color": "#c9b58d",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "spirit",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "mugi-shochu",
+    "number": "110",
+    "name": "Mugi Shōchū",
+    "japaneseName": "麦焼酎",
+    "description": "A barley shōchū with a clean, mellow flavour and a light grain aroma.",
+    "emoji": "🥃",
+    "color": "#d6c69d",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "spirit",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "awamori",
+    "number": "111",
+    "name": "Awamori",
+    "japaneseName": "泡盛",
+    "description": "A distilled Okinawan spirit made from long-grain indica rice and black koji.",
+    "emoji": "🥃",
+    "color": "#d5c79c",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "spirit",
+      "alcoholic"
+    ]
+  },
+  {
+    "id": "umeshu",
+    "number": "112",
+    "name": "Umeshu",
+    "japaneseName": "梅酒",
+    "description": "A sweet Japanese liqueur made by steeping ume fruit in alcohol and sugar.",
+    "emoji": "🍑",
+    "color": "#d9b77f",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "liqueur",
+      "alcoholic"
+    ]
   }
 ]

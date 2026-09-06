@@ -13,7 +13,7 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 client = genai.Client(api_key=API_KEY)
 
 
-master_prompt = """Create a polished, friendly illustration for a Japanese food encyclopedia card.
+food_prompt = """Create a polished, friendly illustration for a Japanese food encyclopedia card.
 Use a cute minimalist anime-inspired editorial style with clean, moderately thick outlines,
 soft flat colors, subtle shading, and a warm off-white background. Show exactly one clearly
 recognizable serving of the named food, centered in a wide 16:9 landscape composition with
@@ -22,22 +22,50 @@ plate, bowl, skewer, tray, or serving vessel when that is part of the dish, but 
 extraneous ingredients or multiple dishes. Keep the camera angle and visual scale consistent
 across the series. No people, hands, logos, labels, captions, Japanese characters, or other text."""
 
+drink_prompt = """
+Create a polished, friendly illustration for a Japanese drink encyclopedia card.
+
+Use a cute minimalist anime-inspired editorial style with clean, moderately thick outlines,
+soft flat colors, subtle shading, and a warm off-white background. Show exactly one clearly
+recognizable serving of the named drink, centered in a wide 16:9 landscape composition with
+comfortable empty margins so it remains legible when cropped responsively.
+
+Use an appropriate glass, cup, bottle, can, sake vessel, beer mug, or traditional serving
+vessel when it is characteristic of the drink. Show the drink in a natural, recognizable
+serving style, including appropriate ice, foam, garnish, or condensation when these are
+essential to identifying it. Do not add extraneous ingredients, additional drinks, or
+multiple servings.
+Sake uses traditional sake cups.
+
+Keep the camera angle, visual scale, proportions, and illustration style consistent across
+the entire series. Make each drink immediately recognizable from its silhouette, color,
+serving vessel, and distinctive visual characteristics.
+
+No people, hands, logos, brand names, labels, captions, Japanese characters, or other text.
+"""
+
 def get_food_names() -> list[str]:
     with open(DATA_DIR / "foods.json", encoding="utf-8") as fo:
         data = json.load(fo)
-    names = [element['name'].lower().replace(" ", "-") for element in data]
+    names = [element['name'].lower().replace(" ", "-") for element in data if element["category"] != "Drinks"]
     return names
 
-def generate_image(food):
-    output_path = ASSETS_DIR / f"{food}_image.png"
+def get_drink_names() -> list[str]:
+    with open(DATA_DIR / "foods.json", encoding="utf-8") as fo:
+        data = json.load(fo)
+    names = [element['name'].lower().replace(" ", "-") for element in data if element["category"] == "Drinks"]
+    return names
+
+def generate_image(item, master_prompt: str):
+    output_path = ASSETS_DIR / f"{item}_image.png"
     if output_path.exists():
-        print(f"Skipping {food}. Already exists.")
+        print(f"Skipping {item}. Already exists.")
         return
     else:
-        print(f"Generating {food}.")
+        print(f"Generating {item}.")
     interaction = client.interactions.create(
         model="gemini-3.1-flash-lite-image",
-        input=f"{master_prompt} The food is {food}.",
+        input=f"{master_prompt} The item is {item}.",
         service_tier="flex"
     )
     with output_path.open("wb") as f:
@@ -47,7 +75,11 @@ def generate_image(food):
 def main():
     foods = get_food_names()
     for food in foods:
-        generate_image(food)
+        generate_image(food, food_prompt)
+
+    drinks = get_drink_names()
+    for drink in drinks:
+        generate_image(drink, drink_prompt)
 
 if __name__ == "__main__":
     main()
