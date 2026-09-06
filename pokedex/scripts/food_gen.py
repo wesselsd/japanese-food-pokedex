@@ -20,7 +20,10 @@ recognizable serving of the named food, centered in a wide 16:9 landscape compos
 comfortable empty margins so it remains legible when cropped responsively. Use an appropriate
 plate, bowl, skewer, tray, or serving vessel when that is part of the dish, but do not add
 extraneous ingredients or multiple dishes. Keep the camera angle and visual scale consistent
-across the series. No people, hands, logos, labels, captions, Japanese characters, or other text."""
+across the series. No people, hands, logos, labels, captions, Japanese characters, or other text.
+For yakiniku, show it on a table grill.
+For ikura, present it as ikura gunkan.
+"""
 
 drink_prompt = """
 Create a polished, friendly illustration for a Japanese drink encyclopedia card.
