@@ -13,6 +13,7 @@ const cloudProgress = isConfigured.value
   : null
 const {
   eatenFoods,
+  eatenDates,
   photos,
   searchTerm,
   selectedCategory,
@@ -38,12 +39,18 @@ const categorySections = computed(() => categories.slice(1).map((category) => ({
   eatenCount: foods.filter((food) => food.category === category && eatenFoods.value.includes(food.id)).length
 })).filter((section) => section.foods.length))
 const essentialFoods = computed(() => filteredFoods.value.filter((food) => food.essential))
+const selectedFood = ref<(typeof foods)[number] | null>(null)
 const authMode = ref<'signIn' | 'signUp'>('signIn')
 const email = ref('')
 const password = ref('')
 let dragging = false
 let lastX = 0
 let lastY = 0
+
+function formatEatenDate(foodId: string) {
+  const date = eatenDates.value[foodId]
+  return date ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(date)) : ''
+}
 
 async function submitAuth() {
   if (authMode.value === 'signIn') await signIn(email.value, password.value)
@@ -109,18 +116,26 @@ function stopCropDrag() {
       <div class="eaten-filters" aria-label="Eaten status">
         <button v-for="filter in [{ value: 'all', label: 'All' }, { value: 'eaten', label: 'Eaten' }, { value: 'uneaten', label: 'Not eaten' }]" :key="filter.value" class="category" :class="{ active: eatenFilter === filter.value }" @click="eatenFilter = filter.value">{{ filter.label }}</button>
       </div>
-      <div class="categories">
-        <button v-for="category in categories" :key="category" class="category" :class="{ active: selectedCategory === category }" @click="selectedCategory = category">{{ category }}</button>
-      </div>
-      <div class="labels" aria-label="Food labels">
-        <button v-for="label in labels" :key="label" class="category" :class="{ active: selectedLabel === label }" @click="selectedLabel = label">{{ label }}</button>
+      <div class="select-filters">
+        <label class="filter-select">
+          <span>Filter by Category</span>
+          <select v-model="selectedCategory">
+            <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+          </select>
+        </label>
+        <label class="filter-select">
+          <span>Filter by Label</span>
+          <select v-model="selectedLabel">
+            <option v-for="label in labels" :key="label" :value="label">{{ label }}</option>
+          </select>
+        </label>
       </div>
     </section>
 
     <section v-if="essentialFoods.length" class="food-section" aria-live="polite">
       <h2 class="section-title">Essential</h2>
       <div class="food-grid">
-      <article v-for="food in essentialFoods" :key="food.id" class="food-card">
+      <article v-for="food in essentialFoods" :key="food.id" class="food-card" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
         <div class="food-art" :style="{ backgroundColor: food.color }">
           <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
           <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
@@ -133,10 +148,9 @@ function stopCropDrag() {
             <div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div>
             <span class="category-label">{{ foodLabels(food).join(' · ') }}</span>
           </div>
-          <p class="description">{{ food.description }}</p>
           <div class="card-actions">
-            <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button>
-            <label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'"><span aria-hidden="true">▧</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label>
+            <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button>
+            <label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span aria-hidden="true">▧</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label>
           </div>
         </div>
       </article>
@@ -145,7 +159,7 @@ function stopCropDrag() {
     <section v-for="section in categorySections" :key="section.category" class="food-section" aria-live="polite">
       <h2 class="section-title">{{ section.category }} <span class="category-progress"><span class="category-progress-bar"><span :style="{ width: `${section.eatenCount / section.totalCount * 100}%` }" /></span><small>{{ section.eatenCount }}/{{ section.totalCount }}</small></span></h2>
       <div class="food-grid">
-        <article v-for="food in section.foods" :key="food.id" class="food-card">
+        <article v-for="food in section.foods" :key="food.id" class="food-card" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
           <div class="food-art" :style="{ backgroundColor: food.color }">
             <img v-if="photos[food.id]" :src="photos[food.id]" :alt="`${food.name} photo`" />
             <img v-else-if="food.image" :src="food.image" :alt="`${food.name} illustration`" />
@@ -155,13 +169,29 @@ function stopCropDrag() {
           </div>
           <div class="card-body">
             <div class="card-heading"><div><h2>{{ food.name }}</h2><p class="japanese">{{ food.japaneseName }}</p></div><span class="category-label">{{ foodLabels(food).join(' · ') }}</span></div>
-            <p class="description">{{ food.description }}</p>
-            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'"><span aria-hidden="true">▧</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
+            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="toggleEaten(food.id)">{{ eatenFoods.includes(food.id) ? 'Eaten!' : 'Mark as eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span aria-hidden="true">▧</span><input type="file" accept="image/*" capture="environment" @change="savePhoto(food.id, $event)" /></label></div>
           </div>
         </article>
       </div>
     </section>
     <p v-if="filteredFoods.length === 0" class="empty">No foods found. Try another search.</p>
+    <div v-if="selectedFood" class="detail-backdrop" role="dialog" aria-modal="true" :aria-label="`${selectedFood.name} details`" @click.self="selectedFood = null">
+      <article class="detail-dialog">
+        <button class="detail-close" aria-label="Close details" @click="selectedFood = null">×</button>
+        <div class="detail-art" :style="{ backgroundColor: selectedFood.color }">
+          <img v-if="photos[selectedFood.id]" :src="photos[selectedFood.id]" :alt="`${selectedFood.name} photo`" />
+          <img v-else-if="selectedFood.image" :src="selectedFood.image" :alt="`${selectedFood.name} illustration`" />
+          <span v-else class="food-emoji" aria-hidden="true">{{ selectedFood.emoji }}</span>
+        </div>
+        <div class="detail-body">
+          <p class="number">#{{ selectedFood.number }}</p>
+          <h2>{{ selectedFood.name }}</h2>
+          <p class="japanese">{{ selectedFood.japaneseName }}</p>
+          <p class="detail-meta">{{ eatenFoods.includes(selectedFood.id) ? `Eaten at ${formatEatenDate(selectedFood.id)}` : 'Not yet eaten' }}</p>
+          <p class="description">{{ selectedFood.description }}</p>
+        </div>
+      </article>
+    </div>
     <div v-if="crop" class="crop-backdrop" role="dialog" aria-modal="true" aria-label="Crop photo">
       <div class="crop-dialog">
         <h2>Choose your thumbnail</h2>

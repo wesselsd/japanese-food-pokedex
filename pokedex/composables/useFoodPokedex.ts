@@ -5,6 +5,7 @@ import type { Food } from '~/data/foods'
 
 const EATEN_STORAGE_KEY = 'pokedex-eaten'
 const PHOTOS_STORAGE_KEY = 'pokedex-photos'
+const EATEN_DATES_STORAGE_KEY = 'pokedex-eaten-dates'
 const CROP_WIDTH = 320
 const CROP_HEIGHT = 180
 const OUTPUT_WIDTH = 640
@@ -25,6 +26,7 @@ type CropState = {
 
 export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>>, cloudProgress: ProgressAdapter | null = null) {
   const eatenFoods = ref<string[]>([])
+  const eatenDates = ref<Record<string, string>>({})
   const photos = ref<Record<string, string>>({})
   const searchTerm = ref('')
   const selectedCategory = ref('All')
@@ -64,6 +66,9 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     eatenFoods.value = nextEaten
       ? [...eatenFoods.value, id]
       : eatenFoods.value.filter((foodId) => foodId !== id)
+    eatenDates.value = nextEaten
+      ? { ...eatenDates.value, [id]: new Date().toISOString() }
+      : Object.fromEntries(Object.entries(eatenDates.value).filter(([foodId]) => foodId !== id))
     if (user.value && cloudProgress) {
       try {
         await cloudProgress.setEaten(user.value.id, id, nextEaten)
@@ -185,8 +190,10 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         if (typeof window === 'undefined') return
         const savedEaten = localStorage.getItem(EATEN_STORAGE_KEY)
         const savedPhotos = localStorage.getItem(PHOTOS_STORAGE_KEY)
+        const savedEatenDates = localStorage.getItem(EATEN_DATES_STORAGE_KEY)
         if (savedEaten) eatenFoods.value = JSON.parse(savedEaten)
         if (savedPhotos) photos.value = JSON.parse(savedPhotos)
+        if (savedEatenDates) eatenDates.value = JSON.parse(savedEatenDates)
         return
       }
 
@@ -194,6 +201,7 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         syncError.value = ''
         const cloudState = await cloudProgress.load(nextUser.id)
         eatenFoods.value = cloudState.eatenFoods
+        eatenDates.value = cloudState.eatenDates
         photos.value = cloudState.photos
       } catch (cause) {
         syncError.value = cause instanceof Error ? cause.message : 'Unable to load saved progress.'
@@ -206,6 +214,9 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     watch(photos, (value) => {
       if (!user.value && typeof window !== 'undefined') localStorage.setItem(PHOTOS_STORAGE_KEY, JSON.stringify(value))
     }, { deep: true })
+    watch(eatenDates, (value) => {
+      if (!user.value && typeof window !== 'undefined') localStorage.setItem(EATEN_DATES_STORAGE_KEY, JSON.stringify(value))
+    }, { deep: true })
 
-    return { eatenFoods, photos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
+    return { eatenFoods, eatenDates, photos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
 }

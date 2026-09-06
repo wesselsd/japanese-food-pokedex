@@ -2,6 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 
 export type CloudProgress = {
   eatenFoods: string[]
+  eatenDates: Record<string, string>
   photos: Record<string, string>
 }
 
@@ -17,12 +18,14 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
   async function load(userId: string): Promise<CloudProgress> {
     const { data, error } = await client
       .from('user_foods')
-      .select('food_id, photo_path')
+      .select('food_id, photo_path, eaten_at')
       .eq('user_id', userId)
 
     if (error) throw error
 
     const photos: Record<string, string> = {}
+    const eatenDates: Record<string, string> = {}
+    data.forEach((row) => { eatenDates[row.food_id] = row.eaten_at })
     await Promise.all(
       data
         .filter((row) => row.photo_path)
@@ -37,6 +40,7 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
 
     return {
       eatenFoods: data.map((row) => row.food_id),
+      eatenDates,
       photos
     }
   }

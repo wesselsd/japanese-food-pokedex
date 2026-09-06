@@ -89,11 +89,13 @@ describe('useFoodPokedex', () => {
     await nextTick()
     expect(state.eatenFoods.value).toEqual(['ramen'])
     expect(state.eatenCount.value).toBe(1)
+    expect(state.eatenDates.value.ramen).toBeDefined()
     expect(localStorage.getItem('pokedex-eaten')).toBe('["ramen"]')
 
     await state.toggleEaten('ramen')
     await nextTick()
     expect(state.eatenFoods.value).toEqual([])
+    expect(state.eatenDates.value).toEqual({})
   })
 
   it('filters foods by eaten status', async () => {
