@@ -69,6 +69,20 @@ describe('useFoodPokedex', () => {
     expect(state.eatenFoods.value).toEqual([])
   })
 
+  it('filters foods by eaten status', async () => {
+    const state = mountComposable()
+
+    await state.toggleEaten('ramen')
+    state.eatenFilter.value = 'eaten'
+    await nextTick()
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['ramen'])
+
+    state.eatenFilter.value = 'uneaten'
+    await nextTick()
+    expect(state.filteredFoods.value).toHaveLength(53)
+    expect(state.filteredFoods.value.some((food) => food.id === 'ramen')).toBe(false)
+  })
+
   it('restores saved eaten foods on mount', () => {
     localStorage.setItem('pokedex-eaten', '["sushi", "onigiri"]')
 

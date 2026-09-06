@@ -11,6 +11,7 @@ const OUTPUT_WIDTH = 640
 const OUTPUT_HEIGHT = 360
 const MAX_PHOTO_BYTES = 100 * 1024
 const CATEGORY_ORDER = ['Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Drinks']
+export type EatenFilter = 'all' | 'eaten' | 'uneaten'
 
 type CropState = {
   foodId: string
@@ -27,6 +28,7 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
   const photos = ref<Record<string, string>>({})
   const searchTerm = ref('')
   const selectedCategory = ref('All')
+  const eatenFilter = ref<EatenFilter>('all')
   const syncError = ref('')
   const crop = ref<CropState | null>(null)
 
@@ -42,7 +44,12 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
         food.category.toLowerCase().includes(search) ||
         food.foodTypes.some((type) => type.toLowerCase().includes(search))
 
-      return matchesSearch && (selectedCategory.value === 'All' || food.category === selectedCategory.value)
+      const matchesEaten =
+        eatenFilter.value === 'all' ||
+        (eatenFilter.value === 'eaten' && eatenFoods.value.includes(food.id)) ||
+        (eatenFilter.value === 'uneaten' && !eatenFoods.value.includes(food.id))
+
+      return matchesSearch && matchesEaten && (selectedCategory.value === 'All' || food.category === selectedCategory.value)
     })
   })
   const eatenCount = computed(() => eatenFoods.value.length)
@@ -195,5 +202,5 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
       if (!user.value && typeof window !== 'undefined') localStorage.setItem(PHOTOS_STORAGE_KEY, JSON.stringify(value))
     }, { deep: true })
 
-    return { eatenFoods, photos, searchTerm, selectedCategory, categories, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
+    return { eatenFoods, photos, searchTerm, selectedCategory, eatenFilter, categories, filteredFoods, eatenCount, syncError, crop, toggleEaten, savePhoto, moveCrop, setCropZoom, cancelCrop, confirmCrop }
 }

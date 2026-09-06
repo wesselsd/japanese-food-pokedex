@@ -650,8 +650,8 @@
     "color": "#d5b47e"
   }
   ,
-  {"id":"yakiniku","number":"051","name":"Yakiniku","japaneseName":"焼肉","categories":["Meat"],"description":"Placeholder entry for grilled Japanese-style meat.","emoji":"🥩","color":"#c98f62"},
-  {"id":"wagashi","number":"052","name":"Wagashi","japaneseName":"和菓子","categories":["Sweets"],"description":"Placeholder entry for traditional Japanese sweets.","emoji":"🍡","color":"#e7c2b5"},
-  {"id":"unagi","number":"053","name":"Unagi","japaneseName":"うなぎ","categories":["Seafood"],"description":"Placeholder entry for grilled freshwater eel.","emoji":"🐟","color":"#b88d70"},
-  {"id":"ekiben","number":"054","name":"Ekiben","japaneseName":"駅弁","categories":["Rice"],"description":"Placeholder entry for a Japanese railway bento meal.","emoji":"🍱","color":"#d9b477"}
+  {"id":"yakiniku","number":"051","name":"Yakiniku","japaneseName":"焼肉","categories":["Meat"],"description":"Thinly sliced meat grilled at the table and enjoyed with dipping sauces and side dishes.","emoji":"🥩","color":"#c98f62"},
+  {"id":"wagashi","number":"052","name":"Wagashi","japaneseName":"和菓子","categories":["Sweets"],"description":"Traditional Japanese sweets shaped from ingredients such as mochi, red bean paste, and seasonal fruit.","emoji":"🍡","color":"#e7c2b5"},
+  {"id":"unagi","number":"053","name":"Unagi","japaneseName":"うなぎ","categories":["Seafood"],"description":"Grilled freshwater eel brushed with a sweet soy-based sauce and served tender over rice.","emoji":"🐟","color":"#b88d70"},
+  {"id":"ekiben","number":"054","name":"Ekiben","japaneseName":"駅弁","categories":["Rice"],"description":"A beautifully arranged boxed meal sold at railway stations, packed with regional specialties for the journey.","emoji":"🍱","color":"#d9b477"}
 ]

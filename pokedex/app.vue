@@ -16,6 +16,7 @@ const {
   photos,
   searchTerm,
   selectedCategory,
+  eatenFilter,
   categories,
   filteredFoods,
   eatenCount,
@@ -30,7 +31,9 @@ const {
 } = useFoodPokedex(foods, user, cloudProgress)
 const categorySections = computed(() => categories.slice(1).map((category) => ({
   category,
-  foods: filteredFoods.value.filter((food) => food.category === category && !food.essential)
+  foods: filteredFoods.value.filter((food) => food.category === category && !food.essential),
+  totalCount: foods.filter((food) => food.category === category).length,
+  eatenCount: foods.filter((food) => food.category === category && eatenFoods.value.includes(food.id)).length
 })).filter((section) => section.foods.length))
 const essentialFoods = computed(() => filteredFoods.value.filter((food) => food.essential))
 const authMode = ref<'signIn' | 'signUp'>('signIn')
@@ -101,6 +104,9 @@ function stopCropDrag() {
 
     <section class="controls" aria-label="Food filters">
       <label class="search"><span aria-hidden="true">⌕</span><input v-model="searchTerm" type="search" placeholder="Search foods..." /></label>
+      <div class="eaten-filters" aria-label="Eaten status">
+        <button v-for="filter in [{ value: 'all', label: 'All' }, { value: 'eaten', label: 'Eaten' }, { value: 'uneaten', label: 'Not eaten' }]" :key="filter.value" class="category" :class="{ active: eatenFilter === filter.value }" @click="eatenFilter = filter.value">{{ filter.label }}</button>
+      </div>
       <div class="categories">
         <button v-for="category in categories" :key="category" class="category" :class="{ active: selectedCategory === category }" @click="selectedCategory = category">{{ category }}</button>
       </div>
@@ -132,7 +138,7 @@ function stopCropDrag() {
       </div>
     </section>
     <section v-for="section in categorySections" :key="section.category" class="food-section" aria-live="polite">
-      <h2 class="section-title">{{ section.category }}</h2>
+      <h2 class="section-title">{{ section.category }} <span class="category-progress"><span class="category-progress-bar"><span :style="{ width: `${section.eatenCount / section.totalCount * 100}%` }" /></span><small>{{ section.eatenCount }}/{{ section.totalCount }}</small></span></h2>
       <div class="food-grid">
         <article v-for="food in section.foods" :key="food.id" class="food-card">
           <div class="food-art" :style="{ backgroundColor: food.color }">
