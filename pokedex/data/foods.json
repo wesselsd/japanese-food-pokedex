@@ -26,6 +26,7 @@
     "essential": true,
     "foodTypes": [
       "seafood",
+      "rice",
       "raw"
     ]
   },
@@ -267,10 +268,10 @@
     ]
   },
   {
-    "id": "gyutan",
+    "id": "grilled-gyutan",
     "number": "019",
-    "name": "Gyūtan",
-    "japaneseName": "牛タン",
+    "name": "Grilled gyūtan",
+    "japaneseName": "焼き牛タン",
     "description": "Thinly sliced beef tongue grilled until tender, often associated with Sendai.",
     "emoji": "🥩",
     "color": "#c48b72",
@@ -753,11 +754,11 @@
     ]
   },
   {
-    "id": "wagashi",
+    "id": "nerikiri",
     "number": "052",
-    "name": "Wagashi",
-    "japaneseName": "和菓子",
-    "description": "Traditional Japanese sweets shaped from ingredients such as mochi, red bean paste, and seasonal fruit.",
+    "name": "Nerikiri",
+    "japaneseName": "練り切り",
+    "description": "Delicate seasonal sweets shaped from white bean paste and coloured into artistic forms.",
     "emoji": "🍡",
     "color": "#e7c2b5",
     "category": "Sweets",
@@ -767,10 +768,10 @@
     ]
   },
   {
-    "id": "unagi",
+    "id": "unagi-kabayaki",
     "number": "053",
-    "name": "Unagi",
-    "japaneseName": "うなぎ",
+    "name": "Unagi kabayaki",
+    "japaneseName": "うなぎの蒲焼き",
     "description": "Freshwater eel commonly grilled and brushed with a sweet soy-based sauce.",
     "emoji": "🐟",
     "color": "#b88d70",
@@ -933,11 +934,11 @@
     ]
   },
   {
-    "id": "uni",
+    "id": "uni-gunkan",
     "number": "064",
-    "name": "Uni",
-    "japaneseName": "うに",
-    "description": "Rich, creamy sea urchin roe enjoyed fresh, often over sushi rice or as sashimi.",
+    "name": "Uni gunkan",
+    "japaneseName": "うに軍艦",
+    "description": "Gunkan sushi topped with rich, creamy sea urchin roe.",
     "emoji": "🍣",
     "color": "#e4b66d",
     "category": "Seafood",
@@ -949,13 +950,60 @@
     ]
   },
   {
-    "id": "ikura",
+    "id": "ikura-gunkan",
     "number": "065",
-    "name": "Ikura",
-    "japaneseName": "いくら",
-    "description": "Bright salmon roe with a delicate pop and briny flavour, often served over sushi rice.",
+    "name": "Ikura gunkan",
+    "japaneseName": "いくら軍艦",
+    "description": "Gunkan sushi topped with bright salmon roe and its delicate briny pop.",
     "emoji": "🍣",
     "color": "#d66b58",
+    "category": "Seafood",
+    "essential": false,
+    "foodTypes": [
+      "seafood",
+      "rice",
+      "raw"
+    ]
+  },
+  {
+    "id": "anago-nigiri",
+    "number": "066",
+    "name": "Anago nigiri",
+    "japaneseName": "穴子握り",
+    "description": "Nigiri sushi topped with tender conger eel brushed with a delicate sweet sauce.",
+    "emoji": "🍣",
+    "color": "#b98c70",
+    "category": "Seafood",
+    "essential": false,
+    "foodTypes": [
+      "seafood",
+      "rice"
+    ]
+  },
+  {
+    "id": "hotate-nigiri",
+    "number": "067",
+    "name": "Hotate nigiri",
+    "japaneseName": "ほたて握り",
+    "description": "Nigiri sushi topped with a sweet, tender raw scallop.",
+    "emoji": "🐚",
+    "color": "#e5c6aa",
+    "category": "Seafood",
+    "essential": false,
+    "foodTypes": [
+      "seafood",
+      "rice",
+      "raw"
+    ]
+  },
+  {
+    "id": "hamachi-sashimi",
+    "number": "068",
+    "name": "Hamachi sashimi",
+    "japaneseName": "はまち刺身",
+    "description": "Slices of mild, buttery yellowtail served as sashimi.",
+    "emoji": "🐟",
+    "color": "#c7d7d3",
     "category": "Seafood",
     "essential": false,
     "foodTypes": [
@@ -964,59 +1012,18 @@
     ]
   },
   {
-    "id": "anago",
-    "number": "066",
-    "name": "Anago",
-    "japaneseName": "穴子",
-    "description": "Tender conger eel prepared with a delicate sweet sauce and commonly served as sushi.",
-    "emoji": "🍣",
-    "color": "#b98c70",
-    "category": "Seafood",
-    "essential": false,
-    "foodTypes": [
-      "seafood"
-    ]
-  },
-  {
-    "id": "hotate",
-    "number": "067",
-    "name": "Hotate",
-    "japaneseName": "ほたて",
-    "description": "Sweet, tender scallop served raw as sashimi or sushi, or lightly grilled.",
-    "emoji": "🐚",
-    "color": "#e5c6aa",
-    "category": "Seafood",
-    "essential": false,
-    "foodTypes": [
-      "seafood"
-    ]
-  },
-  {
-    "id": "hamachi",
-    "number": "068",
-    "name": "Hamachi",
-    "japaneseName": "はまち",
-    "description": "Mild and buttery yellowtail enjoyed as sashimi or sushi.",
-    "emoji": "🐟",
-    "color": "#c7d7d3",
-    "category": "Seafood",
-    "essential": false,
-    "foodTypes": [
-      "seafood"
-    ]
-  },
-  {
-    "id": "kani",
+    "id": "kani-maki",
     "number": "069",
-    "name": "Kani",
-    "japaneseName": "かに",
-    "description": "Sweet Japanese crab served steamed, grilled, as sashimi, or in sushi.",
+    "name": "Kani maki",
+    "japaneseName": "かに巻き",
+    "description": "Sushi roll filled with sweet Japanese crab.",
     "emoji": "🦀",
     "color": "#d98b70",
     "category": "Seafood",
     "essential": false,
     "foodTypes": [
-      "seafood"
+      "seafood",
+      "rice"
     ]
   },
   {
@@ -1653,6 +1660,37 @@
     "foodTypes": [
       "liqueur",
       "alcoholic"
+    ]
+  },
+  {
+    "id": "engawa-nigiri",
+    "number": "113",
+    "name": "Engawa nigiri",
+    "japaneseName": "えんがわ握り",
+    "description": "Nigiri sushi topped with delicate flounder fin meat, prized for its rich texture.",
+    "emoji": "🍣",
+    "color": "#d9c2a5",
+    "category": "Seafood",
+    "essential": false,
+    "foodTypes": [
+      "seafood",
+      "rice",
+      "raw"
+    ]
+  },
+  {
+    "id": "natto",
+    "number": "114",
+    "name": "Natto",
+    "japaneseName": "納豆",
+    "description": "Fermented soybeans with a distinctive aroma, sticky texture, and savoury umami flavour.",
+    "emoji": "🫘",
+    "color": "#b89b63",
+    "category": "Savory",
+    "essential": false,
+    "foodTypes": [
+      "fermented",
+      "soy"
     ]
   }
 ]

@@ -27,6 +27,8 @@ const {
   labels,
   filteredFoods,
   eatenCount,
+  essentialCount,
+  eatenEssentialCount,
   checkIn,
   updateCheckin,
   deleteCheckin,
@@ -36,8 +38,10 @@ const {
   selectPhoto,
   syncError
 } = useFoodPokedex(foods, user, cloudProgress)
-const isFiltering = computed(() => Boolean(searchTerm.value.trim()) || selectedCategory.value !== 'All' || selectedLabel.value !== 'All' || eatenFilter.value !== 'all')
-const categorySections = computed(() => isFiltering.value
+const progressCount = computed(() => eatenEssentialCount.value === essentialCount ? eatenCount.value : eatenEssentialCount.value)
+const progressTotal = computed(() => eatenEssentialCount.value === essentialCount ? foods.length : essentialCount)
+const isLabelFiltering = computed(() => selectedLabel.value !== 'All')
+const categorySections = computed(() => isLabelFiltering.value
   ? [{ category: '', foods: filteredFoods.value, totalCount: 0, eatenCount: 0 }]
   : categories.slice(1).map((category) => ({
   category,
@@ -45,7 +49,7 @@ const categorySections = computed(() => isFiltering.value
   totalCount: foods.filter((food) => food.category === category).length,
   eatenCount: foods.filter((food) => food.category === category && eatenFoods.value.includes(food.id)).length
 })).filter((section) => section.foods.length))
-const essentialFoods = computed(() => isFiltering.value ? [] : filteredFoods.value.filter((food) => food.essential))
+const essentialFoods = computed(() => isLabelFiltering.value ? [] : filteredFoods.value.filter((food) => food.essential))
 const selectedFood = ref<(typeof foods)[number] | null>(null)
 const checkinFood = ref<(typeof foods)[number] | null>(null)
 const editingCheckin = ref<Checkin | null>(null)
@@ -189,8 +193,8 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
       <h1>Food <em>Pokedex.</em></h1>
       <p v-if="syncError" class="auth-error">{{ syncError }}</p>
       <div class="progress-row">
-        <div><strong>{{ eatenCount }}</strong><span> / {{ foods.length }} foods tried</span></div>
-        <div class="progress-track"><div class="progress-fill" :style="{ width: `${(eatenCount / foods.length) * 100}%` }" /></div>
+        <div><strong>{{ progressCount }}</strong><span> / {{ progressTotal }} {{ progressTotal === essentialCount ? 'essential ' : '' }}foods tried</span></div>
+        <div class="progress-track"><div class="progress-fill" :style="{ width: `${(progressCount / progressTotal) * 100}%` }" /></div>
       </div>
     </header>
 
@@ -218,7 +222,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
     <section v-if="essentialFoods.length" class="food-section" aria-live="polite">
       <h2 class="section-title">Essential</h2>
       <div class="food-grid">
-      <article v-for="food in essentialFoods" :key="food.id" class="food-card" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
+      <article v-for="food in essentialFoods" :key="food.id" class="food-card" :class="{ eaten: eatenFoods.includes(food.id) }" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
         <div class="food-art" :style="{ backgroundColor: food.color }">
           <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" />
           <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
@@ -238,10 +242,10 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
       </article>
       </div>
     </section>
-    <section v-for="section in categorySections" :key="section.category || 'filtered'" class="food-section" :class="{ 'flat-results': isFiltering }" aria-live="polite">
-      <h2 v-if="!isFiltering" class="section-title">{{ section.category }} <span class="category-progress"><span class="category-progress-bar"><span :style="{ width: `${section.eatenCount / section.totalCount * 100}%` }" /></span><small>{{ section.eatenCount }}/{{ section.totalCount }}</small></span></h2>
+    <section v-for="section in categorySections" :key="section.category || 'filtered'" class="food-section" :class="{ 'flat-results': isLabelFiltering }" aria-live="polite">
+      <h2 v-if="!isLabelFiltering" class="section-title">{{ section.category }} <span class="category-progress"><span class="category-progress-bar"><span :style="{ width: `${section.eatenCount / section.totalCount * 100}%` }" /></span><small>{{ section.eatenCount }}/{{ section.totalCount }}</small></span></h2>
       <div class="food-grid">
-        <article v-for="food in section.foods" :key="food.id" class="food-card" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
+        <article v-for="food in section.foods" :key="food.id" class="food-card" :class="{ eaten: eatenFoods.includes(food.id) }" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
           <div class="food-art" :style="{ backgroundColor: food.color }">
             <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" />
             <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>

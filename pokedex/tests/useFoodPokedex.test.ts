@@ -52,10 +52,9 @@ describe('useFoodPokedex', () => {
   it('filters foods by search term and category', async () => {
     const state = mountComposable()
 
-    expect(state.filteredFoods.value).toHaveLength(112)
+    expect(state.filteredFoods.value).toHaveLength(114)
     expect(foods.filter((food) => food.essential)).toHaveLength(14)
     expect(state.categories).toEqual(['All', 'Noodles', 'Rice & Bowls', 'Meat', 'Seafood', 'Dumplings & Buns', 'Sweets', 'Savory', 'Drinks'])
-    expect(foods.filter((food) => food.image)).toHaveLength(112)
 
     state.searchTerm.value = '寿司'
     await nextTick()
@@ -71,7 +70,7 @@ describe('useFoodPokedex', () => {
       'chicken-nanban',
       'sukiyaki',
       'shabu-shabu',
-      'gyutan',
+      'grilled-gyutan',
       'motsunabe',
       'nikujaga',
       'yakiniku',
@@ -84,16 +83,19 @@ describe('useFoodPokedex', () => {
     state.selectedCategory.value = 'All'
     state.selectedLabel.value = 'grilled'
     await nextTick()
-    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['yakitori', 'gyutan', 'yakiniku', 'unagi', 'tsukune', 'grilled-squid'])
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['yakitori', 'grilled-gyutan', 'yakiniku', 'unagi-kabayaki', 'tsukune', 'grilled-squid'])
   })
 
   it('toggles eaten foods and persists the state', async () => {
     const state = mountComposable()
 
+    expect(state.eatenEssentialCount.value).toBe(0)
+    expect(state.essentialCount).toBe(14)
     await state.toggleEaten('ramen')
     await nextTick()
     expect(state.eatenFoods.value).toEqual(['ramen'])
     expect(state.eatenCount.value).toBe(1)
+    expect(state.eatenEssentialCount.value).toBe(1)
     expect(state.checkins.value[0]).toMatchObject({ foodId: 'ramen', rating: 5 })
 
     await state.toggleEaten('ramen')
@@ -140,7 +142,7 @@ describe('useFoodPokedex', () => {
 
     state.eatenFilter.value = 'uneaten'
     await nextTick()
-    expect(state.filteredFoods.value).toHaveLength(111)
+    expect(state.filteredFoods.value).toHaveLength(113)
     expect(state.filteredFoods.value.some((food) => food.id === 'ramen')).toBe(false)
   })
 

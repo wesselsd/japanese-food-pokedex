@@ -45,6 +45,8 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
     })
   })
   const eatenCount = computed(() => eatenFoods.value.length)
+  const essentialCount = foodList.filter((food) => food.essential).length
+  const eatenEssentialCount = computed(() => eatenFoods.value.filter((id) => foodList.some((food) => food.id === id && food.essential)).length)
 
   async function checkIn(id: string, rating: number, location = '', locationDetails?: FoodLocation) {
     if (rating < 1 || rating > 5) throw new Error('Rating must be between 1 and 5.')
@@ -187,5 +189,5 @@ export function useFoodPokedex(foodList: Food[], user: Readonly<Ref<User | null>
       if (!user.value && typeof window !== 'undefined') localStorage.setItem('pokedex-selected-photos', JSON.stringify(value))
     }, { deep: true })
 
-    return { checkins, eatenFoods, photos, selectedPhotos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, removePhoto, selectPhoto }
+    return { checkins, eatenFoods, photos, selectedPhotos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, filteredFoods, eatenCount, essentialCount, eatenEssentialCount, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, removePhoto, selectPhoto }
 }
