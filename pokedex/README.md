@@ -44,6 +44,42 @@ npm run test:watch
 
 The initial tests cover the `useFoodPokedex` composable: searching, category filtering, eaten-state tracking, and local-storage restoration.
 
+Run the browser-level end-to-end tests against the generated static site:
+
+```bash
+npm run test:e2e
+```
+
+The first Playwright run may need a browser installation:
+
+```bash
+npx playwright install chromium
+```
+
+To watch the tests in a visible browser, use headed mode:
+
+```bash
+npx playwright test --headed
+```
+
+To pause execution and inspect each step with the Playwright Inspector:
+
+```bash
+npx playwright test --debug
+```
+
+Playwright UI mode is also available for selecting and rerunning individual tests:
+
+```bash
+npx playwright test --ui
+```
+
+To run one journey, pass its spec path and an optional title filter:
+
+```bash
+npx playwright test tests/e2e/catalog.spec.ts -g "photo"
+```
+
 ## Supabase authentication
 
 Create a Supabase project, then copy `.env.example` to `.env` and fill in the project URL and public anonymous key:
@@ -56,29 +92,12 @@ The public anonymous key is safe to use in the browser. Do not put a Supabase se
 
 When Supabase credentials are configured, the app shows sign-in and account-creation controls. Authentication code is isolated in `adapter/supabase/`, so the provider can be replaced later.
 
-The initial database migration is in `supabase/migrations/20260905205000_create_foods.sql`. Run it in the Supabase SQL Editor before running the integration test:
+The optional Supabase integration smoke test uses the configured public
+credentials to verify auth connectivity:
 
 ```bash
 npm run test:integration
 ```
-
-The integration test reads one row from `public.foods` using the publishable key.
-
-To persist eaten foods and photos per account, also run:
-
-```text
-supabase/migrations/20260905211500_create_user_progress.sql
-```
-
-This creates the user-scoped progress table and private `food-photos` Storage bucket with row-level security policies.
-
-To expand the catalogue and change food categories into multi-value tags, run:
-
-```text
-supabase/migrations/20260905223000_expand_food_catalog_and_tags.sql
-```
-
-This adds the first 50 non-chain foods. Chains, drinks, and very specific sushi/yakiniku ingredient variants are intentionally reserved for later catalogue passes.
 
 ## Photo uploads
 
