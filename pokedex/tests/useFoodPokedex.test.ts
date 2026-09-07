@@ -1,16 +1,20 @@
 import { mount } from '@vue/test-utils'
 import { nextTick, ref } from 'vue'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { foodLabels, foods } from '../data/foods'
 import { useFoodPokedex } from '../composables/useFoodPokedex'
 import { createLocalProgressStore } from '../adapter/localProgress'
 
 function mountComposable(foodList = foods) {
+  return mountComposableWithStore(foodList, createLocalProgressStore())
+}
+
+function mountComposableWithStore(foodList: typeof foods, store: ReturnType<typeof createLocalProgressStore>) {
   let state!: ReturnType<typeof useFoodPokedex>
 
   mount({
     setup() {
-      state = useFoodPokedex(foodList, ref(createLocalProgressStore()))
+      state = useFoodPokedex(foodList, ref(store))
       return {}
     },
     template: '<div />'
@@ -230,5 +234,15 @@ describe('useFoodPokedex', () => {
 
     expect(state.eatenFoods.value).toEqual(['sushi', 'onigiri'])
     expect(state.eatenCount.value).toBe(2)
+  })
+
+  it('surfaces progress-store load failures', async () => {
+    const store = createLocalProgressStore()
+    vi.spyOn(store, 'load').mockRejectedValue(new Error('Progress unavailable'))
+
+    const state = mountComposableWithStore(foods, store)
+    await nextTick()
+
+    expect(state.syncError.value).toBe('Progress unavailable')
   })
 })

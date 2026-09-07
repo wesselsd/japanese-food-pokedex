@@ -96,18 +96,45 @@ export function useFoodPokedex(foodList: Food[], progressStore: Readonly<Ref<Pro
     selectedPhotos.value = { ...selectedPhotos.value, [foodId]: photoId }
   }
 
-    watch(progressStore, async (nextStore) => {
-      if (!nextStore) return
-      try {
-        syncError.value = ''
-        const savedState = await nextStore.load()
-        checkins.value = savedState.checkins
-        photos.value = savedState.photos
-        selectedPhotos.value = savedState.selectedPhotos
-      } catch (cause) {
-        syncError.value = cause instanceof Error ? cause.message : 'Unable to load saved progress.'
-      }
-    }, { immediate: true })
+  watch(progressStore, async (nextStore) => {
+    if (!nextStore) return
+    try {
+      syncError.value = ''
+      const savedState = await nextStore.load()
+      checkins.value = savedState.checkins
+      photos.value = savedState.photos
+      selectedPhotos.value = savedState.selectedPhotos
+    } catch (cause) {
+      syncError.value = cause instanceof Error ? cause.message : 'Unable to load saved progress.'
+    }
+  }, { immediate: true })
 
-    return { checkins, eatenFoods, photos, selectedPhotos, searchTerm, selectedCategory, selectedLabel, eatenFilter, categories, labels, visibleFoods, lockedVariationCount, filteredFoods, eatenCount, essentialCount, eatenEssentialCount, progressCount, progressTotal, checkIn, updateCheckin, deleteCheckin, toggleEaten, savePhoto, removePhoto, selectPhoto }
+  return {
+    checkins,
+    eatenFoods,
+    photos,
+    selectedPhotos,
+    searchTerm,
+    selectedCategory,
+    selectedLabel,
+    eatenFilter,
+    categories,
+    labels,
+    visibleFoods,
+    lockedVariationCount,
+    filteredFoods,
+    eatenCount,
+    essentialCount,
+    eatenEssentialCount,
+    progressCount,
+    progressTotal,
+    syncError,
+    checkIn,
+    updateCheckin,
+    deleteCheckin,
+    toggleEaten,
+    savePhoto,
+    removePhoto,
+    selectPhoto
+  }
 }
