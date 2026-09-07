@@ -141,9 +141,9 @@ HTTP-referrer restrictions, and production must have a valid Google Maps Map ID 
 `AdvancedMarkerElement`.
 
 Supabase migrations must be applied before cloud check-ins, location details, or
-multi-photo persistence can work correctly. The latest migration removes the
-obsolete `user_foods` compatibility table; current check-ins are stored in
-`user_food_checkins`.
+multi-photo persistence can work correctly. The latest migration first preserves
+legacy `user_foods` check-ins and photo paths in `user_food_checkins` and
+`user_food_photos`, then removes the obsolete compatibility table.
 
 ## Tests and validation
 

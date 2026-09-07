@@ -22,10 +22,11 @@ The plan is in progress rather than complete. The current implementation status 
 The product decisions that affect the refactor are now settled. Essentials remain
 the onboarding milestone. After all essentials are eaten, progress counts only
 currently unlocked foods; hidden variations enter the denominator when unlocked
-and do not affect the percentage beforehand. The legacy `user_foods` table is
-removed by migration, while `user_food_photos` remains the active multi-photo
-store with its selected-photo state. The operational checks listed in the
-architecture notes remain valid.
+and do not affect the percentage beforehand. The removal migration preserves
+legacy `user_foods` check-ins and photo paths, then drops that table. The
+`user_food_photos` table remains the active multi-photo store with its
+selected-photo state. The operational checks listed in the architecture notes
+remain valid.
 
 The current unit suite has 58 passing tests across 13 files. The latest measured
 unit coverage is 85.58% statements overall, with the pure domain modules at 100%.
