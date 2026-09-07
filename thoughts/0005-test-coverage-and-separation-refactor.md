@@ -1,11 +1,13 @@
 # Test coverage and separation-of-concerns refactor
 
-Status: implementation in progress
+Status: core refactor complete; integration and UI hardening in progress
 Updated: 2026-09-07
 
 ## Implementation status
 
-The plan is in progress rather than complete. The current implementation status is:
+The core separation-of-concerns refactor is complete. The remaining work is
+focused on live third-party integration coverage and the smaller set of UI paths
+that are not practical to cover through pure domain or adapter tests.
 
 | Phase | Status | Notes |
 |---|---|---|
@@ -35,20 +37,23 @@ Chromium browser.
 
 ## Executive summary
 
-The current test suite is a useful starting point, but it does not yet provide
-confidence in the complete application:
+The current test suite provides strong coverage for the pure domain rules,
+local/cloud adapter contracts, image processing, authentication, and the primary
+catalog/photo journeys. It does not yet provide complete confidence in live
+Supabase persistence or every location/modal interaction:
 
 - `npm test` passes 64 tests.
 - `npm run test:e2e` covers catalog persistence and the photo crop/upload/select/remove journey.
-- `npm run test:integration` still passes one Supabase authentication smoke test.
+- `npm run test:integration` still covers one Supabase authentication smoke test;
+  it does not yet exercise live progress or photo CRUD.
 - Coverage reporting and thresholds are enforced by `.github/workflows/tests.yml`.
 - The Supabase progress adapter, authentication flows, photo processing, and the
   critical root check-in flow have focused automated coverage.
 
-The application has some useful boundaries, especially `ProgressAdapter`,
-`AuthAdapter`, and the pure Google Places parsing helpers. However, the largest
-composable and the root page still combine business rules, persistence, browser
-APIs, presentation decisions, and third-party setup.
+The application now has explicit `ProgressStore`, `AuthAdapter`, Google Maps
+service, image-processing, and pure-domain boundaries. The remaining coupling is
+primarily visual: `app.vue` owns the page-level modal and form state, and
+`LocationPicker.vue` owns map/marker lifecycle around the injected Maps service.
 
 The recommended approach is an incremental refactor, not a rewrite. Extract pure
 domain functions first, then move local persistence and browser/third-party
@@ -56,7 +61,7 @@ integration behind ports, and finally add focused adapter and component tests.
 
 ## Current test baseline
 
-The 58 current unit tests are distributed as follows:
+The 64 current unit tests are distributed as follows:
 
 | Test file | Tests | Current scope |
 |---|---:|---|
@@ -82,7 +87,7 @@ one file.
 
 - Live Supabase progress CRUD and photo lifecycle behavior against an isolated
   test identity or project
-- Google Maps script tag reuse/failure branches and some malformed place payloads
+- Some malformed Google Places payloads
 - Location-selection UI, keyboard interactions, and the remaining root-page modal
   paths
 
@@ -90,52 +95,62 @@ one file.
 
 ### `useFoodPokedex.ts`
 
-This composable currently contains:
+This composable currently coordinates:
 
-- food visibility, hierarchy unlocking, filtering, and progress rules;
-- check-in mutations;
-- localStorage loading and saving;
-- Supabase progress orchestration;
-- image decoding and compression;
-- object URL, `FileReader`, canvas, `Image`, and `crypto` usage.
+- reactive check-ins, eaten state, filtering, visible foods, and progress;
+- calls to pure catalog and check-in domain functions;
+- an injected `ProgressStore` for local or cloud persistence;
+- image compression before passing files to the progress store;
+- explicit synchronization errors.
 
-It also accepts a Supabase `User` type and a cloud adapter, which couples the
-application behavior layer to infrastructure details.
+It no longer imports Supabase user types or accesses localStorage and Supabase
+directly. Browser image APIs remain behind `utils/imageProcessing.ts`.
 
 ### `app.vue`
 
 The root component currently:
 
-- creates the Supabase client and progress adapter;
-- calculates category sections and category progress;
-- calculates highest ratings and star strings;
-- owns modal state and check-in form state;
-- coordinates cropping, photo saving, and location selection;
-- renders the complete catalog UI.
+- creates concrete Supabase and local adapters at the composition boundary;
+- selects the injected local or cloud `ProgressStore`;
+- owns modal state, check-in form state, authentication forms, and file selection;
+- renders the catalog UI and coordinates child components;
+- delegates category sections, ratings, progress, persistence, cropping, and Maps
+  operations to their respective boundaries.
 
-The category progress calculation uses the full catalog for its denominator while
-the visible food list excludes locked variations. This is both a product decision
-and business logic currently embedded in presentation code.
+Category progress receives the visible/unlocked food list, so locked variations
+do not affect category totals or post-onboarding progress until they unlock.
 
 ### `useAuth.ts`
 
-This composable reads runtime configuration, creates the Supabase client, manages
-the auth subscription, and translates failures into UI messages. The
-`AuthAdapter` is a good starting boundary, but the composable still performs
-third-party setup directly.
+This composable receives an injected `AuthAdapter`, manages session lifecycle and
+subscription cleanup, and translates adapter failures into UI messages. Concrete
+Supabase client and adapter construction happens in the composition root.
 
 ### `LocationPicker.vue`
 
-The component combines rendering with Google Maps script loading, library imports,
-geolocation, map setup, marker lifecycle, map clicks, Places searches, and error
-handling. `utils/googlePlaces.ts` already provides a useful pure parsing boundary,
-but the client/service boundary remains inside the Vue component.
+The component combines rendering with map setup, marker lifecycle, map clicks,
+geolocation display, and emitted error states. `adapter/googleMaps.ts` owns script
+loading, library imports, nearby search, point lookup, and geolocation fallback
+logging. `utils/googlePlaces.ts` remains the pure request and response-mapping
+boundary.
 
 ### `ImageCropDialog.vue` and photo handling
 
-The crop dialog owns the cropper UI, while compression and persistence are in
-`useFoodPokedex.ts`. The user-facing photo flow therefore crosses several
-responsibilities without a separately testable image-processing module.
+The crop dialog owns cropper UI and crop readiness/fallback handling.
+`utils/imageProcessing.ts` owns JPEG resizing and the 100KB limit, while
+`ProgressStore` implementations own photo persistence and selected-photo state.
+
+## Current remaining work
+
+The core refactor is complete. The remaining hardening work is:
+
+- add an isolated live Supabase integration flow for check-in and photo CRUD;
+- cover malformed Google Places payloads and the remaining parser error branches;
+- add focused `LocationPicker` selection/error tests and modal keyboard/close tests;
+- decide whether an authenticated browser journey is worth the setup cost, using a
+  dedicated test identity rather than a personal or production account;
+- complete a focused audit for fallback and parsing-error logging;
+- add an ID alias/migration mechanism before making future catalog renames.
 
 ## Target architecture
 
@@ -146,14 +161,14 @@ domain/
   foodCatalog.ts       visibility, hierarchy, filtering, progress
   checkins.ts          check-in and rating rules
 
-adapters/
+adapter/
   localProgress.ts     localStorage implementation
   supabaseProgress.ts  Supabase implementation
   auth.ts              auth port and Supabase implementation
   googleMaps.ts        Maps/Places client and script loading
 
 utils/
-  imageProcessing.ts   crop result validation and <=100KB compression
+  imageProcessing.ts   <=100KB JPEG compression
 
 composables/
   useFoodPokedex.ts    Vue state orchestration
@@ -192,7 +207,7 @@ Do not use the first percentage as a quality target by itself. The initial purpo
 is to reveal untested branches and prevent coverage from falling during the
 refactor.
 
-### Phase 1: Extract and test pure catalog rules
+### Phase 1: Extract and test pure catalog rules — complete
 
 Create pure functions for:
 
@@ -212,14 +227,15 @@ Add tests for:
 - a valid future three-tier chain;
 - missing parents and cycles;
 - locked variations excluded from every filter;
-- the selected essential/root/full-catalog progress policy;
+- the selected essential-first and unlocked-only progress policy;
 - category totals matching the foods that the UI claims to show;
 - duplicate IDs, invalid parent IDs, and catalog count invariants.
 
-This phase should also resolve the current ambiguity around whether category
-progress counts locked variations.
+This phase resolved the progress policy: essentials are the onboarding milestone;
+afterward, only currently unlocked foods count, and hidden variations enter the
+denominator when unlocked.
 
-### Phase 2: Introduce a persistence port
+### Phase 2: Introduce a persistence port — complete
 
 Define an application-facing progress store that does not mention Supabase `User`
 objects. It should cover loading and saving check-ins, photos, and selected photos,
@@ -245,17 +261,20 @@ Add tests for:
 - cloud adapter mapping in both directions;
 - adapter failures without silently changing local state.
 
-### Phase 3: Refactor and test Supabase boundaries
+### Phase 3: Refactor and test Supabase boundaries — contract complete, live test remaining
 
 Keep Supabase-specific query and storage code in the adapter. Add contract-style
 tests with a fake Supabase client for:
 
-- loading check-ins and both legacy and multi-photo records;
+- loading check-ins and current multi-photo records;
 - adding, updating, and deleting check-ins;
 - uploading, selecting, and deleting photos;
 - signed URL creation failures;
 - database and storage errors;
 - user scoping on every query and mutation.
+
+Legacy `user_foods` rows are preserved by the removal migration before that table
+is dropped; the runtime adapter no longer contains a legacy compatibility path.
 
 Retain one live integration suite for the deployed schema. It should use a
 dedicated test identity or isolated test project, create and clean up test data,
@@ -287,7 +306,7 @@ Test:
 `useFoodPokedex.ts` should only coordinate the returned `File` with the selected
 photo adapter.
 
-### Phase 5: Extract Google Maps service behavior
+### Phase 5: Extract Google Maps service behavior — mostly complete
 
 Create a Google Maps/Places service around:
 
@@ -301,7 +320,7 @@ Keep `googlePlaces.ts` as the pure request and response-mapping module. Make
 `LocationPicker.vue` consume the service and render loading, error, and result
 states.
 
-Add tests for:
+Add or maintain tests for:
 
 - missing configuration;
 - existing script reuse;
@@ -343,18 +362,17 @@ After the domain and adapter extraction, add a small number of component tests:
 Avoid testing every implementation detail of the large root template. Prefer
 testing pure functions and a few user-visible integration paths.
 
-### Phase 8: Add an end-to-end smoke path and thresholds
+### Phase 8: Add an end-to-end smoke path and thresholds — partially complete
 
-Add one browser-level happy path covering:
+The current browser-level journeys cover:
 
 ```text
-browse a root food
--> check it in
--> see its variations unlock
--> add a cropped photo
--> save a location
--> reload and see the state restored
+browse a root food -> check it in -> see variations unlock -> reload and restore
+upload a photo -> crop it -> save/select/remove it -> reload and restore
 ```
+
+An authenticated journey and a location-selection journey remain optional follow-up
+coverage.
 
 Once the new tests have been stable for a few changes, add separate thresholds
 for domain logic and the overall project. A reasonable starting policy is a high
