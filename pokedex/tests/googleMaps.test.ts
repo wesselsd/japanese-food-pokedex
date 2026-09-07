@@ -3,6 +3,8 @@ import { createGoogleMapsService, currentLocation } from '../adapter/googleMaps'
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
+  document.querySelectorAll('script[data-google-maps]').forEach((script) => script.remove())
 })
 
 describe('Google Maps service', () => {
@@ -60,6 +62,36 @@ describe('Google Maps service', () => {
 
   it('fails clearly when Maps is not configured', async () => {
     await expect(createGoogleMapsService('').loadMaps()).rejects.toThrow('Google Maps is not configured.')
+  })
+
+  it('loads the Maps script and resolves once the API is available', async () => {
+    let script: HTMLScriptElement | undefined
+    vi.spyOn(document.head, 'appendChild').mockImplementation((node) => {
+      script = node as HTMLScriptElement
+      return node
+    })
+    const service = createGoogleMapsService('test-key')
+    const loading = service.loadMaps()
+
+    expect(script?.src).toContain('key=test-key')
+    const maps = { importLibrary: vi.fn() }
+    vi.stubGlobal('google', { maps })
+    script?.dispatchEvent(new Event('load'))
+
+    await expect(loading).resolves.toBe(maps)
+  })
+
+  it('reports script-loading failures', async () => {
+    let script: HTMLScriptElement | undefined
+    vi.spyOn(document.head, 'appendChild').mockImplementation((node) => {
+      script = node as HTMLScriptElement
+      return node
+    })
+    const loading = createGoogleMapsService('test-key').loadMaps()
+
+    script?.dispatchEvent(new Event('error'))
+
+    await expect(loading).rejects.toThrow('Unable to load Google Maps.')
   })
 
   it('uses the browser location and falls back when it is unavailable', async () => {

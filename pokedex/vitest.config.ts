@@ -9,7 +9,15 @@ export default defineConfig(({ mode }) => {
   plugins: [vue()],
   test: {
     environment: 'happy-dom',
-    include: ['tests/**/*.test.ts']
+    include: ['tests/**/*.test.ts'],
+    coverage: {
+      thresholds: {
+        statements: 75,
+        branches: 65,
+        functions: 60,
+        lines: 75
+      }
+    }
   },
   define: {
     'import.meta.env.NUXT_PUBLIC_SUPABASE_URL': JSON.stringify(env.NUXT_PUBLIC_SUPABASE_URL),

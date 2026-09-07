@@ -1,6 +1,6 @@
 # Test coverage and separation-of-concerns refactor
 
-Status: proposed implementation plan
+Status: implementation in progress
 Updated: 2026-09-07
 
 ## Implementation status
@@ -9,30 +9,29 @@ The plan is in progress rather than complete. The current implementation status 
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0. Measurable baseline | Mostly complete | Coverage provider and `npm run test:coverage` exist; CI thresholds/workflow remain |
+| 0. Measurable baseline | Complete | Coverage provider, thresholds, and a GitHub Actions test workflow are in place |
 | 1. Pure catalog rules | Complete | Catalog, hierarchy, progress, category sections, and ratings are extracted and tested |
 | 2. Persistence port | Mostly complete | Local store, cloud binding, photo persistence, and local-store tests exist |
 | 3. Supabase boundaries | Partial | Contract tests exist; live integration still only checks authentication |
 | 4. Image processing | Complete | Compression is isolated and the 100KB behavior is tested |
-| 5. Google Maps service | Mostly complete | Loading/search/geolocation service is extracted; some SDK and component error paths remain |
+| 5. Google Maps service | Mostly complete | Loading/search/geolocation service is extracted; component error/marker paths are covered, with script-tag branches remaining |
 | 6. Authentication | Complete | Auth construction is injected and both composable and adapter behavior are tested |
-| 7. Component coverage | Partial | Crop dialog, location paths, and root check-in/unlock flow have coverage; photo/modal editing flows remain |
-| 8. E2E and thresholds | Not started | No browser smoke path or CI coverage policy exists yet |
+| 7. Component coverage | Partial | Crop dialog, Maps paths, root check-in/unlock, edit/delete, and photo selection/removal have coverage; location-selection UI and keyboard/modal paths remain |
+| 8. E2E and thresholds | Partial | CI coverage thresholds are enforced; a browser-level smoke path remains |
 
-The current suite has 51 passing tests across 13 files. The latest measured
-coverage is 80.61% statements overall, with the pure domain modules at 100%.
+The current suite has 57 passing tests across 13 files. The latest measured
+coverage is 85.58% statements overall, with the pure domain modules at 100%.
 
 ## Executive summary
 
 The current test suite is a useful starting point, but it does not yet provide
 confidence in the complete application:
 
-- `npm test` passes 51 tests.
+- `npm test` passes 57 tests.
 - `npm run test:integration` still passes one Supabase authentication smoke test.
-- Coverage reporting is configured, but no CI threshold or dedicated test workflow
-  exists yet.
-- The Supabase progress adapter, authentication flows, photo processing, and most
-  UI flows have no meaningful automated coverage.
+- Coverage reporting and thresholds are enforced by `.github/workflows/tests.yml`.
+- The Supabase progress adapter, authentication flows, photo processing, and the
+  critical root check-in flow have focused automated coverage.
 
 The application has some useful boundaries, especially `ProgressAdapter`,
 `AuthAdapter`, and the pure Google Places parsing helpers. However, the largest
@@ -45,13 +44,22 @@ integration behind ports, and finally add focused adapter and component tests.
 
 ## Current test baseline
 
-The 19 existing tests are distributed as follows:
+The 53 current tests are distributed as follows:
 
 | Test file | Tests | Current scope |
 |---|---:|---|
-| `tests/app.test.ts` | 2 | Initial rendering, locked-variation notice, root check-in, and unlock flow |
-| `tests/useFoodPokedex.test.ts` | 14 | Labels, filtering, check-ins, local restoration, progress, and variation unlocking |
-| `tests/googlePlaces.test.ts` | 4 | Places request construction, response conversion, missing names, and one nearby-list component path |
+| `tests/app.test.ts` | 4 | Initial rendering, check-in/unlock, check-in edit/delete, and photo selection/removal |
+| `tests/checkins.test.ts` | 2 | Rating and star formatting rules |
+| `tests/foodCatalog.test.ts` | 6 | Hierarchy, filtering, progress, categories, and catalog visibility |
+| `tests/googleMaps.test.ts` | 6 | Maps service loading/failure, nearby search, point lookup, configuration, and geolocation |
+| `tests/googlePlaces.test.ts` | 6 | Places parsing, nearby rendering, map initialization errors, and marker cleanup |
+| `tests/imageCropDialog.test.ts` | 2 | Crop cancellation and JPEG crop output |
+| `tests/imageProcessing.test.ts` | 2 | Progressive compression and 100KB limit |
+| `tests/localProgress.test.ts` | 3 | Local persistence, legacy data, photos, and malformed data |
+| `tests/supabaseAuth.test.ts` | 3 | Supabase auth adapter behavior and error propagation |
+| `tests/supabaseProgress.test.ts` | 4 | Supabase progress and photo adapter contracts |
+| `tests/useAuth.test.ts` | 3 | Auth orchestration and injected adapter behavior |
+| `tests/useFoodPokedex.test.ts` | 15 | Labels, filtering, check-ins, local restoration, progress, and variation unlocking |
 | `tests/integration/supabase.test.ts` | 1 | `auth.getSession()` against the configured Supabase project |
 
 Because `vitest.config.ts` includes `tests/**/*.test.ts`, the integration test is
@@ -60,24 +68,13 @@ one file.
 
 ### Important uncovered behavior
 
-- Supabase progress loading, check-in CRUD, photo upload/deletion, signed URLs,
-  selected-photo persistence, and error handling
-- Sign-in, sign-up, sign-out, auth state changes, and authentication errors
-- Image decoding, 16:9 crop output, progressive compression, and the 100KB limit
-- Local photo persistence, legacy photo formats, malformed local data, and user
-  switching
-- Check-in update and deletion through both local and cloud paths
-- Invalid food IDs, invalid rating values beyond the basic range check, missing
-  parent entries, cyclic hierarchy data, and deeper hierarchy behavior
-- Google Maps script loading, geolocation, map clicks, markers, nearby-search
-  failures, missing coordinates, missing IDs, and missing URLs
-- Crop-dialog behavior, modal flows, photo selection/removal, check-in editing,
-  keyboard interactions, and the main page rendering
+- Live Supabase progress CRUD and photo lifecycle behavior against an isolated
+  test identity or project
+- Google Maps script tag reuse/failure branches and some malformed place payloads
+- Location-selection UI, keyboard interactions, and the remaining root-page modal
+  paths
 - Catalog invariants such as unique IDs, unique numbers, valid parent references,
   and artwork naming consistency
-
-The project cannot currently state a numerical coverage percentage because no
-coverage provider or reporting configuration is installed.
 
 ## Current responsibility map
 

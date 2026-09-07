@@ -89,4 +89,74 @@ describe('Google Places business logic', () => {
     expect(firstRestaurant.text()).toContain('Schaffhauserstrasse 29, 8006 Zürich, Switzerland')
   })
 
+  it('emits a useful error when the map cannot be initialized', async () => {
+    vi.stubGlobal('google', {
+      maps: {
+        importLibrary: vi.fn().mockRejectedValue(new Error('Maps service unavailable'))
+      }
+    })
+    vi.stubGlobal('useRuntimeConfig', () => ({
+      public: {
+        googleMapsApiKey: 'test-key',
+        googleMapsMapId: 'test-map-id'
+      }
+    }))
+
+    const wrapper = mount(LocationPicker)
+    await vi.waitFor(() => expect(wrapper.emitted('error')).toEqual([['Maps service unavailable']]))
+  })
+
+  it('clears the previous marker when selecting another map point', async () => {
+    let clickHandler: ((event: { latLng: { lat: () => number; lng: () => number } }) => void) | undefined
+    const markers: Array<{ map: unknown }> = []
+    const searchNearby = vi.fn().mockResolvedValue({
+      places: [{
+        id: 'place-3',
+        displayName: 'Ramen Shop',
+        formattedAddress: 'Osaka',
+        location: { lat: 34.7, lng: 135.5 },
+        googleMapsURI: 'https://maps.example/place-3'
+      }]
+    })
+    class FakeMap {
+      addListener(_event: string, callback: typeof clickHandler) {
+        clickHandler = callback ?? undefined
+      }
+    }
+    class FakeMarker {
+      map: unknown
+
+      constructor(options: { map: unknown }) {
+        this.map = options.map
+        markers.push(this)
+      }
+    }
+    const maps = {
+      importLibrary: async (library: string) => {
+        if (library === 'maps') return { Map: FakeMap }
+        if (library === 'marker') return { AdvancedMarkerElement: FakeMarker }
+        return { Place: { searchNearby } }
+      }
+    }
+    vi.stubGlobal('google', { maps })
+    vi.stubGlobal('useRuntimeConfig', () => ({
+      public: {
+        googleMapsApiKey: 'test-key',
+        googleMapsMapId: 'test-map-id'
+      }
+    }))
+
+    const wrapper = mount(LocationPicker)
+    await vi.waitFor(() => expect(clickHandler).toBeTypeOf('function'))
+    clickHandler?.({ latLng: { lat: () => 34.7, lng: () => 135.5 } })
+    await vi.waitFor(() => expect(wrapper.emitted('selected')).toHaveLength(1))
+    const firstMarker = markers[0]
+
+    clickHandler?.({ latLng: { lat: () => 34.8, lng: () => 135.6 } })
+    await vi.waitFor(() => expect(markers).toHaveLength(2))
+
+    expect(firstMarker.map).toBeNull()
+    expect(markers[1].map).not.toBeNull()
+  })
+
 })
