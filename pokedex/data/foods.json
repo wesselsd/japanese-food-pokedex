@@ -1826,7 +1826,7 @@
     "number": "121",
     "name": "Seseri",
     "japaneseName": "せせり",
-    "description": "Seseri is chicken neck meat, removed from around the neck bones and valued for its juicy fat and pleasantly springy texture. The small strips are grilled loose at yakiniku restaurants or threaded onto skewers for yakitori. Salt, pepper, citrus, or a savory sauce commonly accompany it, and the chicken is cooked thoroughly before eating.",
+    "description": "Seseri is chicken neck meat, removed from around the neck bones and valued for its juicy fat and pleasantly springy texture. The small strips are threaded onto skewers and grilled over charcoal for yakitori, though they can also be cooked loose at yakiniku restaurants. Salt, pepper, citrus, or a savory sauce commonly accompany it, and the chicken is cooked thoroughly before eating.",
     "emoji": "🍗",
     "color": "#d9ad8b",
     "category": "Meat",
@@ -1835,7 +1835,7 @@
       "meat",
       "grilled"
     ],
-    "parentId": "yakiniku"
+    "parentId": "yakitori"
   },
   {
     "id": "ichibo",
