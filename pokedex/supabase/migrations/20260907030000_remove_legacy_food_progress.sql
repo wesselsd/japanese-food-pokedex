@@ -5,6 +5,9 @@ create unique index if not exists user_food_photos_one_selected_per_food
   on public.user_food_photos (user_id, food_id)
   where is_selected;
 
+drop policy if exists "Users can update their food photos"
+  on public.user_food_photos;
+
 create policy "Users can update their food photos"
   on public.user_food_photos for update
   using (auth.uid() = user_id)
@@ -44,8 +47,8 @@ update public.user_food_photos as photo
 set is_selected = (
   legacy.selected_photo_id is not null
   and (
-    legacy.selected_photo_id = photo.id::text
-    or legacy.selected_photo_id = photo.photo_path
+    legacy.selected_photo_id::text = photo.id::text
+    or legacy.selected_photo_id::text = photo.photo_path
   )
 )
 from public.user_foods as legacy
