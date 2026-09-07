@@ -1,37 +1,17 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue'
-import type { FoodLocation } from '~/adapter/supabase/progress'
 import {
-  locationFromPlace,
-  nearbyRestaurantSearchRequest,
+  createGoogleMapsService,
+  currentLocation,
+  type GoogleMap,
+  type MapsLibrary,
+  type MarkerLibrary
+} from '~/adapter/googleMaps'
+import {
   placeName,
   type GooglePlace,
-  type LatLngLiteral,
+  type LatLngLiteral
 } from '~/utils/googlePlaces'
-type GoogleMap = {
-  addListener: (event: string, callback: (event: { latLng: { lat: () => number; lng: () => number } }) => void) => void
-}
-type GoogleMaps = {
-  importLibrary: (library: string) => Promise<unknown>
-}
-type GoogleWindow = Window & { google?: { maps: GoogleMaps } }
-type PlacesLibrary = {
-  Place: {
-    searchNearby: (request: {
-      fields: string[]
-      includedTypes?: string[]
-      locationRestriction: { center: LatLngLiteral; radius: number }
-      maxResultCount: number
-      rankPreference?: 'DISTANCE' | 'POPULARITY'
-      }) => Promise<{ places: GooglePlace[] }>
-  }
-}
-type MapsLibrary = {
-  Map: new (element: HTMLElement, options: { center: LatLngLiteral; zoom: number; mapId: string; mapTypeControl: boolean; streetViewControl: boolean }) => GoogleMap
-}
-type MarkerLibrary = {
-  AdvancedMarkerElement: new (options: { map: GoogleMap; position: LatLngLiteral; content?: HTMLElement }) => { map: GoogleMap | null }
-}
 
 const emit = defineEmits<{
   selected: [location: FoodLocation]
@@ -44,59 +24,19 @@ const mode = ref<'map' | 'nearby'>('map')
 const nearbyRestaurants = shallowRef<GooglePlace[]>([])
 const nearbyLoading = ref(false)
 const currentCenter = ref<LatLngLiteral>({ lat: 35.6762, lng: 139.6503 })
+const mapsService = createGoogleMapsService(config.public.googleMapsApiKey)
 let marker: { map: GoogleMap | null } | null = null
 let currentLocationMarker: { map: GoogleMap | null } | null = null
-let mapsPromise: Promise<GoogleMaps> | null = null
 
-function loadMaps(): Promise<GoogleMaps> {
-  if (mapsPromise) return mapsPromise
-  mapsPromise = new Promise((resolve, reject) => {
-    const finish = () => {
-      const maps = (window as GoogleWindow).google?.maps
-      if (maps?.importLibrary) resolve(maps)
-      else reject(new Error('Google Maps loaded without its API.'))
-    }
-    if ((window as GoogleWindow).google?.maps) {
-      finish()
-      return
-    }
-    if (!config.public.googleMapsApiKey) {
-      reject(new Error('Google Maps is not configured.'))
-      return
-    }
-    const existing = document.querySelector<HTMLScriptElement>('script[data-google-maps]')
-    if (existing) {
-      existing.addEventListener('load', finish, { once: true })
-      existing.addEventListener('error', () => reject(new Error('Unable to load Google Maps.')), { once: true })
-      return
-    }
-    const script = document.createElement('script')
-    script.dataset.googleMaps = 'true'
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(config.public.googleMapsApiKey)}&v=weekly`
-    script.async = true
-    script.defer = true
-    script.addEventListener('load', finish, { once: true })
-    script.addEventListener('error', () => reject(new Error('Unable to load Google Maps.')), { once: true })
-    document.head.appendChild(script)
-  })
-  return mapsPromise
-}
-
-async function selectLocation(map: GoogleMap, places: PlacesLibrary, point: LatLngLiteral) {
+async function selectLocation(map: GoogleMap, point: LatLngLiteral) {
   try {
     if (marker) marker.map = null
-    const maps = await loadMaps()
+    const maps = await mapsService.loadMaps()
     const markerLibrary = await maps.importLibrary('marker') as MarkerLibrary
     const selectedMarker = document.createElement('div')
     selectedMarker.className = 'selected-location-marker'
     marker = new markerLibrary.AdvancedMarkerElement({ map, position: point, content: selectedMarker })
-    const result = await places.Place.searchNearby({
-      fields: ['id', 'displayName', 'formattedAddress', 'location', 'googleMapsURI'],
-      locationRestriction: { center: point, radius: 50 },
-      maxResultCount: 1
-    })
-    const place = result.places[0]
-    const location = place && locationFromPlace(place)
+    const location = await mapsService.findPlaceAt(point)
     if (!location) {
       emit('error', 'Google Maps could not find a named place at that point. Try clicking closer to the location.')
       return
@@ -110,10 +50,7 @@ async function selectLocation(map: GoogleMap, places: PlacesLibrary, point: LatL
 async function loadNearbyRestaurants() {
   nearbyLoading.value = true
   try {
-    const maps = await loadMaps()
-    const places = await maps.importLibrary('places') as PlacesLibrary
-    const result = await places.Place.searchNearby(nearbyRestaurantSearchRequest(currentCenter.value))
-    nearbyRestaurants.value = result.places
+    nearbyRestaurants.value = await mapsService.searchNearbyRestaurants(currentCenter.value)
   } catch (cause) {
     emit('error', cause instanceof Error ? cause.message : 'Unable to load nearby restaurants.')
   } finally {
@@ -129,24 +66,13 @@ function chooseNearby(place: GooglePlace) {
 
 async function setupMap() {
   try {
-    const maps = await loadMaps()
+    const maps = await mapsService.loadMaps()
     const mapsLibrary = await maps.importLibrary('maps') as MapsLibrary
-    const placesLibrary = await maps.importLibrary('places') as PlacesLibrary
     if (!mapHost.value) return
     let center = { lat: 35.6762, lng: 139.6503 }
-    let hasCurrentLocation = false
-    if (navigator.geolocation) {
-      center = await new Promise<LatLngLiteral>((resolve) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            hasCurrentLocation = true
-            resolve({ lat: position.coords.latitude, lng: position.coords.longitude })
-          },
-          () => resolve(center),
-          { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
-        )
-      })
-    }
+    const initialCenter = await currentLocation(center)
+    const hasCurrentLocation = initialCenter !== center
+    center = initialCenter
     const map = new mapsLibrary.Map(mapHost.value, {
       center,
       zoom: hasCurrentLocation ? 15 : 12,
@@ -166,7 +92,7 @@ async function setupMap() {
       })
     }
     map.addListener('click', (event) => {
-      void selectLocation(map, placesLibrary, { lat: event.latLng.lat(), lng: event.latLng.lng() })
+      void selectLocation(map, { lat: event.latLng.lat(), lng: event.latLng.lng() })
     })
   } catch (cause) {
     emit('error', cause instanceof Error ? cause.message : 'Unable to load Google Maps.')

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { foods } from '../data/foods'
 import {
   catalogProgress,
+  categorySections,
   filterFoods,
   isFoodUnlocked,
   lockedVariationCount,
@@ -128,5 +129,27 @@ describe('food catalog domain rules', () => {
       essentialCount: 14,
       progressTotal: 14
     })
+  })
+
+  it('builds category sections from filtered foods and eaten state', () => {
+    const sections = categorySections(
+      foods.filter((food) => food.category === 'Noodles'),
+      foods,
+      ['All', 'Noodles'],
+      new Set(['ramen']),
+      false
+    )
+
+    expect(sections).toEqual([expect.objectContaining({
+      category: 'Noodles',
+      totalCount: 11,
+      eatenCount: 1
+    })])
+    expect(categorySections([], foods, ['All', 'Noodles'], new Set(), true)).toEqual([{
+      category: '',
+      foods: [],
+      totalCount: 0,
+      eatenCount: 0
+    }])
   })
 })

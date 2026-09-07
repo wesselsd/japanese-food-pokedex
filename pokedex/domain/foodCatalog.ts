@@ -18,6 +18,13 @@ export type FoodProgress = {
   progressTotal: number
 }
 
+export type CategorySection = {
+  category: string
+  foods: Food[]
+  totalCount: number
+  eatenCount: number
+}
+
 export function isFoodUnlocked(
   food: Food,
   foodById: ReadonlyMap<string, Food>,
@@ -79,4 +86,21 @@ export function catalogProgress(foodList: Food[], eatenFoodIds: ReadonlySet<stri
     progressCount: essentialsComplete ? eatenCount : eatenEssentialCount,
     progressTotal: essentialsComplete ? foodList.length : essentialCount
   }
+}
+
+export function categorySections(
+  filteredFoodList: Food[],
+  foodList: Food[],
+  categories: string[],
+  eatenFoodIds: ReadonlySet<string>,
+  flatResults: boolean
+): CategorySection[] {
+  if (flatResults) return [{ category: '', foods: filteredFoodList, totalCount: 0, eatenCount: 0 }]
+
+  return categories.slice(1).map((category) => ({
+    category,
+    foods: filteredFoodList.filter((food) => food.category === category && !food.essential),
+    totalCount: foodList.filter((food) => food.category === category).length,
+    eatenCount: foodList.filter((food) => food.category === category && eatenFoodIds.has(food.id)).length
+  })).filter((section) => section.foods.length)
 }

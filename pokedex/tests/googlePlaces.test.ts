@@ -1,5 +1,4 @@
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import nearbyRestaurantsResponse from './fixtures/realresponse.json'
 import LocationPicker from '../components/LocationPicker.vue'
@@ -83,7 +82,7 @@ describe('Google Places business logic', () => {
 
     const wrapper = mount(LocationPicker)
     await wrapper.find('button.location-tab:not(.active)').trigger('click')
-    await nextTick()
+    await vi.waitFor(() => expect(wrapper.find('.nearby-restaurant').exists()).toBe(true))
 
     const firstRestaurant = wrapper.find('.nearby-restaurant')
     expect(firstRestaurant.text()).toContain('Al Ventotto')

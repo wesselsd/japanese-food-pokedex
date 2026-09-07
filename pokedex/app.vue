@@ -5,14 +5,19 @@ import type { Checkin, FoodLocation, ProgressStore } from './domain/progress'
 import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
 import { getSupabaseClient } from './adapter/supabase/client'
+import { createSupabaseAuthAdapter } from './adapter/supabase/auth'
 import { bindProgressAdapter, createSupabaseProgressAdapter } from './adapter/supabase/progress'
 import { createLocalProgressStore } from './adapter/localProgress'
 import ImageCropDialog from './components/ImageCropDialog.vue'
 import LocationPicker from './components/LocationPicker.vue'
 import { highestRating, ratingStars } from './domain/checkins'
+import { categorySections as getCategorySections } from './domain/foodCatalog'
 
-const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth()
 const config = useRuntimeConfig()
+const configuredAuthAdapter = config.public.supabaseUrl && config.public.supabaseAnonKey
+  ? createSupabaseAuthAdapter(getSupabaseClient(config.public.supabaseUrl, config.public.supabaseAnonKey))
+  : null
+const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth(configuredAuthAdapter)
 const cloudProgressAdapter = isConfigured.value
   ? createSupabaseProgressAdapter(getSupabaseClient(config.public.supabaseUrl, config.public.supabaseAnonKey))
   : null
@@ -46,14 +51,13 @@ const {
   syncError
 } = useFoodPokedex(foods, progressStore)
 const isLabelFiltering = computed(() => selectedLabel.value !== 'All')
-const categorySections = computed(() => isLabelFiltering.value
-  ? [{ category: '', foods: filteredFoods.value, totalCount: 0, eatenCount: 0 }]
-  : categories.slice(1).map((category) => ({
-  category,
-  foods: filteredFoods.value.filter((food) => food.category === category && !food.essential),
-  totalCount: foods.filter((food) => food.category === category).length,
-  eatenCount: foods.filter((food) => food.category === category && eatenFoods.value.includes(food.id)).length
-})).filter((section) => section.foods.length))
+const categorySections = computed(() => getCategorySections(
+  filteredFoods.value,
+  foods,
+  categories,
+  new Set(eatenFoods.value),
+  isLabelFiltering.value
+))
 const essentialFoods = computed(() => isLabelFiltering.value ? [] : filteredFoods.value.filter((food) => food.essential))
 const selectedFood = ref<(typeof foods)[number] | null>(null)
 const checkinFood = ref<(typeof foods)[number] | null>(null)

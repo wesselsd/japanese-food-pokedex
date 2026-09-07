@@ -1,30 +1,27 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
-import { getSupabaseClient } from '~/adapter/supabase/client'
-import { createSupabaseAuthAdapter, type AuthAdapter } from '~/adapter/supabase/auth'
+import type { AuthAdapter } from '~/adapter/supabase/auth'
 
-const authAdapter = ref<AuthAdapter | null>(null)
-const session = ref<Session | null>(null)
-const initialized = ref(false)
-
-export function useAuth() {
-  const config = useRuntimeConfig()
+export function useAuth(initialAdapter: AuthAdapter | null = null) {
+  const authAdapter = ref<AuthAdapter | null>(initialAdapter)
+  const session = ref<Session | null>(null)
+  const initialized = ref(false)
   const error = ref('')
   const message = ref('')
   let unsubscribe: (() => void) | undefined
 
   const user = computed(() => session.value?.user ?? null)
-  const isConfigured = computed(() => Boolean(config.public.supabaseUrl && config.public.supabaseAnonKey))
+  const isConfigured = computed(() => Boolean(authAdapter.value))
 
   async function initialize() {
-    if (!isConfigured.value) {
+    const adapter = authAdapter.value
+    if (!adapter) {
       initialized.value = true
       return
     }
 
-    authAdapter.value = createSupabaseAuthAdapter(getSupabaseClient(config.public.supabaseUrl, config.public.supabaseAnonKey))
-    session.value = await authAdapter.value.getSession()
-    unsubscribe = authAdapter.value.onAuthStateChange((_event: AuthChangeEvent, nextSession) => {
+    session.value = await adapter.getSession()
+    unsubscribe = adapter.onAuthStateChange((_event: AuthChangeEvent, nextSession) => {
       session.value = nextSession
     })
     initialized.value = true
