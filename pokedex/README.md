@@ -103,6 +103,14 @@ npm run test:integration
 
 Before a photo is saved, the browser opens a wide 16:9 crop editor matching the food thumbnail shape. Drag the image to choose the visible area and use the zoom control if needed. The selected crop is resized to a 640x360 JPEG and compressed to a maximum of 100 KB before being stored. This keeps thumbnail storage small and avoids uploading the original camera image.
 
+## Offline image caching
+
+Catalog artwork is lazy-loaded as food cards approach the viewport. In production,
+a service worker caches each requested catalog image using a cache-first strategy,
+so previously viewed artwork remains available with limited or no connectivity.
+Images are cached on demand; the full catalog is not pre-cached. Uploaded photos
+and third-party images are not added to this cache.
+
 ## Deploy to GitHub Pages
 
 The workflow in `.github/workflows/deploy-pages.yml` builds and deploys the site automatically whenever `main` changes.

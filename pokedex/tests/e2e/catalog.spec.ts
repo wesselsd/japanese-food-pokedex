@@ -40,6 +40,22 @@ test('checks in a root food and persists unlocked variations', async ({ page }) 
   await expect(page.getByRole('heading', { name: 'Uni gunkan' })).toBeVisible()
 })
 
+test('lazy-loads and caches requested catalog artwork', async ({ page }) => {
+  await page.reload()
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready
+  })
+
+  const firstImage = page.locator('.food-card img').first()
+  await expect(firstImage).toHaveAttribute('loading', 'lazy')
+  await firstImage.scrollIntoViewIfNeeded()
+  await expect.poll(() => firstImage.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true)
+  await expect.poll(() => page.evaluate(async () => {
+    const cache = await caches.open('catalog-images-v1')
+    return (await cache.keys()).length > 0
+  })).toBe(true)
+})
+
 test('crops, saves, selects, and removes an uploaded photo', async ({ page }) => {
   const search = page.getByPlaceholder('Search foods...')
   await search.fill('sushi')

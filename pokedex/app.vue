@@ -228,7 +228,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
       <div class="food-grid">
       <article v-for="food in essentialFoods" :key="food.id" class="food-card" :class="{ eaten: eatenFoods.includes(food.id) }" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
         <div class="food-art" :style="{ backgroundColor: food.color }">
-          <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" />
+          <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" loading="lazy" decoding="async" />
           <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
           <span class="number">#{{ food.number }}</span>
           <span class="art-labels">{{ foodLabels(food).slice(0, 3).join(' · ') }}</span>
@@ -251,7 +251,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
       <div class="food-grid">
         <article v-for="food in section.foods" :key="food.id" class="food-card" :class="{ eaten: eatenFoods.includes(food.id) }" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
           <div class="food-art" :style="{ backgroundColor: food.color }">
-            <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" />
+            <img v-if="displayedPhoto(food)" :src="displayedPhoto(food)" :alt="`${food.name} photo`" loading="lazy" decoding="async" />
             <span v-else class="food-emoji" aria-hidden="true">{{ food.emoji }}</span>
             <span class="number">#{{ food.number }}</span>
             <span class="art-labels">{{ foodLabels(food).slice(0, 3).join(' · ') }}</span>
@@ -270,7 +270,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
       <article class="detail-dialog">
         <button class="detail-close" aria-label="Close details" @click="selectedFood = null">×</button>
         <div class="detail-art" :style="{ backgroundColor: selectedFood.color }">
-          <img v-if="displayedPhoto(selectedFood)" :src="displayedPhoto(selectedFood)" :alt="`${selectedFood.name} photo`" />
+          <img v-if="displayedPhoto(selectedFood)" :src="displayedPhoto(selectedFood)" :alt="`${selectedFood.name} photo`" loading="lazy" decoding="async" />
           <span v-else class="food-emoji" aria-hidden="true">{{ selectedFood.emoji }}</span>
         </div>
         <div class="detail-body">
@@ -280,12 +280,12 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
           <div class="photo-library">
             <span class="detail-labels-title">Images</span>
             <button type="button" class="photo-choice" :class="{ selected: !selectedPhotos[selectedFood.id] || selectedPhotos[selectedFood.id] === 'default' }" @click="selectPhoto(selectedFood.id, 'default')">
-              <img v-if="selectedFood.image" :src="selectedFood.image" :alt="`${selectedFood.name} predefined image`" />
+              <img v-if="selectedFood.image" :src="selectedFood.image" :alt="`${selectedFood.name} predefined image`" loading="lazy" decoding="async" />
               <span>Original</span>
             </button>
             <div v-for="photo in foodPhotos(selectedFood.id)" :key="photo.id" class="photo-choice-wrap">
               <button type="button" class="photo-choice" :class="{ selected: selectedPhotos[selectedFood.id] === photo.id }" @click="selectPhoto(selectedFood.id, photo.id)">
-                <img :src="photo.url" :alt="`${selectedFood.name} uploaded photo`" />
+                <img :src="photo.url" :alt="`${selectedFood.name} uploaded photo`" loading="lazy" decoding="async" />
                 <span>Uploaded</span>
               </button>
               <button type="button" class="remove-photo" aria-label="Remove uploaded image" @click="removePhoto(selectedFood.id, photo.id)">×</button>
