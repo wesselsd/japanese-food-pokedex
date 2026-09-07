@@ -36,6 +36,7 @@ const {
   eatenFilter,
   categories,
   labels,
+  visibleFoods,
   lockedVariationCount,
   filteredFoods,
   essentialCount,
@@ -53,7 +54,7 @@ const {
 const isLabelFiltering = computed(() => selectedLabel.value !== 'All')
 const categorySections = computed(() => getCategorySections(
   filteredFoods.value,
-  foods,
+  visibleFoods.value,
   categories,
   new Set(eatenFoods.value),
   isLabelFiltering.value

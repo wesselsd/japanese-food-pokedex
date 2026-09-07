@@ -25,36 +25,21 @@ const BUCKET = 'food-photos'
 
 export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressAdapter {
   async function load(userId: string): Promise<CloudProgress> {
-    const { data, error } = await client
-      .from('user_foods')
-      .select('food_id, photo_path, selected_photo_id')
-      .eq('user_id', userId)
-
-    if (error) throw error
-
     const photos: Record<string, FoodPhoto[]> = {}
     const selectedPhotos: Record<string, string> = {}
     const { data: checkinData, error: checkinError } = await client.from('user_food_checkins').select('id, food_id, eaten_at, rating, location, location_details').eq('user_id', userId)
     if (checkinError) throw checkinError
-    await Promise.all(
-      data
-        .filter((row) => row.photo_path)
-        .map(async (row) => {
-          const { data: signedUrl, error: signedUrlError } = await client.storage
-            .from(BUCKET)
-            .createSignedUrl(row.photo_path, 3600)
-          if (signedUrlError) throw signedUrlError
-          photos[row.food_id] = [{ id: row.photo_path, url: signedUrl.signedUrl }]
-          selectedPhotos[row.food_id] = row.selected_photo_id ?? row.photo_path
-        })
-    )
-    const { data: photoRows, error: photoError } = await client.from('user_food_photos').select('id, food_id, photo_path').eq('user_id', userId)
+    const { data: photoRows, error: photoError } = await client.from('user_food_photos').select('id, food_id, photo_path, is_selected').eq('user_id', userId)
     if (photoError) throw photoError
-    await Promise.all(photoRows.map(async (row) => {
+    const loadedPhotos = await Promise.all(photoRows.map(async (row) => {
       const { data: signedUrl, error: signedUrlError } = await client.storage.from(BUCKET).createSignedUrl(row.photo_path, 3600)
       if (signedUrlError) throw signedUrlError
-      photos[row.food_id] = [...(photos[row.food_id] ?? []).filter((photo) => photo.id !== row.id), { id: row.id, url: signedUrl.signedUrl }]
+      return { row, photo: { id: row.id, url: signedUrl.signedUrl } }
     }))
+    loadedPhotos.forEach(({ row, photo }) => {
+      photos[row.food_id] = [...(photos[row.food_id] ?? []), photo]
+      if (row.is_selected) selectedPhotos[row.food_id] = row.id
+    })
 
     return {
       checkins: checkinData.map((row) => ({ id: row.id, foodId: row.food_id, eatenAt: row.eaten_at, rating: row.rating, location: row.location ?? '', locationDetails: row.location_details ?? undefined })),
@@ -85,7 +70,9 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
     const { error: uploadError } = await client.storage.from(BUCKET).upload(path, file, { upsert: true })
     if (uploadError) throw uploadError
 
-    const { error: progressError } = await client.from('user_food_photos').insert({ id: photoId, user_id: userId, food_id: foodId, photo_path: path })
+    const { error: clearSelectionError } = await client.from('user_food_photos').update({ is_selected: false }).eq('user_id', userId).eq('food_id', foodId)
+    if (clearSelectionError) throw clearSelectionError
+    const { error: progressError } = await client.from('user_food_photos').insert({ id: photoId, user_id: userId, food_id: foodId, photo_path: path, is_selected: true })
     if (progressError) throw progressError
 
     const { data, error: signedUrlError } = await client.storage.from(BUCKET).createSignedUrl(path, 3600)
@@ -94,13 +81,6 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
   }
 
   async function deletePhoto(userId: string, foodId: string, photoId: string) {
-    if (photoId.includes('/')) {
-      const { error: storageError } = await client.storage.from(BUCKET).remove([photoId])
-      if (storageError) throw storageError
-      const { error } = await client.from('user_foods').delete().eq('user_id', userId).eq('food_id', foodId).eq('photo_path', photoId)
-      if (error) throw error
-      return
-    }
     const { data: row, error: lookupError } = await client.from('user_food_photos').select('photo_path').eq('id', photoId).eq('user_id', userId).eq('food_id', foodId).single()
     if (lookupError) throw lookupError
     const { error: storageError } = await client.storage.from(BUCKET).remove([row.photo_path])
@@ -110,7 +90,10 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
   }
 
   async function selectPhoto(userId: string, foodId: string, photoId: string) {
-    const { error } = await client.from('user_foods').upsert({ user_id: userId, food_id: foodId, selected_photo_id: photoId === 'default' ? null : photoId })
+    const { error: clearSelectionError } = await client.from('user_food_photos').update({ is_selected: false }).eq('user_id', userId).eq('food_id', foodId)
+    if (clearSelectionError) throw clearSelectionError
+    if (photoId === 'default') return
+    const { error } = await client.from('user_food_photos').update({ is_selected: true }).eq('id', photoId).eq('user_id', userId).eq('food_id', foodId)
     if (error) throw error
   }
 

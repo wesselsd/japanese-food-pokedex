@@ -93,10 +93,11 @@ describe('food catalog domain rules', () => {
     expect(filtered).toEqual([])
   })
 
-  it('calculates essential-first progress before switching to the full catalog', () => {
+  it('uses essentials first, then tracks only unlocked foods', () => {
     const catalog = [
       { id: 'essential', essential: true, parentId: undefined },
-      { id: 'optional', essential: false, parentId: undefined }
+      { id: 'optional', essential: false, parentId: undefined },
+      { id: 'variation', essential: false, parentId: 'optional' }
     ].map((food, index) => ({
       ...food,
       number: String(index),
@@ -118,7 +119,11 @@ describe('food catalog domain rules', () => {
     })
     expect(catalogProgress(catalog, new Set(['essential', 'optional']))).toMatchObject({
       progressCount: 2,
-      progressTotal: 2
+      progressTotal: 3
+    })
+    expect(catalogProgress(catalog, new Set(['essential', 'optional', 'variation']))).toMatchObject({
+      progressCount: 3,
+      progressTotal: 3
     })
   })
 
@@ -134,7 +139,7 @@ describe('food catalog domain rules', () => {
   it('builds category sections from filtered foods and eaten state', () => {
     const sections = categorySections(
       foods.filter((food) => food.category === 'Noodles'),
-      foods,
+      visibleFoods(foods, new Set()),
       ['All', 'Noodles'],
       new Set(['ramen']),
       false
@@ -142,7 +147,7 @@ describe('food catalog domain rules', () => {
 
     expect(sections).toEqual([expect.objectContaining({
       category: 'Noodles',
-      totalCount: 11,
+      totalCount: 6,
       eatenCount: 1
     })])
     expect(categorySections([], foods, ['All', 'Noodles'], new Set(), true)).toEqual([{

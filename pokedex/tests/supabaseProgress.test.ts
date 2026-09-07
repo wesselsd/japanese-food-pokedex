@@ -47,7 +47,6 @@ function createClient(queries: Record<string, FakeQuery>) {
 
 describe('Supabase progress adapter', () => {
   it('loads and maps check-ins and photos from user-scoped rows', async () => {
-    const userFoods = createQuery([])
     const checkins = createQuery([{
       id: 'checkin-1',
       food_id: 'sushi',
@@ -66,10 +65,15 @@ describe('Supabase progress adapter', () => {
     const photos = createQuery([{
       id: 'photo-1',
       food_id: 'sushi',
-      photo_path: 'user-1/sushi/photo-1.jpg'
+      photo_path: 'user-1/sushi/photo-1.jpg',
+      is_selected: true
+    }, {
+      id: 'photo-2',
+      food_id: 'sushi',
+      photo_path: 'user-1/sushi/photo-2.jpg',
+      is_selected: false
     }])
     const { client, storage } = createClient({
-      user_foods: userFoods,
       user_food_checkins: checkins,
       user_food_photos: photos
     })
@@ -83,9 +87,11 @@ describe('Supabase progress adapter', () => {
       rating: 4,
       location: 'Sushi Bar'
     })
-    expect(state.photos.sushi).toEqual([{ id: 'photo-1', url: 'https://signed.example/photo.jpg' }])
-    expect(state.selectedPhotos).toEqual({})
-    expect(userFoods.eq).toHaveBeenCalledWith('user_id', 'user-1')
+    expect(state.photos.sushi).toEqual([
+      { id: 'photo-1', url: 'https://signed.example/photo.jpg' },
+      { id: 'photo-2', url: 'https://signed.example/photo.jpg' }
+    ])
+    expect(state.selectedPhotos).toEqual({ sushi: 'photo-1' })
     expect(checkins.eq).toHaveBeenCalledWith('user_id', 'user-1')
     expect(photos.eq).toHaveBeenCalledWith('user_id', 'user-1')
     expect(storage.createSignedUrl).toHaveBeenCalledWith('user-1/sushi/photo-1.jpg', 3600)
@@ -137,9 +143,7 @@ describe('Supabase progress adapter', () => {
       food_id: 'sushi',
       photo_path: 'user-3/sushi/photo-2.jpg'
     })
-    const userFoods = createQuery(null)
     const { client, storage } = createClient({
-      user_foods: userFoods,
       user_food_photos: photos
     })
     const adapter = createSupabaseProgressAdapter(client)
@@ -156,13 +160,11 @@ describe('Supabase progress adapter', () => {
     )
     expect(photos.insert).toHaveBeenCalledWith(expect.objectContaining({
       user_id: 'user-3',
-      food_id: 'sushi'
-    }))
-    expect(userFoods.upsert).toHaveBeenCalledWith({
-      user_id: 'user-3',
       food_id: 'sushi',
-      selected_photo_id: uploaded.id
-    })
+      is_selected: true
+    }))
+    expect(photos.update).toHaveBeenCalledWith({ is_selected: false })
+    expect(photos.update).toHaveBeenCalledWith({ is_selected: true })
     expect(storage.remove).toHaveBeenCalled()
     expect(photos.delete).toHaveBeenCalled()
   })

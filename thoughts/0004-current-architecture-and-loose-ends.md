@@ -16,17 +16,25 @@ The runtime catalog currently contains:
 - 14 essential entries
 
 The current progress display uses the 14 essential entries first. After all
-essential entries are eaten, it switches to the full 116-entry denominator,
-including locked variations.
+essential entries are eaten, it tracks only unlocked foods; newly unlocked
+variations increase the denominator when they become available. Hidden
+variations do not affect the progress percentage before they are unlocked.
 
 ## Application architecture
 
 - `pokedex/` contains the Nuxt 3 application.
 - Nuxt runs with `ssr: false` and generates static output for GitHub Pages.
 - `pokedex/app.vue` owns the page layout, card rendering, modal state, filter
-  controls, check-in dialogs, photo dialogs, and location-picker integration.
-- `pokedex/composables/useFoodPokedex.ts` owns check-ins, eaten state, hierarchy
-  visibility, filtering, progress counts, local persistence, and photo state.
+  controls, check-in dialogs, photo dialogs, and location-picker integration. It
+  composes the domain rules and the injected progress store without owning
+  persistence or catalog policy.
+- `pokedex/composables/useFoodPokedex.ts` coordinates reactive check-ins, eaten
+  state, filtering, visible foods, progress projections, and photo state through
+  the `ProgressStore` port.
+- `pokedex/domain/` contains pure catalog, progress, rating, and check-in rules.
+- `pokedex/adapter/localProgress.ts` and `pokedex/adapter/supabase/` contain the
+  localStorage and Supabase infrastructure implementations of the progress and
+  authentication ports.
 - `pokedex/composables/useAuth.ts` owns Supabase session state.
 - `pokedex/adapter/supabase/` contains the authentication and progress adapters.
 - `pokedex/components/ImageCropDialog.vue` contains the upload crop flow.
@@ -87,10 +95,11 @@ Signed-out state is stored in localStorage:
 - `pokedex-photos`
 - `pokedex-selected-photos`
 
-Legacy eaten and single-photo formats are still read where applicable. Signed-in
-users use Supabase through the progress adapter. Check-ins and location details are
-stored in `user_food_checkins`; photos use the legacy `user_foods` row plus the
-multi-photo `user_food_photos` table.
+Legacy eaten and single-photo formats are still read for signed-out local data.
+Signed-in users use Supabase through the progress adapter. Check-ins and location
+details are stored in `user_food_checkins`; multi-photo persistence uses
+`user_food_photos`, including its selected-photo flag. The legacy `user_foods`
+table is removed by the latest migration.
 
 ## Photos and artwork
 
@@ -132,7 +141,9 @@ HTTP-referrer restrictions, and production must have a valid Google Maps Map ID 
 `AdvancedMarkerElement`.
 
 Supabase migrations must be applied before cloud check-ins, location details, or
-multi-photo persistence can work correctly.
+multi-photo persistence can work correctly. The latest migration removes the
+obsolete `user_foods` compatibility table; current check-ins are stored in
+`user_food_checkins`.
 
 ## Tests and validation
 
@@ -156,18 +167,11 @@ accessible database with the migrations applied.
 
 ## Loose ends for tomorrow
 
-### 1. Decide the progress model
+### 1. Progress model (decided)
 
-The essential-first milestone was introduced when the catalog was a flat 112-entry
-list. The catalog now starts with 87 visible roots and 29 hidden variations. Decide
-whether to:
-
-- keep `0/14 essential foods tried` as the onboarding milestone;
-- use `0/87 root foods tried`, then include variations later; or
-- use the full `0/116 foods tried` denominator from the beginning.
-
-The decision should also specify whether hidden variations affect category progress
-and the progress percentage.
+The onboarding milestone remains `0/14 essential foods tried`. Once all essentials
+are eaten, progress uses only currently unlocked foods. Hidden variations are added
+to the denominator when unlocked and do not affect the percentage beforehand.
 
 ### 2. Add an ID migration strategy before real usage
 
@@ -192,8 +196,8 @@ does not say which parent unlocks which entries. Consider:
 - adding a subtle locked preview without making locked foods searchable;
 - deciding how a deleted parent check-in should affect already viewed children.
 
-The recursive unlock code supports deeper chains, but the product rules for third
-tiers and hidden-child progress are not yet finalized.
+The recursive unlock code supports deeper chains. Third-tier catalog additions
+should continue to follow the same parent-chain rule.
 
 ### 4. Curate remaining root entries and labels
 
@@ -205,18 +209,17 @@ classes; a later pass should decide whether those are one unified tag system.
 
 ### 5. Clean up persistence boundaries
 
-The progress adapter still supports both legacy `user_foods` photo fields and the
-new `user_food_photos` table. Decide whether to keep this compatibility layer
-permanently or add a cleanup migration. Signed URLs expire after one hour, so a
-long-lived session may need URL refresh behavior for previously loaded photos.
+The legacy `user_foods` compatibility table is being removed. Current signed-in
+photo persistence uses only `user_food_photos` and its selected-photo flag. Signed
+URLs expire after one hour, so a long-lived session may still need URL refresh
+behavior for previously loaded photos.
 
 ### 6. Expand UI and integration coverage
 
-The core composable behavior is covered, but there are no browser-level tests for:
+The core composable behavior and the main catalog/photo browser journeys are covered,
+but there are no browser-level tests for:
 
 - modal keyboard/focus behavior
-- image cropping and compression size limits
-- multi-photo selection and removal
 - Google Maps loading and location selection
 - locked variation rendering in category sections
 

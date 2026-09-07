@@ -74,7 +74,9 @@ export function filterFoods(foodList: Food[], options: FoodFilterOptions) {
 }
 
 export function catalogProgress(foodList: Food[], eatenFoodIds: ReadonlySet<string>): FoodProgress {
-  const eatenCount = eatenFoodIds.size
+  const unlockedFoods = visibleFoods(foodList, eatenFoodIds)
+  const unlockedFoodIds = new Set(unlockedFoods.map((food) => food.id))
+  const eatenCount = unlockedFoods.filter((food) => eatenFoodIds.has(food.id)).length
   const essentialCount = foodList.filter((food) => food.essential).length
   const eatenEssentialCount = foodList.filter((food) => food.essential && eatenFoodIds.has(food.id)).length
   const essentialsComplete = eatenEssentialCount === essentialCount
@@ -84,7 +86,7 @@ export function catalogProgress(foodList: Food[], eatenFoodIds: ReadonlySet<stri
     essentialCount,
     eatenEssentialCount,
     progressCount: essentialsComplete ? eatenCount : eatenEssentialCount,
-    progressTotal: essentialsComplete ? foodList.length : essentialCount
+    progressTotal: essentialsComplete ? unlockedFoodIds.size : essentialCount
   }
 }
 

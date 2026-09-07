@@ -11,13 +11,21 @@ The plan is in progress rather than complete. The current implementation status 
 |---|---|---|
 | 0. Measurable baseline | Complete | Coverage provider, thresholds, and a GitHub Actions test workflow are in place |
 | 1. Pure catalog rules | Complete | Catalog, hierarchy, progress, category sections, and ratings are extracted and tested |
-| 2. Persistence port | Mostly complete | Local store, cloud binding, photo persistence, and local-store tests exist |
+| 2. Persistence port | Complete | Local store, cloud binding, photo persistence, and local-store tests exist; signed-in photos use only `user_food_photos` |
 | 3. Supabase boundaries | Partial | Contract tests exist; live integration still only checks authentication |
 | 4. Image processing | Complete | Compression is isolated and the 100KB behavior is tested |
 | 5. Google Maps service | Mostly complete | Loading/search/geolocation service is extracted; component error/marker paths are covered, with script-tag branches remaining |
 | 6. Authentication | Complete | Auth construction is injected and both composable and adapter behavior are tested |
 | 7. Component coverage | Partial | Crop dialog, Maps paths, root check-in/unlock, edit/delete, and photo selection/removal have coverage; location-selection UI and keyboard/modal paths remain |
 | 8. E2E and thresholds | Partial | CI thresholds and two deterministic browser journeys are in place; authenticated/location journeys remain |
+
+The product decisions that affect the refactor are now settled. Essentials remain
+the onboarding milestone. After all essentials are eaten, progress counts only
+currently unlocked foods; hidden variations enter the denominator when unlocked
+and do not affect the percentage beforehand. The legacy `user_foods` table is
+removed by migration, while `user_food_photos` remains the active multi-photo
+store with its selected-photo state. The operational checks listed in the
+architecture notes remain valid.
 
 The current unit suite has 58 passing tests across 13 files. The latest measured
 unit coverage is 85.58% statements overall, with the pure domain modules at 100%.

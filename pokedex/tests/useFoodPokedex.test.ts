@@ -209,16 +209,16 @@ describe('useFoodPokedex', () => {
     expect(state.lockedVariationCount.value).toBe(25)
   })
 
-  it('uses the full catalog for progress after all essential foods are eaten', async () => {
+  it('uses unlocked foods for progress after all essential foods are eaten', async () => {
     const state = mountComposable()
 
     for (const food of foods.filter((item) => item.essential)) await state.checkIn(food.id, 5)
 
     expect(state.progressCount.value).toBe(14)
-    expect(state.progressTotal.value).toBe(116)
+    expect(state.progressTotal.value).toBe(98)
     expect(state.eatenCount.value).toBe(14)
 
-    await state.checkIn('curry-udon', 4)
+    await state.checkIn('udon', 4)
     expect(state.progressCount.value).toBe(15)
     expect(state.eatenCount.value).toBe(15)
   })
