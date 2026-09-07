@@ -1756,5 +1756,529 @@
       "fermented",
       "soy"
     ]
+  },
+  {
+    "id": "karubi",
+    "number": "117",
+    "name": "Karubi",
+    "japaneseName": "カルビ",
+    "description": "Karubi is a popular yakiniku order of richly marbled beef, generally taken from short-rib or related rib and belly cuts. Thin slices are grilled quickly at the table and eaten with dipping sauce, salt, or rice. Its juicy fat and strong flavor make it a familiar starting point, though the exact cut varies by restaurant.",
+    "emoji": "🥩",
+    "color": "#cf8d78",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "rosu",
+    "number": "118",
+    "name": "Rōsu",
+    "japaneseName": "ロース",
+    "description": "Rōsu is a familiar yakiniku menu term for loin-style beef, although restaurants may use several different cuts under the name. It often offers a meatier, less fatty contrast to karubi, with premium versions showing more marbling. Slices are grilled briefly and served with tare, salt, wasabi, or steamed rice.",
+    "emoji": "🥩",
+    "color": "#ba7c68",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "harami",
+    "number": "119",
+    "name": "Harami",
+    "japaneseName": "ハラミ",
+    "description": "Harami is beef diaphragm meat served in yakiniku restaurants, valued for its deep flavor and loosely grained, tender texture. Although commonly grouped with offal on Japanese menus, it eats more like an ordinary steak cut. Pieces are grilled over high heat and commonly seasoned with a savory marinade, dipping sauce, or salt.",
+    "emoji": "🥩",
+    "color": "#ad705b",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "misuji",
+    "number": "120",
+    "name": "Misuji",
+    "japaneseName": "ミスジ",
+    "description": "Misuji is a beef cut from the shoulder-blade area, recognizable by the line of connective tissue running through its center. Well-marbled slices have a rich flavor and tender bite when prepared appropriately. It is often offered as a premium yakiniku selection, served in small portions with simple seasonings that highlight the meat.",
+    "emoji": "🥩",
+    "color": "#cd9688",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "seseri",
+    "number": "121",
+    "name": "Seseri",
+    "japaneseName": "せせり",
+    "description": "Seseri is chicken neck meat, removed from around the neck bones and valued for its juicy fat and pleasantly springy texture. The small strips are grilled loose at yakiniku restaurants or threaded onto skewers for yakitori. Salt, pepper, citrus, or a savory sauce commonly accompany it, and the chicken is cooked thoroughly before eating.",
+    "emoji": "🍗",
+    "color": "#d9ad8b",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "ichibo",
+    "number": "122",
+    "name": "Ichibo",
+    "japaneseName": "イチボ",
+    "description": "Ichibo is a beef rump-cap cut served at yakiniku restaurants, offering a balance of pronounced beef flavor and rich marbling. It is often sliced across the grain and grilled briefly, then paired with salt, wasabi, or dipping sauce. Restaurants commonly present it as a specialty cut alongside other individually named beef selections.",
+    "emoji": "🥩",
+    "color": "#bd806c",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "tontoro",
+    "number": "123",
+    "name": "Tontoro",
+    "japaneseName": "豚トロ",
+    "description": "Tontoro is a fatty pork cut usually taken from around the neck and jowl, sliced into small pieces for grilling. It has a firm bite and generous fat that browns readily over heat. Common at yakiniku restaurants and izakaya, it is often seasoned with salt and served with lemon or green onion.",
+    "emoji": "🥓",
+    "color": "#e0b6a0",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "mino",
+    "number": "124",
+    "name": "Mino",
+    "japaneseName": "ミノ",
+    "description": "Mino is beef tripe from the first stomach, served in bite-sized pieces at yakiniku and grilled-offal restaurants. Its pale flesh has a firm, springy texture, and thicker portions are often scored to make them easier to chew. Salt or miso-based marinades provide seasoning before the pieces are grilled and eaten hot.",
+    "emoji": "🥩",
+    "color": "#dfc9b1",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "shimacho",
+    "number": "125",
+    "name": "Shimachō",
+    "japaneseName": "シマチョウ",
+    "description": "Shimachō is beef large intestine prepared for yakiniku, named for the striped appearance of its surface. The pieces combine a chewy outer layer with rich fat and are commonly coated in a miso or soy-based marinade. It is a classic grilled-offal order, cooked thoroughly and enjoyed with rice, vegetables, or drinks.",
+    "emoji": "🥩",
+    "color": "#c8a58b",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "marucho",
+    "number": "126",
+    "name": "Maruchō",
+    "japaneseName": "マルチョウ",
+    "description": "Maruchō is beef small intestine commonly prepared as short tubular pieces with the fat enclosed inside. Grilling browns the surface while the interior becomes rich and juicy, creating a contrast with the chewy casing. It is a popular choice at yakiniku and grilled-offal restaurants, usually seasoned with miso, soy-based sauce, or salt.",
+    "emoji": "🥩",
+    "color": "#d5b394",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ],
+    "parentId": "yakiniku"
+  },
+  {
+    "id": "miso-soup",
+    "number": "127",
+    "name": "Miso soup",
+    "japaneseName": "味噌汁",
+    "description": "Miso soup is a Japanese soup made by dissolving fermented soybean paste into dashi, with additions such as tofu, wakame, green onion, or seasonal vegetables. Its flavor varies with the miso and stock used. Served alongside rice at breakfast, lunch, and dinner, it is a foundation of home cooking and restaurant set meals.",
+    "emoji": "🥣",
+    "color": "#c8ad85",
+    "category": "Savory",
+    "essential": true,
+    "foodTypes": [
+      "soup",
+      "soy",
+      "fermented"
+    ]
+  },
+  {
+    "id": "oden",
+    "number": "128",
+    "name": "Oden",
+    "japaneseName": "おでん",
+    "description": "Oden is a Japanese simmered dish of ingredients such as daikon, boiled eggs, fish cakes, and konjac cooked slowly in a seasoned dashi broth. Diners choose individual pieces and may add mustard or regional sauces. It is especially associated with colder weather, appearing in home kitchens, specialty restaurants, izakaya, and some convenience stores.",
+    "emoji": "🍢",
+    "color": "#d1b58b",
+    "category": "Savory",
+    "essential": false,
+    "foodTypes": [
+      "soup",
+      "seafood",
+      "egg",
+      "vegetable"
+    ]
+  },
+  {
+    "id": "sashimi",
+    "number": "129",
+    "name": "Sashimi",
+    "japaneseName": "刺身",
+    "description": "Sashimi is a Japanese preparation of carefully sliced seafood served without sushi rice, usually raw but sometimes blanched or otherwise prepared. Tuna, sea bream, salmon, squid, and scallops are common choices. Soy sauce, wasabi, shredded daikon, and shiso accompany it at restaurants, izakaya, traditional meals, and home celebrations.",
+    "emoji": "🐟",
+    "color": "#e0b3ad",
+    "category": "Seafood",
+    "essential": true,
+    "foodTypes": [
+      "seafood",
+      "raw"
+    ]
+  },
+  {
+    "id": "inari-sushi",
+    "number": "130",
+    "name": "Inari sushi",
+    "japaneseName": "いなり寿司",
+    "description": "Inari sushi is vinegared rice tucked into pockets of fried tofu that have been simmered in a sweet soy-based seasoning. Sesame, vegetables, or other ingredients may be mixed into the rice, and shapes vary by region. The portable pieces are familiar in bento boxes, picnics, supermarkets, and casual sushi assortments.",
+    "emoji": "🍣",
+    "color": "#d6a566",
+    "category": "Rice & Bowls",
+    "essential": false,
+    "foodTypes": [
+      "rice",
+      "tofu"
+    ],
+    "parentId": "sushi"
+  },
+  {
+    "id": "temaki",
+    "number": "131",
+    "name": "Temaki sushi",
+    "japaneseName": "手巻き寿司",
+    "description": "Temaki sushi is a hand-rolled sushi format, often shaped into a cone of nori around vinegared rice and fillings such as fish, cucumber, egg, or pickles. It is eaten by hand soon after rolling to keep the seaweed crisp. Temaki appears at sushi restaurants and informal home meals where diners assemble their own rolls.",
+    "emoji": "🍣",
+    "color": "#b4c09a",
+    "category": "Rice & Bowls",
+    "essential": false,
+    "foodTypes": [
+      "rice"
+    ],
+    "parentId": "sushi"
+  },
+  {
+    "id": "chawanmushi",
+    "number": "132",
+    "name": "Chawanmushi",
+    "japaneseName": "茶碗蒸し",
+    "description": "Chawanmushi is a savory Japanese egg custard steamed gently in a small cup with dashi and seasonings. Chicken, shrimp, mushrooms, ginkgo nuts, or fish cake may be hidden beneath its smooth surface. Eaten with a spoon, it is commonly served as a delicate side dish in sushi restaurants, traditional meals, and home cooking.",
+    "emoji": "🥚",
+    "color": "#e8d8ac",
+    "category": "Savory",
+    "essential": false,
+    "foodTypes": [
+      "egg"
+    ]
+  },
+  {
+    "id": "hiyayakko",
+    "number": "133",
+    "name": "Hiyayakko",
+    "japaneseName": "冷奴",
+    "description": "Hiyayakko is a chilled tofu dish served with toppings such as grated ginger, green onion, bonito flakes, and soy sauce. Silken tofu is common, though firmer varieties are also used. With little preparation beyond cutting and garnishing, it is a familiar summer side dish in home meals and a simple order at izakaya.",
+    "emoji": "🍲",
+    "color": "#e7e0c7",
+    "category": "Savory",
+    "essential": false,
+    "foodTypes": [
+      "tofu"
+    ]
+  },
+  {
+    "id": "yudofu",
+    "number": "134",
+    "name": "Yudōfu",
+    "japaneseName": "湯豆腐",
+    "description": "Yudōfu is a Japanese dish of tofu gently heated in water or a light kombu broth and lifted out to eat with dipping sauce and condiments. Ponzu, green onion, and grated ginger are common accompaniments. Strongly associated with Kyoto and temple-area restaurants, it is also a simple warming meal prepared at home.",
+    "emoji": "🍲",
+    "color": "#dedbc0",
+    "category": "Savory",
+    "essential": false,
+    "foodTypes": [
+      "tofu"
+    ]
+  },
+  {
+    "id": "zaru-soba",
+    "number": "135",
+    "name": "Zaru soba",
+    "japaneseName": "ざるそば",
+    "description": "Zaru soba is a chilled soba preparation served drained on a bamboo tray or similar dish, often topped with shredded nori. Diners dip small bundles of noodles into a concentrated sauce with green onion and wasabi. It is popular in warm weather, and hot soba cooking water may be offered afterward to dilute the remaining sauce.",
+    "emoji": "🥢",
+    "color": "#bca98b",
+    "category": "Noodles",
+    "essential": false,
+    "foodTypes": [
+      "noodles"
+    ],
+    "parentId": "soba"
+  },
+  {
+    "id": "somen",
+    "number": "136",
+    "name": "Sōmen",
+    "japaneseName": "そうめん",
+    "description": "Sōmen is a very thin Japanese wheat noodle, commonly boiled briefly, rinsed, and served cold with a dipping sauce. Ginger, green onion, shiso, and other garnishes add flavor to the delicate strands. It is a familiar summer home meal, though the noodles can also be served warm in broth as nyūmen.",
+    "emoji": "🍜",
+    "color": "#e6dfc7",
+    "category": "Noodles",
+    "essential": false,
+    "foodTypes": [
+      "noodles"
+    ]
+  },
+  {
+    "id": "tantanmen",
+    "number": "137",
+    "name": "Tantanmen",
+    "japaneseName": "担々麺",
+    "description": "Tantanmen is a Japanese adaptation of Sichuan dan dan noodles, commonly served in a broth flavored with sesame paste and chili oil. Seasoned minced pork and leafy greens are frequent toppings, while soup-free versions also exist. Its balance of nutty richness and heat makes it popular at ramen shops and Chinese-style restaurants.",
+    "emoji": "🍜",
+    "color": "#d7986c",
+    "category": "Noodles",
+    "essential": false,
+    "foodTypes": [
+      "noodles",
+      "meat",
+      "soup"
+    ],
+    "parentId": "ramen"
+  },
+  {
+    "id": "yaki-onigiri",
+    "number": "138",
+    "name": "Yaki onigiri",
+    "japaneseName": "焼きおにぎり",
+    "description": "Yaki onigiri is a Japanese rice ball grilled or pan-toasted until its surface develops a browned crust. Soy sauce or miso is commonly brushed onto the outside, adding a savory aroma while the center stays soft. It is served at izakaya, barbecues, and home meals, sometimes with broth poured over it afterward.",
+    "emoji": "🍙",
+    "color": "#cea16e",
+    "category": "Rice & Bowls",
+    "essential": false,
+    "foodTypes": [
+      "rice",
+      "grilled",
+      "snack"
+    ],
+    "parentId": "onigiri"
+  },
+  {
+    "id": "hitsumabushi",
+    "number": "139",
+    "name": "Hitsumabushi",
+    "japaneseName": "ひつまぶし",
+    "description": "Hitsumabushi is a Nagoya specialty of finely sliced grilled eel served over rice, traditionally in a wooden container. Portions are eaten in stages: first plain, then with condiments, and then with dashi or tea poured over them. The changing flavors distinguish it from an ordinary eel rice bowl and make it a leisurely restaurant meal.",
+    "emoji": "🍱",
+    "color": "#b7865f",
+    "category": "Rice & Bowls",
+    "essential": false,
+    "foodTypes": [
+      "seafood",
+      "rice",
+      "grilled"
+    ],
+    "parentId": "unagi-kabayaki"
+  },
+  {
+    "id": "jingisukan",
+    "number": "140",
+    "name": "Jingisukan",
+    "japaneseName": "ジンギスカン",
+    "description": "Jingisukan is a Hokkaido-associated meal of lamb or mutton grilled with vegetables, often on a domed metal pan at the table. The meat may be marinated beforehand or dipped in sauce after cooking, while onions, cabbage, and bean sprouts cook alongside it. It is popular in beer halls, specialty restaurants, and outdoor gatherings.",
+    "emoji": "🥩",
+    "color": "#b88a70",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat",
+      "grilled"
+    ]
+  },
+  {
+    "id": "hambagu",
+    "number": "141",
+    "name": "Hambāgu",
+    "japaneseName": "ハンバーグ",
+    "description": "Hambāgu is a Japanese hamburger steak made from minced beef or a mixture of beef and pork, usually combined with onion, breadcrumbs, and egg. It is served without a bun, often with demi-glace sauce or grated daikon and ponzu. Rice and vegetables accompany it in home meals, family restaurants, and Western-style diners.",
+    "emoji": "🥩",
+    "color": "#ad785b",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat"
+    ]
+  },
+  {
+    "id": "shogayaki",
+    "number": "142",
+    "name": "Shōgayaki",
+    "japaneseName": "生姜焼き",
+    "description": "Shōgayaki is a Japanese dish usually made from sliced pork cooked in a ginger-forward sauce with soy sauce, sake, and a sweet seasoning. Onion may be added, and shredded cabbage is a common accompaniment. Served with rice and miso soup, it is a staple of home cooking, lunch counters, and set-meal restaurants.",
+    "emoji": "🥩",
+    "color": "#c99b77",
+    "category": "Meat",
+    "essential": false,
+    "foodTypes": [
+      "meat"
+    ]
+  },
+  {
+    "id": "soup-curry",
+    "number": "143",
+    "name": "Soup curry",
+    "japaneseName": "スープカレー",
+    "description": "Soup curry is a Sapporo-associated dish of thin, aromatic curry broth served with substantial vegetables and often a chicken leg or another protein. Rice usually comes separately, and diners combine spoonfuls with the soup as they eat. Specialty restaurants commonly offer choices of spice level, toppings, and broth style.",
+    "emoji": "🍛",
+    "color": "#ce9459",
+    "category": "Savory",
+    "essential": false,
+    "foodTypes": [
+      "soup",
+      "vegetable"
+    ]
+  },
+  {
+    "id": "okinawa-soba",
+    "number": "144",
+    "name": "Okinawa soba",
+    "japaneseName": "沖縄そば",
+    "description": "Okinawa soba is an Okinawan noodle soup made with thick wheat noodles rather than the buckwheat noodles suggested by its name. The broth commonly combines pork and bonito, with toppings such as pork belly, fish cake, and green onion. It is an everyday regional meal served in specialty shops, markets, and family restaurants.",
+    "emoji": "🍜",
+    "color": "#ddc49d",
+    "category": "Noodles",
+    "essential": false,
+    "foodTypes": [
+      "noodles",
+      "meat",
+      "soup"
+    ]
+  },
+  {
+    "id": "goya-champuru",
+    "number": "145",
+    "name": "Gōyā champurū",
+    "japaneseName": "ゴーヤーチャンプルー",
+    "description": "Gōyā champurū is an Okinawan stir-fry combining sliced bitter melon with firm tofu, egg, and often pork or canned luncheon meat. The vegetable's distinctive bitterness contrasts with the rich, savory ingredients. It is a representative Okinawan home dish, also widely served in regional restaurants and izakaya throughout Japan.",
+    "emoji": "🥬",
+    "color": "#a7bb7e",
+    "category": "Savory",
+    "essential": false,
+    "foodTypes": [
+      "vegetable",
+      "tofu",
+      "egg"
+    ]
+  },
+  {
+    "id": "zenzai",
+    "number": "146",
+    "name": "Zenzai",
+    "japaneseName": "ぜんざい",
+    "description": "Zenzai is a Japanese sweet commonly served as a warm azuki-bean soup with mochi or small rice-flour dumplings. The beans provide a soft texture and earthy sweetness, sometimes balanced by salted accompaniments. Its meaning varies by region, with some versions served without much liquid, and it is found in traditional sweet shops and home kitchens.",
+    "emoji": "🥣",
+    "color": "#a87569",
+    "category": "Sweets",
+    "essential": false,
+    "foodTypes": [
+      "dessert"
+    ]
+  },
+  {
+    "id": "anpan",
+    "number": "147",
+    "name": "Anpan",
+    "japaneseName": "あんパン",
+    "description": "Anpan is a soft Japanese bread bun filled with sweet bean paste, usually made from red azuki beans. The filling may be smooth or chunky, and the top is sometimes decorated with sesame, poppy seeds, or a salted cherry blossom. It is a longstanding bakery staple eaten for breakfast, as a snack, or with tea.",
+    "emoji": "🥯",
+    "color": "#ce9a68",
+    "category": "Dumplings & Buns",
+    "essential": false,
+    "foodTypes": [
+      "snack"
+    ]
+  },
+  {
+    "id": "fruit-sando",
+    "number": "148",
+    "name": "Fruit sando",
+    "japaneseName": "フルーツサンド",
+    "description": "Fruit sando is a Japanese sandwich of soft white bread filled with whipped cream and fresh fruit such as strawberries, kiwi, or mandarin oranges. The crusts are usually removed, and careful slicing reveals a colorful cross-section. It is sold in fruit parlors, cafés, bakeries, and convenience stores as a sweet snack or light dessert.",
+    "emoji": "🥪",
+    "color": "#edc2b5",
+    "category": "Sweets",
+    "essential": false,
+    "foodTypes": [
+      "dessert",
+      "snack"
+    ]
+  },
+  {
+    "id": "ramune",
+    "number": "149",
+    "name": "Ramune",
+    "japaneseName": "ラムネ",
+    "description": "Ramune is a Japanese carbonated soft drink best known for its distinctive glass bottle sealed with a marble. Opening the bottle pushes the marble into the neck, where indentations help hold it while drinking. The classic flavor is lemon-lime-like, with many other varieties available, and it is strongly associated with summer festivals.",
+    "emoji": "🥤",
+    "color": "#b5dce3",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "non-alcoholic"
+    ]
+  },
+  {
+    "id": "matcha-tea",
+    "number": "150",
+    "name": "Matcha",
+    "japaneseName": "抹茶",
+    "description": "Matcha is a finely ground Japanese green tea powder whisked directly into hot water rather than steeped and removed. Its flavor combines vegetal freshness, umami, and varying bitterness, with a smooth or lightly foamy texture depending on preparation. It is central to Japanese tea ceremony and also served in tea houses and cafés.",
+    "emoji": "🍵",
+    "color": "#a9bf83",
+    "category": "Drinks",
+    "essential": false,
+    "foodTypes": [
+      "tea",
+      "non-alcoholic"
+    ],
+    "parentId": "green-tea"
   }
 ]

@@ -96,13 +96,16 @@ describe('useFoodPokedex', () => {
       'yakiniku',
       'menchi-katsu',
       'tebasaki',
-      'famichiki'
+      'famichiki',
+      'jingisukan',
+      'hambagu',
+      'shogayaki'
     ])
 
     state.selectedCategory.value = 'All'
     state.selectedLabel.value = 'grilled'
     await nextTick()
-    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['yakitori', 'grilled-gyutan', 'yakiniku', 'unagi-kabayaki', 'grilled-squid'])
+    expect(state.filteredFoods.value.map((food) => food.id)).toEqual(['yakitori', 'grilled-gyutan', 'yakiniku', 'unagi-kabayaki', 'grilled-squid', 'jingisukan'])
   })
 
   it('toggles eaten foods and persists the state', async () => {
