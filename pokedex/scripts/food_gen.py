@@ -62,7 +62,6 @@ def get_drink_names() -> list[str]:
 def generate_image(item, master_prompt: str):
     output_path = ASSETS_DIR / f"{item}_image.png"
     if output_path.exists():
-        print(f"Skipping {item}. Already exists.")
         return
     else:
         print(f"Generating {item}.")

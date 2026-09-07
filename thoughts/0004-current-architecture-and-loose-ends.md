@@ -11,8 +11,8 @@ saving personal photos.
 The runtime catalog currently contains:
 
 - 116 total entries
-- 87 root-level entries visible initially
-- 29 locked variations
+- 82 root-level entries visible initially
+- 34 locked variations
 - 14 essential entries
 
 The current progress display uses the 14 essential entries first. After all
@@ -52,8 +52,11 @@ artwork is missing.
 The current two-tier chains are:
 
 ```text
+Ramen -> Tsukemen, Hiyashi chuka, Tanmen
 Sushi -> Uni gunkan, Ikura gunkan, Anago nigiri, Hotate nigiri,
-         Engawa nigiri, Kani maki
+         Engawa nigiri, Kani maki, Kaisendon, Tekkadon
+Tempura -> Tendon
+Tonkatsu -> Katsudon
 Udon -> Curry udon, Yaki-udon, Sara udon
 Mochi -> Daifuku
 Dango -> Mitarashi dango
@@ -64,7 +67,6 @@ Tea -> Green Tea, Hojicha, Mugicha
 Sake -> Junmai Sake, Ginjo Sake, Nigori Sake, Namazake
 Japanese mixed drink -> Hoppy Set, Lemon Sour, High Ball, Chuhai
 Shochu -> Imo Shochu, Mugi Shochu
-Ramen -> Tsukemen, Hiyashi chuka
 ```
 
 Entries without `parentId` are visible initially. A variation becomes visible after
@@ -188,7 +190,7 @@ renames.
 
 ### 3. Refine hierarchy UX
 
-The current UI shows a count such as "29 variations awaiting a parent check-in," but
+The current UI shows a count such as "34 variations awaiting a parent check-in," but
 does not say which parent unlocks which entries. Consider:
 
 - showing locked children grouped under their parent;

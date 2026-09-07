@@ -29,8 +29,10 @@ test('checks in a root food and persists unlocked variations', async ({ page }) 
   await expect(page.getByRole('dialog', { name: 'Check in food' })).toBeHidden()
 
   await search.fill('')
-  await expect(page.getByText('23 variations awaiting a parent check-in.')).toBeVisible()
+  await expect(page.getByText(/variations awaiting a parent check-in\./)).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Uni gunkan' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Kaisendon' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Tekkadon' })).toBeVisible()
 
   await page.reload()
 

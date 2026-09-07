@@ -30,7 +30,7 @@ legacy `user_foods` check-ins and photo paths, then drops that table. The
 selected-photo state. The operational checks listed in the architecture notes
 remain valid.
 
-The current unit suite has 64 passing tests across 13 files. The latest measured
+The current unit suite has 65 passing tests across 13 files. The latest measured
 unit coverage is 82.25% statements overall, with the pure domain modules at 100%.
 Two Playwright journeys additionally cover the generated static site in a real
 Chromium browser.
@@ -42,7 +42,7 @@ local/cloud adapter contracts, image processing, authentication, and the primary
 catalog/photo journeys. It does not yet provide complete confidence in live
 Supabase persistence or every location/modal interaction:
 
-- `npm test` passes 64 tests.
+- `npm test` passes 65 tests.
 - `npm run test:e2e` covers catalog persistence and the photo crop/upload/select/remove journey.
 - `npm run test:integration` still covers one Supabase authentication smoke test;
   it does not yet exercise live progress or photo CRUD.
@@ -61,7 +61,7 @@ integration behind ports, and finally add focused adapter and component tests.
 
 ## Current test baseline
 
-The 64 current unit tests are distributed as follows:
+The 65 current unit tests are distributed as follows:
 
 | Test file | Tests | Current scope |
 |---|---:|---|

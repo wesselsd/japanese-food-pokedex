@@ -23,11 +23,15 @@ Tempura
 Japanese Curry
 Gyūdon
 Soba
-Wagashi
 Okonomiyaki
 Kakigori
 Unagi
 Ekiben
+
+- remove: nerikiri, kakigori, okonomiyaki, tonkatsu, japanese curry rice, unagi kabayaki, 
+- add: hoppy set, onigiri
+
+
 
 #### Not essential
 Everything else

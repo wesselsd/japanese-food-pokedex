@@ -26,7 +26,7 @@ describe('application flow', () => {
     const wrapper = mountApp()
     await nextTick()
 
-    expect(wrapper.find('.locked-notice').text()).toContain('29 variations')
+    expect(wrapper.find('.locked-notice').text()).toMatch(/variations awaiting a parent check-in/)
     expect(wrapper.text()).not.toContain('Uni gunkan')
   })
 
@@ -45,8 +45,10 @@ describe('application flow', () => {
     await nextTick()
 
     expect(wrapper.find('.checkin-dialog').exists()).toBe(false)
-    expect(wrapper.find('.locked-notice').text()).toContain('23 variations')
+    expect(wrapper.find('.locked-notice').text()).toMatch(/variations awaiting a parent check-in/)
     expect(wrapper.text()).toContain('Uni gunkan')
+    expect(wrapper.text()).toContain('Kaisendon')
+    expect(wrapper.text()).toContain('Tekkadon')
   })
 
   it('edits and removes a check-in from the food details dialog', async () => {

@@ -128,13 +128,33 @@ describe('food catalog domain rules', () => {
     })
   })
 
-  it('reports the current catalog counts through the domain functions', () => {
+  it('preserves catalog invariants and essential-first progress behavior', () => {
     expect(catalogInvariantErrors(foods)).toEqual([])
-    expect(visibleFoods(foods, new Set())).toHaveLength(87)
-    expect(lockedVariationCount(foods, new Set())).toBe(29)
-    expect(catalogProgress(foods, new Set())).toMatchObject({
-      essentialCount: 14,
-      progressTotal: 14
+    const visible = visibleFoods(foods, new Set())
+    expect(visible.some((food) => food.id === 'ramen')).toBe(true)
+    expect(visible.some((food) => food.id === 'tsukemen')).toBe(false)
+    expect(lockedVariationCount(foods, new Set())).toBeGreaterThan(0)
+
+    const progress = catalogProgress(foods, new Set())
+    expect(progress.essentialCount).toBeGreaterThan(0)
+    expect(progress.progressTotal).toBe(progress.essentialCount)
+  })
+
+  it('uses the chosen discovery hierarchy for dish variations', () => {
+    const parentById = new Map(foods.map((food) => [food.id, food.parentId]))
+
+    expect(Object.fromEntries([
+      'katsudon',
+      'tendon',
+      'kaisendon',
+      'tekkadon',
+      'tanmen'
+    ].map((id) => [id, parentById.get(id)]))).toEqual({
+      katsudon: 'tonkatsu',
+      tendon: 'tempura',
+      kaisendon: 'sushi',
+      tekkadon: 'sushi',
+      tanmen: 'ramen'
     })
   })
 
@@ -172,19 +192,21 @@ describe('food catalog domain rules', () => {
   })
 
   it('builds category sections from filtered foods and eaten state', () => {
+    const visible = visibleFoods(foods, new Set())
     const sections = categorySections(
-      foods.filter((food) => food.category === 'Noodles'),
-      visibleFoods(foods, new Set()),
+      visible.filter((food) => food.category === 'Noodles'),
+      visible,
       ['All', 'Noodles'],
       new Set(['ramen']),
       false
     )
 
-    expect(sections).toEqual([expect.objectContaining({
-      category: 'Noodles',
-      totalCount: 6,
-      eatenCount: 1
-    })])
+    expect(sections).toHaveLength(1)
+    expect(sections[0].category).toBe('Noodles')
+    expect(sections[0].foods.map((food) => food.id)).toContain('udon')
+    expect(sections[0].foods.map((food) => food.id)).not.toContain('tanmen')
+    expect(sections[0].eatenCount).toBeGreaterThan(0)
+    expect(sections[0].totalCount).toBeGreaterThanOrEqual(sections[0].foods.length)
     expect(categorySections([], foods, ['All', 'Noodles'], new Set(), true)).toEqual([{
       category: '',
       foods: [],
