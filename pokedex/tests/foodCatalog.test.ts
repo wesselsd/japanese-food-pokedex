@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { foods } from '../data/foods'
 import {
   catalogProgress,
+  catalogInvariantErrors,
   categorySections,
   filterFoods,
   isFoodUnlocked,
@@ -128,12 +129,46 @@ describe('food catalog domain rules', () => {
   })
 
   it('reports the current catalog counts through the domain functions', () => {
+    expect(catalogInvariantErrors(foods)).toEqual([])
     expect(visibleFoods(foods, new Set())).toHaveLength(87)
     expect(lockedVariationCount(foods, new Set())).toBe(29)
     expect(catalogProgress(foods, new Set())).toMatchObject({
       essentialCount: 14,
       progressTotal: 14
     })
+  })
+
+  it('reports duplicate identifiers and invalid parent references', () => {
+      const invalidCatalog = [
+        { id: 'one', number: '001', parentId: undefined },
+        { id: 'one', number: '001', parentId: 'missing' },
+        { id: 'three', number: '003', parentId: 'three' }
+      ].map((food) => ({
+        ...food,
+        name: food.id,
+        japaneseName: '',
+        category: 'Test',
+        essential: false,
+        foodTypes: [],
+        description: '',
+        emoji: '',
+        color: ''
+      }))
+
+      expect(catalogInvariantErrors(invalidCatalog)).toEqual([
+        'Duplicate food id: one',
+        'Duplicate food number: 001',
+        'Missing parent missing for food one',
+        'Food cannot be its own parent: three'
+      ])
+    })
+
+  it('maps every catalog entry to display-name artwork', () => {
+    const missingArtwork = foods.filter((food) => {
+      const slug = food.name.toLowerCase().replace(/ /g, '-')
+      return !food.image?.includes(`${encodeURIComponent(slug)}_image.`)
+    }).map((food) => ({ name: food.name, image: food.image }))
+    expect(missingArtwork).toEqual([])
   })
 
   it('builds category sections from filtered foods and eaten state', () => {

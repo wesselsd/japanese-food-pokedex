@@ -25,6 +25,28 @@ export type CategorySection = {
   eatenCount: number
 }
 
+export function catalogInvariantErrors(foodList: readonly Food[]) {
+  const errors: string[] = []
+  const ids = new Set<string>()
+  const numbers = new Set<string>()
+  const foodIds = new Set(foodList.map((food) => food.id))
+
+  foodList.forEach((food) => {
+    if (ids.has(food.id)) errors.push(`Duplicate food id: ${food.id}`)
+    ids.add(food.id)
+
+    if (numbers.has(food.number)) errors.push(`Duplicate food number: ${food.number}`)
+    numbers.add(food.number)
+
+    if (food.parentId && !foodIds.has(food.parentId)) {
+      errors.push(`Missing parent ${food.parentId} for food ${food.id}`)
+    }
+    if (food.parentId === food.id) errors.push(`Food cannot be its own parent: ${food.id}`)
+  })
+
+  return errors
+}
+
 export function isFoodUnlocked(
   food: Food,
   foodById: ReadonlyMap<string, Food>,

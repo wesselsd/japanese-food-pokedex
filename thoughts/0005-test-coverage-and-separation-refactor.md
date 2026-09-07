@@ -10,11 +10,11 @@ The plan is in progress rather than complete. The current implementation status 
 | Phase | Status | Notes |
 |---|---|---|
 | 0. Measurable baseline | Complete | Coverage provider, thresholds, and a GitHub Actions test workflow are in place |
-| 1. Pure catalog rules | Complete | Catalog, hierarchy, progress, category sections, and ratings are extracted and tested |
+| 1. Pure catalog rules | Complete | Catalog, hierarchy, progress, category sections, ratings, and catalog invariants are extracted and tested |
 | 2. Persistence port | Complete | Local store, cloud binding, photo persistence, and local-store tests exist; signed-in photos use only `user_food_photos` |
 | 3. Supabase boundaries | Partial | Contract tests exist; live integration still only checks authentication |
 | 4. Image processing | Complete | Compression is isolated and the 100KB behavior is tested |
-| 5. Google Maps service | Mostly complete | Loading/search/geolocation service is extracted; component error/marker paths are covered, with script-tag branches remaining |
+| 5. Google Maps service | Mostly complete | Loading/search/geolocation service is extracted; component error/marker paths and script-tag branches are covered, with malformed payload cases remaining |
 | 6. Authentication | Complete | Auth construction is injected and both composable and adapter behavior are tested |
 | 7. Component coverage | Partial | Crop dialog, Maps paths, root check-in/unlock, edit/delete, and photo selection/removal have coverage; location-selection UI and keyboard/modal paths remain |
 | 8. E2E and thresholds | Partial | CI thresholds and two deterministic browser journeys are in place; authenticated/location journeys remain |
@@ -28,8 +28,8 @@ legacy `user_foods` check-ins and photo paths, then drops that table. The
 selected-photo state. The operational checks listed in the architecture notes
 remain valid.
 
-The current unit suite has 58 passing tests across 13 files. The latest measured
-unit coverage is 85.58% statements overall, with the pure domain modules at 100%.
+The current unit suite has 64 passing tests across 13 files. The latest measured
+unit coverage is 82.25% statements overall, with the pure domain modules at 100%.
 Two Playwright journeys additionally cover the generated static site in a real
 Chromium browser.
 
@@ -38,7 +38,7 @@ Chromium browser.
 The current test suite is a useful starting point, but it does not yet provide
 confidence in the complete application:
 
-- `npm test` passes 58 tests.
+- `npm test` passes 64 tests.
 - `npm run test:e2e` covers catalog persistence and the photo crop/upload/select/remove journey.
 - `npm run test:integration` still passes one Supabase authentication smoke test.
 - Coverage reporting and thresholds are enforced by `.github/workflows/tests.yml`.
@@ -62,8 +62,8 @@ The 58 current unit tests are distributed as follows:
 |---|---:|---|
 | `tests/app.test.ts` | 4 | Initial rendering, check-in/unlock, check-in edit/delete, and photo selection/removal |
 | `tests/checkins.test.ts` | 2 | Rating and star formatting rules |
-| `tests/foodCatalog.test.ts` | 6 | Hierarchy, filtering, progress, categories, and catalog visibility |
-| `tests/googleMaps.test.ts` | 6 | Maps service loading/failure, nearby search, point lookup, configuration, and geolocation |
+| `tests/foodCatalog.test.ts` | 8 | Hierarchy, filtering, progress, categories, catalog visibility, invariants, and artwork mapping |
+| `tests/googleMaps.test.ts` | 10 | Maps service loading/reuse/failure, nearby search, point lookup, configuration, and geolocation |
 | `tests/googlePlaces.test.ts` | 6 | Places parsing, nearby rendering, map initialization errors, and marker cleanup |
 | `tests/imageCropDialog.test.ts` | 3 | Crop cancellation, JPEG crop output, and cropper change-canvas handling |
 | `tests/imageProcessing.test.ts` | 2 | Progressive compression and 100KB limit |
@@ -85,8 +85,6 @@ one file.
 - Google Maps script tag reuse/failure branches and some malformed place payloads
 - Location-selection UI, keyboard interactions, and the remaining root-page modal
   paths
-- Catalog invariants such as unique IDs, unique numbers, valid parent references,
-  and artwork naming consistency
 
 ## Current responsibility map
 

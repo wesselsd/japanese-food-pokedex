@@ -109,12 +109,18 @@ export function currentLocation(
   fallback: LatLngLiteral,
   geolocation: Geolocation | null = typeof navigator === 'undefined' ? null : navigator.geolocation
 ) {
-  if (!geolocation) return Promise.resolve(fallback)
+  if (!geolocation) {
+    console.warn('Unable to access browser geolocation; using the default map location.', fallback)
+    return Promise.resolve(fallback)
+  }
 
   return new Promise<LatLngLiteral>((resolve) => {
     geolocation.getCurrentPosition(
       (position) => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }),
-      () => resolve(fallback),
+      (error) => {
+        console.warn('Unable to determine browser location; using the default map location.', error)
+        resolve(fallback)
+      },
       { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
     )
   })

@@ -94,7 +94,47 @@ describe('Google Maps service', () => {
     await expect(loading).rejects.toThrow('Unable to load Google Maps.')
   })
 
+  it('reuses an existing Maps script', async () => {
+    const existing = document.createElement('script')
+    existing.dataset.googleMaps = 'true'
+    document.head.appendChild(existing)
+    const maps = { importLibrary: vi.fn() }
+    vi.stubGlobal('google', { maps })
+
+    const loading = createGoogleMapsService('test-key').loadMaps()
+    existing.dispatchEvent(new Event('load'))
+
+    await expect(loading).resolves.toBe(maps)
+    expect(document.querySelectorAll('script[data-google-maps]')).toHaveLength(1)
+  })
+
+  it('rejects when an existing Maps script fails', async () => {
+    const existing = document.createElement('script')
+    existing.dataset.googleMaps = 'true'
+    document.head.appendChild(existing)
+
+    const loading = createGoogleMapsService('test-key').loadMaps()
+    existing.dispatchEvent(new Event('error'))
+
+    await expect(loading).rejects.toThrow('Unable to load Google Maps.')
+  })
+
+  it('rejects when the loaded global does not expose the Maps API', async () => {
+    let script: HTMLScriptElement | undefined
+    vi.spyOn(document.head, 'appendChild').mockImplementation((node) => {
+      script = node as HTMLScriptElement
+      return node
+    })
+    const loading = createGoogleMapsService('test-key').loadMaps()
+
+    vi.stubGlobal('google', { maps: {} })
+    script?.dispatchEvent(new Event('load'))
+
+    await expect(loading).rejects.toThrow('Google Maps loaded without its API.')
+  })
+
   it('uses the browser location and falls back when it is unavailable', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const located = await currentLocation(
       { lat: 35, lng: 139 },
       {
@@ -112,5 +152,19 @@ describe('Google Maps service', () => {
 
     expect(located).toEqual({ lat: 34.7, lng: 135.5 })
     expect(fallback).toEqual({ lat: 35, lng: 139 })
+    expect(warn).toHaveBeenCalledWith(
+      'Unable to determine browser location; using the default map location.',
+      expect.anything()
+    )
+  })
+
+  it('logs and uses the fallback when geolocation is unavailable', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    await expect(currentLocation({ lat: 35, lng: 139 }, null)).resolves.toEqual({ lat: 35, lng: 139 })
+    expect(warn).toHaveBeenCalledWith(
+      'Unable to access browser geolocation; using the default map location.',
+      { lat: 35, lng: 139 }
+    )
   })
 })
