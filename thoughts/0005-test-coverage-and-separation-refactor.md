@@ -17,17 +17,20 @@ The plan is in progress rather than complete. The current implementation status 
 | 5. Google Maps service | Mostly complete | Loading/search/geolocation service is extracted; component error/marker paths are covered, with script-tag branches remaining |
 | 6. Authentication | Complete | Auth construction is injected and both composable and adapter behavior are tested |
 | 7. Component coverage | Partial | Crop dialog, Maps paths, root check-in/unlock, edit/delete, and photo selection/removal have coverage; location-selection UI and keyboard/modal paths remain |
-| 8. E2E and thresholds | Partial | CI coverage thresholds are enforced; a browser-level smoke path remains |
+| 8. E2E and thresholds | Partial | CI thresholds and two deterministic browser journeys are in place; authenticated/location journeys remain |
 
-The current suite has 57 passing tests across 13 files. The latest measured
-coverage is 85.58% statements overall, with the pure domain modules at 100%.
+The current unit suite has 58 passing tests across 13 files. The latest measured
+unit coverage is 85.58% statements overall, with the pure domain modules at 100%.
+Two Playwright journeys additionally cover the generated static site in a real
+Chromium browser.
 
 ## Executive summary
 
 The current test suite is a useful starting point, but it does not yet provide
 confidence in the complete application:
 
-- `npm test` passes 57 tests.
+- `npm test` passes 58 tests.
+- `npm run test:e2e` covers catalog persistence and the photo crop/upload/select/remove journey.
 - `npm run test:integration` still passes one Supabase authentication smoke test.
 - Coverage reporting and thresholds are enforced by `.github/workflows/tests.yml`.
 - The Supabase progress adapter, authentication flows, photo processing, and the
@@ -53,7 +56,7 @@ The 53 current tests are distributed as follows:
 | `tests/foodCatalog.test.ts` | 6 | Hierarchy, filtering, progress, categories, and catalog visibility |
 | `tests/googleMaps.test.ts` | 6 | Maps service loading/failure, nearby search, point lookup, configuration, and geolocation |
 | `tests/googlePlaces.test.ts` | 6 | Places parsing, nearby rendering, map initialization errors, and marker cleanup |
-| `tests/imageCropDialog.test.ts` | 2 | Crop cancellation and JPEG crop output |
+| `tests/imageCropDialog.test.ts` | 3 | Crop cancellation, JPEG crop output, and cropper change-canvas handling |
 | `tests/imageProcessing.test.ts` | 2 | Progressive compression and 100KB limit |
 | `tests/localProgress.test.ts` | 3 | Local persistence, legacy data, photos, and malformed data |
 | `tests/supabaseAuth.test.ts` | 3 | Supabase auth adapter behavior and error propagation |

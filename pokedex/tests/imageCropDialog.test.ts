@@ -42,4 +42,30 @@ describe('ImageCropDialog', () => {
     expect(cropEvent).toHaveLength(1)
     expect(cropEvent?.[0][0]).toMatchObject({ name: 'food-photo.jpg', type: 'image/jpeg' })
   })
+
+  it('uses the latest crop canvas emitted by the cropper', async () => {
+    const cropCanvas = {
+      toBlob: (callback: BlobCallback) => callback(new Blob(['cropped'], { type: 'image/jpeg' }))
+    }
+    const wrapper = mount(ImageCropDialog, {
+      props: { src: 'blob:image' },
+      global: {
+        stubs: {
+          Cropper: {
+            template: '<div />',
+            mounted() {
+              this.$emit('change', { canvas: cropCanvas })
+            },
+            methods: {
+              getResult: () => ({ canvas: null })
+            }
+          }
+        }
+      }
+    })
+
+    await wrapper.find('form').trigger('submit')
+
+    expect(wrapper.emitted('crop')).toHaveLength(1)
+  })
 })

@@ -33,3 +33,28 @@ jobs:
           NUXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           NUXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
         run: npm run test:coverage
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: pokedex/package-lock.json
+
+      - name: Install dependencies
+        working-directory: pokedex
+        run: npm ci
+
+      - name: Install Chromium
+        working-directory: pokedex
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser tests
+        working-directory: pokedex
+        run: npm run test:e2e
