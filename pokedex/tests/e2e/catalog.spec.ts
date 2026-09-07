@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Locator } from '@playwright/test'
 
 const cropFixture = {
   name: 'food-photo.svg',
@@ -38,6 +38,50 @@ test('checks in a root food and persists unlocked variations', async ({ page }) 
 
   await expect(page.getByRole('button', { name: 'Eaten again!' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Uni gunkan' })).toBeVisible()
+})
+
+async function expectPathCardsToHaveSameSize(path: Locator) {
+  const parent = path.locator('.evolution-root .evolution-card')
+  const children = path.locator('.evolution-steps .evolution-card')
+  await expect(children).not.toHaveCount(0)
+
+  const parentBox = await parent.boundingBox()
+  expect(parentBox).not.toBeNull()
+  for (const child of await children.all()) {
+    const childBox = await child.boundingBox()
+    expect(childBox).not.toBeNull()
+    expect(Math.abs(parentBox!.width - childBox!.width)).toBeLessThanOrEqual(1)
+    expect(Math.abs(parentBox!.height - childBox!.height)).toBeLessThanOrEqual(1)
+  }
+}
+
+test('shows evolution relationships, modal behavior, and consistent card sizing', async ({ page }) => {
+  await page.getByRole('tab', { name: 'Evolutions' }).click()
+
+  const undiscoveredSection = page.locator('.evolution-section').filter({ has: page.locator('#undiscovered-heading') })
+  const undiscoveredPath = undiscoveredSection.locator('.evolution-path').first()
+  await expect(undiscoveredPath).toBeVisible()
+  await expectPathCardsToHaveSameSize(undiscoveredPath)
+
+  const parentCard = undiscoveredPath.locator('.evolution-root .evolution-card')
+  const parentName = await parentCard.locator('h2').textContent()
+  expect(parentName).not.toBeNull()
+  await parentCard.click()
+  await expect(page.getByRole('dialog', { name: `${parentName} details` })).toBeVisible()
+  await page.getByRole('button', { name: 'Close details' }).click()
+
+  const lockedChild = undiscoveredPath.locator('.evolution-steps .evolution-card').first()
+  await lockedChild.click()
+  await expect(page.locator('.detail-dialog')).toHaveCount(0)
+
+  await parentCard.getByRole('button', { name: 'Mark eaten' }).click()
+  await page.locator('.checkin-dialog').getByRole('button', { name: 'Save check-in' }).click()
+  await expect(page.locator('.checkin-dialog')).toBeHidden()
+
+  const discoveredSection = page.locator('.evolution-section').filter({ has: page.locator('#discovered-heading') })
+  const discoveredPath = discoveredSection.locator('.evolution-path').first()
+  await expect(discoveredPath).toBeVisible()
+  await expectPathCardsToHaveSameSize(discoveredPath)
 })
 
 test('lazy-loads and caches requested catalog artwork', async ({ page }) => {

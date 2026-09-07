@@ -316,7 +316,6 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
         <h2 :id="`${section.id}-heading`" class="section-title">{{ section.title }}</h2>
         <div v-for="group in section.groups" :key="`${section.id}-${group.root.id}`" class="evolution-path">
           <div class="evolution-root">
-            <span class="evolution-stage">Root</span>
             <article class="food-card evolution-card" :class="{ eaten: eatenFoods.includes(group.root.id) }" tabindex="0" @click="selectedFood = group.root" @keydown.enter="selectedFood = group.root" @keydown.space.prevent="selectedFood = group.root">
               <div class="food-art" :style="{ backgroundColor: group.root.color }">
                 <img v-if="displayedPhoto(group.root)" :src="displayedPhoto(group.root)" :alt="`${group.root.name} photo`" loading="lazy" decoding="async" />
