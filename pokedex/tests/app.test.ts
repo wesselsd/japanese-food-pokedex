@@ -23,11 +23,11 @@ function mountApp() {
 }
 
 describe('application flow', () => {
-  it('shows locked variations before their parent is eaten', async () => {
+  it('does not show the removed locked variation notice', async () => {
     const wrapper = mountApp()
     await nextTick()
 
-    expect(wrapper.find('.locked-notice').text()).toMatch(/variations awaiting a parent check-in/)
+    expect(wrapper.find('.locked-notice').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Uni gunkan')
   })
 
@@ -71,7 +71,7 @@ describe('application flow', () => {
     await nextTick()
 
     expect(wrapper.find('.checkin-dialog').exists()).toBe(false)
-    expect(wrapper.find('.locked-notice').text()).toMatch(/variations awaiting a parent check-in/)
+    expect(wrapper.find('.locked-notice').exists()).toBe(false)
     expect(wrapper.text()).toContain('Uni gunkan')
     expect(wrapper.text()).toContain('Kaisendon')
     expect(wrapper.text()).toContain('Tekkadon')

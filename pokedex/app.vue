@@ -37,7 +37,6 @@ const {
   categories,
   labels,
   visibleFoods,
-  lockedVariationCount,
   filteredFoods,
   essentialCount,
   progressCount,
@@ -201,7 +200,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
   <main class="shell">
     <header class="hero">
       <div class="hero-top">
-        <div class="eyebrow">おいしい図鑑 <span>•</span> Food adventure</div>
+        <div class="eyebrow">おいしい図鑑 <span>•</span> とてもアドベンチャーです!</div>
         <div v-if="initialized && isConfigured && user" class="account-bar">
           <span>Signed in as {{ user.email }}</span>
           <button class="text-button" @click="signOut">Sign out</button>
@@ -227,7 +226,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
           <p v-if="authMessage" class="auth-message">{{ authMessage }}</p>
         </form>
       </div>
-      <h1>Food <em>Pokedex.</em></h1>
+      <h1>Tabe<em>dex</em></h1>
       <p v-if="syncError" class="auth-error">{{ syncError }}</p>
       <div class="progress-row">
         <div><strong>{{ progressCount }}</strong><span> / {{ progressTotal }} {{ progressTotal === essentialCount ? 'essential ' : '' }}foods tried</span></div>
@@ -260,10 +259,6 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
         </label>
       </div>
     </section>
-    <p v-if="currentView === 'pokedex' && lockedVariationCount" class="locked-notice" aria-live="polite">
-      {{ lockedVariationCount }} variation{{ lockedVariationCount === 1 ? '' : 's' }} awaiting a parent check-in.
-    </p>
-
     <section v-if="currentView === 'pokedex' && essentialFoods.length" class="food-section" aria-live="polite">
       <h2 class="section-title">Essential</h2>
       <div class="food-grid">
@@ -310,7 +305,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
     <section v-else class="evolution-view" aria-labelledby="evolutions-heading">
       <div class="evolution-intro">
         <h2 id="evolutions-heading">Evolution paths</h2>
-        <p>Check in a root food to reveal its available evolutions.</p>
+        <p>Catch a basic food to reveal varieties</p>
       </div>
       <section v-for="section in evolutionSections" :key="section.id" class="evolution-section" :aria-labelledby="`${section.id}-heading`">
         <h2 :id="`${section.id}-heading`" class="section-title">{{ section.title }}</h2>

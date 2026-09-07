@@ -1,4 +1,4 @@
-# Japanese Food Pokedex
+# Tabedex
 
 A mobile-first web app for discovering Japanese food, tracking dishes eaten, and storing food photos.
 

@@ -16,7 +16,7 @@ const cropFixture = {
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'Food Pokedex.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Tabedex' })).toBeVisible()
 })
 
 test('checks in a root food and persists unlocked variations', async ({ page }) => {
@@ -29,7 +29,7 @@ test('checks in a root food and persists unlocked variations', async ({ page }) 
   await expect(page.getByRole('dialog', { name: 'Check in food' })).toBeHidden()
 
   await search.fill('')
-  await expect(page.getByText(/variations awaiting a parent check-in\./)).toBeVisible()
+  await expect(page.locator('.locked-notice')).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Uni gunkan' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Kaisendon' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Tekkadon' })).toBeVisible()
@@ -57,6 +57,7 @@ async function expectPathCardsToHaveSameSize(path: Locator) {
 
 test('shows evolution relationships, modal behavior, and consistent card sizing', async ({ page }) => {
   await page.getByRole('tab', { name: 'Evolutions' }).click()
+  await expect(page.getByText('Catch a basic food to reveal varieties')).toBeVisible()
 
   const undiscoveredSection = page.locator('.evolution-section').filter({ has: page.locator('#undiscovered-heading') })
   const undiscoveredPath = undiscoveredSection.locator('.evolution-path').first()
