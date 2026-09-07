@@ -3,13 +3,14 @@ import { nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it } from 'vitest'
 import { foodLabels, foods } from '../data/foods'
 import { useFoodPokedex } from '../composables/useFoodPokedex'
+import { createLocalProgressStore } from '../adapter/localProgress'
 
 function mountComposable(foodList = foods) {
   let state!: ReturnType<typeof useFoodPokedex>
 
   mount({
     setup() {
-      state = useFoodPokedex(foodList, ref(null))
+      state = useFoodPokedex(foodList, ref(createLocalProgressStore()))
       return {}
     },
     template: '<div />'
@@ -218,13 +219,14 @@ describe('useFoodPokedex', () => {
     expect(state.eatenCount.value).toBe(15)
   })
 
-  it('restores saved eaten foods on mount', () => {
+  it('restores saved eaten foods on mount', async () => {
     localStorage.setItem('pokedex-checkins', JSON.stringify([
       { id: 'one', foodId: 'sushi', eatenAt: '2026-09-06T10:00:00Z', rating: 4, location: '' },
       { id: 'two', foodId: 'onigiri', eatenAt: '2026-09-06T11:00:00Z', rating: 3, location: '' }
     ]))
 
     const state = mountComposable()
+    await nextTick()
 
     expect(state.eatenFoods.value).toEqual(['sushi', 'onigiri'])
     expect(state.eatenCount.value).toBe(2)

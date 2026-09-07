@@ -1,14 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import type {
+  Checkin,
+  FoodLocation,
+  FoodPhoto,
+  ProgressState,
+  ProgressStore
+} from '~/domain/progress'
 
-export type CloudProgress = {
-  checkins: Checkin[]
-  photos: Record<string, FoodPhoto[]>
-  selectedPhotos: Record<string, string>
-}
+export type { Checkin, FoodLocation, FoodPhoto } from '~/domain/progress'
 
-export type FoodLocation = { placeId: string; name: string; address: string; latitude: number; longitude: number; mapsUrl: string }
-export type Checkin = { id: string; foodId: string; eatenAt: string; rating: number; location: string; locationDetails?: FoodLocation }
-export type FoodPhoto = { id: string; url: string }
+export type CloudProgress = ProgressState
 
 export type ProgressAdapter = {
   load: (userId: string) => Promise<CloudProgress>
@@ -114,4 +115,16 @@ export function createSupabaseProgressAdapter(client: SupabaseClient): ProgressA
   }
 
   return { load, addCheckin, updateCheckin, deleteCheckin, uploadPhoto, deletePhoto, selectPhoto }
+}
+
+export function bindProgressAdapter(adapter: ProgressAdapter, userId: string): ProgressStore {
+  return {
+    load: () => adapter.load(userId),
+    addCheckin: (foodId, rating, location, locationDetails) => adapter.addCheckin(userId, foodId, rating, location, locationDetails),
+    updateCheckin: (checkin) => adapter.updateCheckin(userId, checkin),
+    deleteCheckin: (checkinId) => adapter.deleteCheckin(userId, checkinId),
+    uploadPhoto: (foodId, file) => adapter.uploadPhoto(userId, foodId, file),
+    deletePhoto: (foodId, photoId) => adapter.deletePhoto(userId, foodId, photoId),
+    selectPhoto: (foodId, photoId) => adapter.selectPhoto(userId, foodId, photoId)
+  }
 }

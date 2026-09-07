@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { foods, foodLabels } from './data/foods'
-import type { Checkin, FoodLocation } from './adapter/supabase/progress'
+import type { Checkin, FoodLocation, ProgressStore } from './domain/progress'
 import { useFoodPokedex } from './composables/useFoodPokedex'
 import { useAuth } from './composables/useAuth'
 import { getSupabaseClient } from './adapter/supabase/client'
-import { createSupabaseProgressAdapter } from './adapter/supabase/progress'
+import { bindProgressAdapter, createSupabaseProgressAdapter } from './adapter/supabase/progress'
+import { createLocalProgressStore } from './adapter/localProgress'
 import ImageCropDialog from './components/ImageCropDialog.vue'
 import LocationPicker from './components/LocationPicker.vue'
+import { highestRating, ratingStars } from './domain/checkins'
 
 const { user, initialized, isConfigured, error: authError, message: authMessage, signIn, signUp, signOut } = useAuth()
 const config = useRuntimeConfig()
-const cloudProgress = isConfigured.value
+const cloudProgressAdapter = isConfigured.value
   ? createSupabaseProgressAdapter(getSupabaseClient(config.public.supabaseUrl, config.public.supabaseAnonKey))
   : null
+const localProgress = createLocalProgressStore()
+const progressStore = computed<ProgressStore | null>(() => user.value && cloudProgressAdapter
+  ? bindProgressAdapter(cloudProgressAdapter, user.value.id)
+  : localProgress)
 const {
   eatenFoods,
   checkins,
@@ -38,7 +44,7 @@ const {
   removePhoto,
   selectPhoto,
   syncError
-} = useFoodPokedex(foods, user, cloudProgress)
+} = useFoodPokedex(foods, progressStore)
 const isLabelFiltering = computed(() => selectedLabel.value !== 'All')
 const categorySections = computed(() => isLabelFiltering.value
   ? [{ category: '', foods: filteredFoods.value, totalCount: 0, eatenCount: 0 }]
@@ -84,15 +90,6 @@ function openEditCheckin(checkin: Checkin) {
   checkinLocationDetails.value = checkin.locationDetails
   locationPickerOpen.value = false
   locationError.value = ''
-}
-
-function highestRating(foodId: string) {
-  return Math.max(...checkins.value.filter((checkin) => checkin.foodId === foodId).map((checkin) => checkin.rating))
-}
-
-function ratingStars(foodId: string) {
-  const rating = highestRating(foodId)
-  return `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`
 }
 
 function displayedPhoto(food: (typeof foods)[number]) {
@@ -234,7 +231,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
         </div>
         <div class="card-body">
           <div class="card-heading">
-            <div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(food.id)} out of 5`">{{ ratingStars(food.id) }}</span></div></div>
+            <div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(checkins, food.id)} out of 5`">{{ ratingStars(highestRating(checkins, food.id)) }}</span></div></div>
           </div>
           <div class="card-actions">
             <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button>
@@ -256,7 +253,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
             <span v-if="eatenFoods.includes(food.id)" class="tried-badge" aria-label="Eaten">✓</span>
           </div>
           <div class="card-body">
-            <div class="card-heading"><div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(food.id)} out of 5`">{{ ratingStars(food.id) }}</span></div></div></div>
+            <div class="card-heading"><div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(checkins, food.id)} out of 5`">{{ ratingStars(highestRating(checkins, food.id)) }}</span></div></div></div>
             <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(food.id, $event)" /></label></div>
           </div>
         </article>
