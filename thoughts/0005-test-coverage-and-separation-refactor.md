@@ -47,7 +47,7 @@ integration behind ports, and finally add focused adapter and component tests.
 
 ## Current test baseline
 
-The 53 current tests are distributed as follows:
+The 58 current unit tests are distributed as follows:
 
 | Test file | Tests | Current scope |
 |---|---:|---|
