@@ -25,6 +25,11 @@ export type CategorySection = {
   eatenCount: number
 }
 
+export type EvolutionGroup = {
+  root: Food
+  evolutions: Food[]
+}
+
 export function normalizeSearchText(value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[\s-]/g, '')
 }
@@ -73,6 +78,32 @@ export function visibleFoods(foodList: Food[], eatenFoodIds: ReadonlySet<string>
 export function lockedVariationCount(foodList: Food[], eatenFoodIds: ReadonlySet<string>) {
   const foodById = new Map(foodList.map((food) => [food.id, food]))
   return foodList.filter((food) => food.parentId && !isFoodUnlocked(food, foodById, eatenFoodIds)).length
+}
+
+export function evolutionGroups(foodList: Food[]): EvolutionGroup[] {
+  const childrenByParent = new Map<string, Food[]>()
+  foodList.forEach((food) => {
+    if (!food.parentId) return
+    const children = childrenByParent.get(food.parentId) ?? []
+    children.push(food)
+    childrenByParent.set(food.parentId, children)
+  })
+
+  return foodList.filter((food) => !food.parentId).map((root) => {
+    const evolutions: Food[] = []
+    const visited = new Set<string>()
+    const collectChildren = (parentId: string) => {
+      for (const child of childrenByParent.get(parentId) ?? []) {
+        if (visited.has(child.id)) continue
+        visited.add(child.id)
+        evolutions.push(child)
+        collectChildren(child.id)
+      }
+    }
+
+    collectChildren(root.id)
+    return { root, evolutions }
+  })
 }
 
 export function filterFoods(foodList: Food[], options: FoodFilterOptions) {

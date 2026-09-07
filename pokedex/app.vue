@@ -11,7 +11,7 @@ import { createLocalProgressStore } from './adapter/localProgress'
 import ImageCropDialog from './components/ImageCropDialog.vue'
 import LocationPicker from './components/LocationPicker.vue'
 import { highestRating, ratingStars } from './domain/checkins'
-import { categorySections as getCategorySections } from './domain/foodCatalog'
+import { categorySections as getCategorySections, evolutionGroups as getEvolutionGroups } from './domain/foodCatalog'
 
 const config = useRuntimeConfig()
 const configuredAuthAdapter = config.public.supabaseUrl && config.public.supabaseAnonKey
@@ -59,6 +59,28 @@ const categorySections = computed(() => getCategorySections(
   new Set(eatenFoods.value),
   isLabelFiltering.value
 ))
+const currentView = ref<'pokedex' | 'evolutions'>('pokedex')
+const evolutionGroups = computed(() => getEvolutionGroups(foods).filter((group) => group.evolutions.length))
+const foodById = new Map(foods.map((food) => [food.id, food]))
+const unlockedFoodIds = computed(() => new Set(visibleFoods.value.map((food) => food.id)))
+const evolutionSections = computed(() => [
+  {
+    id: 'undiscovered',
+    title: 'Undiscovered',
+    groups: evolutionGroups.value.map((group) => ({
+      ...group,
+      evolutions: group.evolutions.filter((food) => !isEvolutionFoodUnlocked(food))
+    })).filter((group) => group.evolutions.length)
+  },
+  {
+    id: 'discovered',
+    title: 'Discovered',
+    groups: evolutionGroups.value.map((group) => ({
+      ...group,
+      evolutions: group.evolutions.filter((food) => isEvolutionFoodUnlocked(food))
+    })).filter((group) => group.evolutions.length)
+  }
+])
 const essentialFoods = computed(() => isLabelFiltering.value ? [] : filteredFoods.value.filter((food) => food.essential))
 const selectedFood = ref<(typeof foods)[number] | null>(null)
 const checkinFood = ref<(typeof foods)[number] | null>(null)
@@ -104,6 +126,20 @@ function displayedPhoto(food: (typeof foods)[number]) {
 
 function foodPhotos(foodId: string) {
   return photos.value[foodId] ?? []
+}
+
+function isEvolutionFoodUnlocked(food: (typeof foods)[number]) {
+  return unlockedFoodIds.value.has(food.id)
+}
+
+function evolutionImage(food: (typeof foods)[number]) {
+  if (isEvolutionFoodUnlocked(food)) return displayedPhoto(food)
+  const parent = food.parentId ? foodById.get(food.parentId) : undefined
+  return parent ? displayedPhoto(parent) : food.image
+}
+
+function evolutionParentName(food: (typeof foods)[number]) {
+  return food.parentId ? foodById.get(food.parentId)?.name ?? 'Parent' : 'Root'
 }
 
 async function submitCheckin() {
@@ -199,7 +235,12 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
       </div>
     </header>
 
-    <section class="controls" aria-label="Food filters">
+    <nav class="view-tabs" role="tablist" aria-label="Main views">
+      <button type="button" role="tab" class="view-tab" :class="{ active: currentView === 'pokedex' }" :aria-selected="currentView === 'pokedex'" @click="currentView = 'pokedex'">Pokedex</button>
+      <button type="button" role="tab" class="view-tab" :class="{ active: currentView === 'evolutions' }" :aria-selected="currentView === 'evolutions'" @click="currentView = 'evolutions'">Evolutions</button>
+    </nav>
+
+    <section v-if="currentView === 'pokedex'" class="controls" aria-label="Food filters">
       <label class="search"><span aria-hidden="true">⌕</span><input v-model="searchTerm" type="search" placeholder="Search foods..." /><button v-if="searchTerm" type="button" class="clear-search" aria-label="Clear search" @click="searchTerm = ''">×</button></label>
       <div class="eaten-filters" aria-label="Eaten status">
         <button v-for="filter in [{ value: 'all', label: 'All' }, { value: 'eaten', label: 'Eaten' }, { value: 'uneaten', label: 'Not eaten' }]" :key="filter.value" class="category" :class="{ active: eatenFilter === filter.value }" @click="eatenFilter = filter.value">{{ filter.label }}</button>
@@ -219,11 +260,11 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
         </label>
       </div>
     </section>
-    <p v-if="lockedVariationCount" class="locked-notice" aria-live="polite">
+    <p v-if="currentView === 'pokedex' && lockedVariationCount" class="locked-notice" aria-live="polite">
       {{ lockedVariationCount }} variation{{ lockedVariationCount === 1 ? '' : 's' }} awaiting a parent check-in.
     </p>
 
-    <section v-if="essentialFoods.length" class="food-section" aria-live="polite">
+    <section v-if="currentView === 'pokedex' && essentialFoods.length" class="food-section" aria-live="polite">
       <h2 class="section-title">Essential</h2>
       <div class="food-grid">
       <article v-for="food in essentialFoods" :key="food.id" class="food-card" :class="{ eaten: eatenFoods.includes(food.id) }" tabindex="0" @click="selectedFood = food" @keydown.enter="selectedFood = food" @keydown.space.prevent="selectedFood = food">
@@ -246,6 +287,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
       </article>
       </div>
     </section>
+    <template v-if="currentView === 'pokedex'">
     <section v-for="section in categorySections" :key="section.category || 'filtered'" class="food-section" :class="{ 'flat-results': isLabelFiltering }" aria-live="polite">
       <h2 v-if="!isLabelFiltering" class="section-title">{{ section.category }} <span class="category-progress"><span class="category-progress-bar"><span :style="{ width: `${section.eatenCount / section.totalCount * 100}%` }" /></span><small>{{ section.eatenCount }}/{{ section.totalCount }}</small></span></h2>
       <div class="food-grid">
@@ -264,8 +306,56 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
         </article>
       </div>
     </section>
+    </template>
+    <section v-else class="evolution-view" aria-labelledby="evolutions-heading">
+      <div class="evolution-intro">
+        <h2 id="evolutions-heading">Evolution paths</h2>
+        <p>Check in a root food to reveal its available evolutions.</p>
+      </div>
+      <section v-for="section in evolutionSections" :key="section.id" class="evolution-section" :aria-labelledby="`${section.id}-heading`">
+        <h2 :id="`${section.id}-heading`" class="section-title">{{ section.title }}</h2>
+        <div v-for="group in section.groups" :key="`${section.id}-${group.root.id}`" class="evolution-path">
+          <div class="evolution-root">
+            <span class="evolution-stage">Root</span>
+            <article class="food-card evolution-card" :class="{ eaten: eatenFoods.includes(group.root.id) }" tabindex="0" @click="selectedFood = group.root" @keydown.enter="selectedFood = group.root" @keydown.space.prevent="selectedFood = group.root">
+              <div class="food-art" :style="{ backgroundColor: group.root.color }">
+                <img v-if="displayedPhoto(group.root)" :src="displayedPhoto(group.root)" :alt="`${group.root.name} photo`" loading="lazy" decoding="async" />
+                <span v-else class="food-emoji" aria-hidden="true">{{ group.root.emoji }}</span>
+                <span class="number">#{{ group.root.number }}</span>
+                <span class="art-labels">{{ foodLabels(group.root).slice(0, 3).join(' · ') }}</span>
+                <span v-if="eatenFoods.includes(group.root.id)" class="tried-badge" aria-label="Eaten">✓</span>
+              </div>
+              <div class="card-body">
+                <span class="evolution-parent">Root</span>
+                <div class="card-heading"><div><h2>{{ group.root.name }}</h2><div class="japanese-row"><p class="japanese">{{ group.root.japaneseName }}</p><span v-if="eatenFoods.includes(group.root.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(checkins, group.root.id)} out of 5`">{{ ratingStars(highestRating(checkins, group.root.id)) }}</span></div></div></div>
+                <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(group.root.id) }" @click.stop="openCheckin(group.root)">{{ eatenFoods.includes(group.root.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[group.root.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(group.root.id, $event)" /></label></div>
+              </div>
+            </article>
+          </div>
+          <div class="evolution-arrow" aria-hidden="true">→</div>
+          <div class="evolution-steps">
+            <article v-for="food in group.evolutions" :key="food.id" class="food-card evolution-card" :class="{ eaten: eatenFoods.includes(food.id), 'is-locked': !isEvolutionFoodUnlocked(food) }" :tabindex="isEvolutionFoodUnlocked(food) ? 0 : undefined" @click="isEvolutionFoodUnlocked(food) ? selectedFood = food : undefined" @keydown.enter="isEvolutionFoodUnlocked(food) ? selectedFood = food : undefined" @keydown.space.prevent="isEvolutionFoodUnlocked(food) ? selectedFood = food : undefined">
+              <div class="food-art" :class="{ 'locked-art': !isEvolutionFoodUnlocked(food) }" :style="{ backgroundColor: isEvolutionFoodUnlocked(food) ? food.color : '#fff' }">
+                <img :src="evolutionImage(food)" :class="{ 'locked-image': !isEvolutionFoodUnlocked(food) }" :alt="isEvolutionFoodUnlocked(food) ? `${food.name} photo` : `${food.japaneseName} evolution hint`" loading="lazy" decoding="async" />
+                <span v-if="!isEvolutionFoodUnlocked(food)" class="locked-question" aria-hidden="true">?</span>
+                <span class="number">#{{ food.number }}</span>
+                <span class="art-labels">{{ foodLabels(food).slice(0, 3).join(' · ') }}</span>
+                <span v-if="eatenFoods.includes(food.id)" class="tried-badge" aria-label="Eaten">✓</span>
+              </div>
+              <div class="card-body">
+                <span class="evolution-parent">From {{ evolutionParentName(food) }}</span>
+                <div class="card-heading"><div><h2 v-if="isEvolutionFoodUnlocked(food)">{{ food.name }}</h2><h2 v-else class="locked-name-placeholder" aria-hidden="true">&nbsp;</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(checkins, food.id)} out of 5`">{{ ratingStars(highestRating(checkins, food.id)) }}</span></div></div></div>
+                <div v-if="isEvolutionFoodUnlocked(food)" class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(food.id, $event)" /></label></div>
+                <div v-else class="card-actions locked-actions-placeholder" aria-hidden="true"><span class="try-button"></span><span class="photo-button"></span></div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <p v-if="!section.groups.length" class="empty">{{ section.id === 'undiscovered' ? 'All evolutions discovered.' : 'No evolutions discovered yet.' }}</p>
+      </section>
+    </section>
     <ImageCropDialog v-if="cropSource" :src="cropSource" @cancel="closeCrop" @crop="finishCrop" />
-    <p v-if="filteredFoods.length === 0" class="empty">No foods found. Try another search.</p>
+    <p v-if="currentView === 'pokedex' && filteredFoods.length === 0" class="empty">No foods found. Try another search.</p>
     <div v-if="selectedFood" class="detail-backdrop" role="dialog" aria-modal="true" :aria-label="`${selectedFood.name} details`" @click.self="selectedFood = null">
       <article class="detail-dialog">
         <button class="detail-close" aria-label="Close details" @click="selectedFood = null">×</button>

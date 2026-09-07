@@ -4,6 +4,7 @@ import {
   catalogProgress,
   catalogInvariantErrors,
   categorySections,
+  evolutionGroups,
   filterFoods,
   isFoodUnlocked,
   lockedVariationCount,
@@ -177,6 +178,35 @@ describe('food catalog domain rules', () => {
       tekkadon: 'sushi',
       tanmen: 'ramen'
     })
+  })
+
+  it('groups every root with all descendant evolutions in catalog order', () => {
+    const catalog = [
+      { id: 'root', parentId: undefined },
+      { id: 'second', parentId: 'root' },
+      { id: 'other-root', parentId: undefined },
+      { id: 'third', parentId: 'second' },
+      { id: 'sibling', parentId: 'root' }
+    ].map((food, index) => ({
+      ...food,
+      number: String(index),
+      name: food.id,
+      japaneseName: '',
+      category: 'Test',
+      essential: false,
+      foodTypes: [],
+      description: '',
+      emoji: '',
+      color: ''
+    }))
+
+    expect(evolutionGroups(catalog).map((group) => ({
+      root: group.root.id,
+      evolutions: group.evolutions.map((food) => food.id)
+    }))).toEqual([
+      { root: 'root', evolutions: ['second', 'third', 'sibling'] },
+      { root: 'other-root', evolutions: [] }
+    ])
   })
 
   it('reports duplicate identifiers and invalid parent references', () => {

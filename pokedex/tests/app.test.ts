@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../app.vue'
+import { foods } from '../data/foods'
 
 afterEach(() => {
   localStorage.clear()
@@ -28,6 +29,31 @@ describe('application flow', () => {
 
     expect(wrapper.find('.locked-notice').text()).toMatch(/variations awaiting a parent check-in/)
     expect(wrapper.text()).not.toContain('Uni gunkan')
+  })
+
+  it('groups discovered evolutions and hides locked names and actions', async () => {
+    const wrapper = mountApp()
+    await wrapper.findAll('.view-tab')[1].trigger('click')
+    await nextTick()
+
+    expect(wrapper.find('.evolution-view').exists()).toBe(true)
+    expect(wrapper.find('#undiscovered-heading').text()).toBe('Undiscovered')
+    expect(wrapper.find('#discovered-heading').text()).toBe('Discovered')
+    expect(wrapper.findAll('.evolution-section')).toHaveLength(2)
+    expect(wrapper.find('.evolution-view').text()).not.toContain('Omurice')
+    expect(wrapper.findAll('.evolution-card.is-locked').length).toBeGreaterThan(0)
+    expect(wrapper.find('.evolution-card.is-locked button.try-button').exists()).toBe(false)
+    expect(wrapper.find('.evolution-card.is-locked label.photo-button').exists()).toBe(false)
+    expect(wrapper.find('.evolution-card.is-locked .locked-name-placeholder').exists()).toBe(true)
+    expect(wrapper.find('.evolution-card.is-locked .japanese').exists()).toBe(true)
+    expect(wrapper.find('.evolution-card.is-locked .evolution-parent').text()).toMatch(/^From /)
+    expect(wrapper.find('.evolution-card.is-locked img').classes()).toContain('locked-image')
+    expect(wrapper.find('.evolution-card.is-locked .locked-question').text()).toBe('?')
+
+    const firstLockedFood = foods.find((food) => food.parentId)
+    const parentFood = foods.find((food) => food.id === firstLockedFood?.parentId)
+    const firstLockedCard = wrapper.findAll('.evolution-card.is-locked').find((card) => card.find('.japanese').text() === firstLockedFood?.japaneseName)
+    expect(firstLockedCard?.find('img').attributes('src')).toBe(parentFood?.image)
   })
 
   it('checks in a root food and reveals its variations', async () => {
