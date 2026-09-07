@@ -94,6 +94,27 @@ describe('food catalog domain rules', () => {
     expect(filtered).toEqual([])
   })
 
+  it('matches names with or without macrons', () => {
+    const filterOptions = (searchTerm: string) => filterFoods(foods, {
+      searchTerm,
+      selectedCategory: 'All',
+      selectedLabel: 'All',
+      eatenFilter: 'all',
+      eatenFoodIds: new Set()
+    }).map((food) => food.id)
+
+    expect(filterOptions('gyudon')).toContain('gyudon')
+    expect(filterOptions('gyutan')).toContain('grilled-gyutan')
+    expect(filterOptions('chuhai')).toContain('chuhai')
+    expect(filterOptions('shabushabu')).toContain('shabu-shabu')
+    expect(filterOptions('yaki udon')).toContain('yaki-udon')
+    expect(filterOptions('shochu')).toEqual(expect.arrayContaining([
+      'shochu',
+      'imo-shochu',
+      'mugi-shochu'
+    ]))
+  })
+
   it('uses essentials first, then tracks only unlocked foods', () => {
     const catalog = [
       { id: 'essential', essential: true, parentId: undefined },

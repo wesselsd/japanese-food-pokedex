@@ -25,6 +25,10 @@ export type CategorySection = {
   eatenCount: number
 }
 
+export function normalizeSearchText(value: string) {
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[\s-]/g, '')
+}
+
 export function catalogInvariantErrors(foodList: readonly Food[]) {
   const errors: string[] = []
   const ids = new Set<string>()
@@ -72,15 +76,15 @@ export function lockedVariationCount(foodList: Food[], eatenFoodIds: ReadonlySet
 }
 
 export function filterFoods(foodList: Food[], options: FoodFilterOptions) {
-  const search = options.searchTerm.trim().toLowerCase()
+  const search = normalizeSearchText(options.searchTerm.trim())
 
   return foodList.filter((food) => {
     const matchesSearch =
       !search ||
-      food.name.toLowerCase().includes(search) ||
+      normalizeSearchText(food.name).includes(search) ||
       food.japaneseName.includes(search) ||
-      food.category.toLowerCase().includes(search) ||
-      food.foodTypes.some((type) => type.toLowerCase().includes(search))
+      normalizeSearchText(food.category).includes(search) ||
+      food.foodTypes.some((type) => normalizeSearchText(type).includes(search))
 
     const matchesEaten =
       options.eatenFilter === 'all' ||
