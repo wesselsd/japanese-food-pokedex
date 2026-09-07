@@ -3,7 +3,7 @@
 :root { color: #252321; background: #f7f3ec; font-family: 'DM Sans', sans-serif; }
 * { box-sizing: border-box; } body { margin: 0; } body.modal-open { overflow: hidden; } button, input { font: inherit; } button { cursor: pointer; }
 .shell { width: min(1280px, calc(100% - 40px)); margin: auto; padding: 52px 0 80px; }
-.hero { max-width: 100%; } .hero-top { align-items: flex-start; display: flex; justify-content: space-between; gap: 24px; } .eyebrow, .number, .category-label { color: #b0492f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.hero { max-width: 100%; } .hero-top { align-items: flex-start; display: flex; justify-content: space-between; gap: 24px; } .eyebrow, .number, .category-label { color: #b0492f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .08em; } .number, .category-label { text-transform: uppercase; }
 .account-bar, .auth-heading { align-items: center; display: flex; justify-content: space-between; gap: 12px; }
 .account-bar { color: #77716b; font-size: 12px; }
 .auth-panel { background: #fffdf9; border: 1px solid #e3dcd1; border-radius: 5px; max-width: 520px; padding: 14px; }
@@ -11,7 +11,7 @@
 .auth-fields { display: flex; gap: 8px; margin-top: 13px; } .auth-fields input { background: #f7f3ec; border: 1px solid #e3dcd1; border-radius: 3px; min-width: 0; padding: 9px; width: 100%; }
 .auth-button { background: #252321; border: 0; border-radius: 3px; color: #fff; font-size: 12px; padding: 9px 12px; white-space: nowrap; }
 .auth-error, .auth-message { font-size: 12px; margin: 10px 0 0; } .auth-error { color: #b0492f; } .auth-message { color: #58734c; }
-.eyebrow span { color: #d5a34c; margin: 0 8px; } h1 { font-size: clamp(2.5rem, 7vw, 5.5rem); letter-spacing: -.07em; line-height: .91; margin: 22px 0; white-space: nowrap; }
+.eyebrow span { color: #252321; margin: 0 8px; } h1 { font-size: clamp(2.5rem, 7vw, 5.5rem); letter-spacing: -.07em; line-height: .91; margin: 22px 0; white-space: nowrap; }
 h1 em { color: #b0492f; font-family: 'Playfair Display', serif; font-weight: 600; letter-spacing: -.06em; } .intro { color: #77716b; font-size: 16px; line-height: 1.6; max-width: 475px; }
 .progress-row { align-items: center; display: flex; gap: 16px; margin-top: 30px; max-width: 500px; } .progress-row strong { font-size: 22px; } .progress-row span { color: #8b847b; font-size: 13px; }
 .progress-track { background: #e5ded3; border-radius: 10px; flex: 1; height: 6px; } .progress-fill { background: #b0492f; border-radius: inherit; height: 100%; transition: width .25s; }

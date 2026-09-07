@@ -17,6 +17,7 @@ const cropFixture = {
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { name: 'Tabedex' })).toBeVisible()
+  await expect(page.getByText("Dimitri's Food Pokédex")).toBeVisible()
 })
 
 test('checks in a root food and persists unlocked variations', async ({ page }) => {

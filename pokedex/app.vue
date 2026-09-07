@@ -200,7 +200,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
   <main class="shell">
     <header class="hero">
       <div class="hero-top">
-        <div class="eyebrow">おいしい図鑑 <span>•</span> とてもアドベンチャーです!</div>
+        <div class="eyebrow">Dimitri's Food Pokédex <span>•</span> とてもアドベンチャーです!</div>
         <div v-if="initialized && isConfigured && user" class="account-bar">
           <span>Signed in as {{ user.email }}</span>
           <button class="text-button" @click="signOut">Sign out</button>
