@@ -3,14 +3,34 @@
 Status: proposed implementation plan
 Updated: 2026-09-07
 
+## Implementation status
+
+The plan is in progress rather than complete. The current implementation status is:
+
+| Phase | Status | Notes |
+|---|---|---|
+| 0. Measurable baseline | Mostly complete | Coverage provider and `npm run test:coverage` exist; CI thresholds/workflow remain |
+| 1. Pure catalog rules | Complete | Catalog, hierarchy, progress, category sections, and ratings are extracted and tested |
+| 2. Persistence port | Mostly complete | Local store, cloud binding, photo persistence, and local-store tests exist |
+| 3. Supabase boundaries | Partial | Contract tests exist; live integration still only checks authentication |
+| 4. Image processing | Complete | Compression is isolated and the 100KB behavior is tested |
+| 5. Google Maps service | Mostly complete | Loading/search/geolocation service is extracted; some SDK and component error paths remain |
+| 6. Authentication | Complete | Auth construction is injected and both composable and adapter behavior are tested |
+| 7. Component coverage | Partial | Crop dialog, location paths, and root check-in/unlock flow have coverage; photo/modal editing flows remain |
+| 8. E2E and thresholds | Not started | No browser smoke path or CI coverage policy exists yet |
+
+The current suite has 51 passing tests across 13 files. The latest measured
+coverage is 80.61% statements overall, with the pure domain modules at 100%.
+
 ## Executive summary
 
 The current test suite is a useful starting point, but it does not yet provide
 confidence in the complete application:
 
-- `npm test` passes 19 tests.
-- `npm run test:integration` passes one Supabase authentication smoke test.
-- No coverage report, coverage threshold, or coverage instrumentation is configured.
+- `npm test` passes 51 tests.
+- `npm run test:integration` still passes one Supabase authentication smoke test.
+- Coverage reporting is configured, but no CI threshold or dedicated test workflow
+  exists yet.
 - The Supabase progress adapter, authentication flows, photo processing, and most
   UI flows have no meaningful automated coverage.
 
@@ -29,6 +49,7 @@ The 19 existing tests are distributed as follows:
 
 | Test file | Tests | Current scope |
 |---|---:|---|
+| `tests/app.test.ts` | 2 | Initial rendering, locked-variation notice, root check-in, and unlock flow |
 | `tests/useFoodPokedex.test.ts` | 14 | Labels, filtering, check-ins, local restoration, progress, and variation unlocking |
 | `tests/googlePlaces.test.ts` | 4 | Places request construction, response conversion, missing names, and one nearby-list component path |
 | `tests/integration/supabase.test.ts` | 1 | `auth.getSession()` against the configured Supabase project |
