@@ -107,6 +107,8 @@ test('crops, saves, selects, and removes an uploaded photo', async ({ page }) =>
   await search.fill('sushi')
   const foodCard = page.locator('.food-card')
   const photoInput = foodCard.locator('input[type="file"]')
+  await expect(photoInput).toHaveAttribute('accept', 'image/*')
+  await expect(photoInput).not.toHaveAttribute('capture')
   await photoInput.setInputFiles(cropFixture)
 
   await expect(page.getByRole('dialog', { name: 'Crop image' })).toBeVisible()

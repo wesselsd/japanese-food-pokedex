@@ -276,7 +276,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
           </div>
           <div class="card-actions">
             <button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button>
-            <label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(food.id, $event)" /></label>
+            <label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" @change="openCrop(food.id, $event)" /></label>
           </div>
         </div>
       </article>
@@ -296,7 +296,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
           </div>
           <div class="card-body">
             <div class="card-heading"><div><h2>{{ food.name }}</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(checkins, food.id)} out of 5`">{{ ratingStars(highestRating(checkins, food.id)) }}</span></div></div></div>
-            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(food.id, $event)" /></label></div>
+            <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" @change="openCrop(food.id, $event)" /></label></div>
           </div>
         </article>
       </div>
@@ -322,7 +322,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
               <div class="card-body">
                 <span class="evolution-parent">Root</span>
                 <div class="card-heading"><div><h2>{{ group.root.name }}</h2><div class="japanese-row"><p class="japanese">{{ group.root.japaneseName }}</p><span v-if="eatenFoods.includes(group.root.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(checkins, group.root.id)} out of 5`">{{ ratingStars(highestRating(checkins, group.root.id)) }}</span></div></div></div>
-                <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(group.root.id) }" @click.stop="openCheckin(group.root)">{{ eatenFoods.includes(group.root.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[group.root.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(group.root.id, $event)" /></label></div>
+                <div class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(group.root.id) }" @click.stop="openCheckin(group.root)">{{ eatenFoods.includes(group.root.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[group.root.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" @change="openCrop(group.root.id, $event)" /></label></div>
               </div>
             </article>
           </div>
@@ -339,7 +339,7 @@ watch([selectedFood, checkinFood, editingCheckin, cropFoodId], (values) => {
               <div class="card-body">
                 <span class="evolution-parent">From {{ evolutionParentName(food) }}</span>
                 <div class="card-heading"><div><h2 v-if="isEvolutionFoodUnlocked(food)">{{ food.name }}</h2><h2 v-else class="locked-name-placeholder" aria-hidden="true">&nbsp;</h2><div class="japanese-row"><p class="japanese">{{ food.japaneseName }}</p><span v-if="eatenFoods.includes(food.id)" class="card-rating" :aria-label="`Highest rating: ${highestRating(checkins, food.id)} out of 5`">{{ ratingStars(highestRating(checkins, food.id)) }}</span></div></div></div>
-                <div v-if="isEvolutionFoodUnlocked(food)" class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" capture="environment" @change="openCrop(food.id, $event)" /></label></div>
+                <div v-if="isEvolutionFoodUnlocked(food)" class="card-actions"><button class="try-button" :class="{ selected: eatenFoods.includes(food.id) }" @click.stop="openCheckin(food)">{{ eatenFoods.includes(food.id) ? 'Eaten again!' : 'Mark eaten' }}</button><label class="photo-button" :title="photos[food.id] ? 'Replace photo' : 'Add a photo'" @click.stop><span>Add picture</span><input type="file" accept="image/*" @change="openCrop(food.id, $event)" /></label></div>
                 <div v-else class="card-actions locked-actions-placeholder" aria-hidden="true"><span class="try-button"></span><span class="photo-button"></span></div>
               </div>
             </article>
