@@ -97,4 +97,4 @@ if __name__ == "__main__":
 
         thumbnail_name = source.stem.removesuffix("_image") + ".webp"
         destination = thumbnail_dir / thumbnail_name
-        convert_png(source, destination, 600, 10, min_quality=50, max_quality=95)
+        convert_png(source, destination, 640, 20, min_quality=50, max_quality=95)
