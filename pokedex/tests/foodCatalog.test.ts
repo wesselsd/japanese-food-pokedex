@@ -237,7 +237,8 @@ describe('food catalog domain rules', () => {
   it('maps every catalog entry to display-name artwork', () => {
     const missingArtwork = foods.filter((food) => {
       const slug = food.name.toLowerCase().replace(/ /g, '-')
-      return !food.image?.includes(`${encodeURIComponent(slug)}_image.`)
+      return !food.image?.includes(`/thumbnails/${encodeURIComponent(slug)}.`)
+        || !food.image.endsWith('.webp')
     }).map((food) => ({ name: food.name, image: food.image }))
     expect(missingArtwork).toEqual([])
   })

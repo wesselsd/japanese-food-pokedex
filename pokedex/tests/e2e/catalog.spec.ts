@@ -97,7 +97,7 @@ test('lazy-loads and caches requested catalog artwork', async ({ page }) => {
   await firstImage.scrollIntoViewIfNeeded()
   await expect.poll(() => firstImage.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true)
   await expect.poll(() => page.evaluate(async () => {
-    const cache = await caches.open('catalog-images-v1')
+    const cache = await caches.open('catalog-images-v2')
     return (await cache.keys()).length > 0
   })).toBe(true)
 })

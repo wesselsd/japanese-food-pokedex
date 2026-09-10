@@ -1,9 +1,9 @@
-const CATALOG_IMAGE_CACHE = 'catalog-images-v1'
+const CATALOG_IMAGE_CACHE = 'catalog-images-v2'
 
 function isCatalogImage(url) {
   return url.origin === self.location.origin
     && url.pathname.includes('/_nuxt/')
-    && /_image\.[^/]+\.png$/.test(url.pathname)
+    && (/[^/]+_image\.[^/]+\.png$/.test(url.pathname) || /[^/]+\.[^/]+\.webp$/.test(url.pathname))
 }
 
 async function cacheCatalogImage(request) {

@@ -1,6 +1,6 @@
 import foodData from './foods.json'
 
-const imageModules = import.meta.glob('../assets/images/*_image.png', {
+const imageModules = import.meta.glob('../assets/thumbnails/*.webp', {
   eager: true,
   import: 'default',
   query: '?url'
@@ -39,7 +39,7 @@ function imageSlugForName(name: string) {
 }
 
 function imageForFood(name: string) {
-  return imageModules[`../assets/images/${imageSlugForName(name)}_image.png`]
+  return imageModules[`../assets/thumbnails/${imageSlugForName(name)}.webp`]
 }
 
 export const foods: Food[] = foodData.map((food) => ({
