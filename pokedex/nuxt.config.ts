@@ -11,6 +11,13 @@ export default defineNuxtConfig({
       googleMapsMapId: process.env.NUXT_PUBLIC_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID'
     }
   },
+  hooks: {
+    'build:manifest'(manifest) {
+      for (const entry of Object.values(manifest)) {
+        if (entry.resourceType === 'image') entry.prefetch = false
+      }
+    }
+  },
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {

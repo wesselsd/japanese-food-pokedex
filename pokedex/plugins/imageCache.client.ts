@@ -1,4 +1,4 @@
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin(async () => {
   if (import.meta.dev) return
 
   if (!('serviceWorker' in navigator)) {
@@ -10,7 +10,10 @@ export default defineNuxtPlugin(() => {
   const baseURL = config.app.baseURL.endsWith('/') ? config.app.baseURL : `${config.app.baseURL}/`
   const scriptURL = new URL('sw.js', `${window.location.origin}${baseURL}`).toString()
 
-  navigator.serviceWorker.register(scriptURL, { scope: baseURL }).catch((error) => {
+  try {
+    await navigator.serviceWorker.register(scriptURL, { scope: baseURL })
+    await navigator.serviceWorker.ready
+  } catch (error) {
     console.error('Unable to register catalog image caching.', error)
-  })
+  }
 })

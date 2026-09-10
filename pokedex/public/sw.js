@@ -37,6 +37,7 @@ self.addEventListener('activate', (event) => {
           .filter((cacheName) => cacheName.startsWith('catalog-images-') && cacheName !== CATALOG_IMAGE_CACHE)
           .map((cacheName) => caches.delete(cacheName))
       ))
+      .then(() => self.clients.claim())
       .catch((error) => {
         console.error('Unable to clean up old catalog image caches.', error)
       })
